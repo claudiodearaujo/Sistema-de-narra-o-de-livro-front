@@ -3,16 +3,40 @@
         <div class="field mb-4">
             <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Nome do
                 Personagem</label>
-            <input id="name" type="text" pInputText formControlName="name" placeholder="Ex: Harry Potter" />
+            <input id="name" type="text" class="w-full" pInputText formControlName="name"
+                placeholder="Ex: Harry Potter" />
             <small *ngIf="form.get('name')?.invalid && form.get('name')?.touched" class="p-error block mt-1">
                 Nome é obrigatório (mínimo 2 caracteres).
             </small>
         </div>
 
         <div class="field mb-4">
+            <label for="bookId" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Livro</label>
+            <p-select id="bookId" class="w-full" [options]="books" formControlName="bookId" optionLabel="title"
+                optionValue="id" placeholder="Selecione um livro" [filter]="true" filterBy="title,author"
+                [showClear]="true" appendTo="body">
+                <ng-template pTemplate="selectedItem" let-selectedOption>
+                    <div class="flex align-items-center gap-2" *ngIf="selectedOption">
+                        <div>{{ selectedOption.title }}</div>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="item" let-book>
+                    <div class="flex flex-col">
+                        <span class="font-medium">{{ book.title }}</span>
+                        <span class="text-xs text-gray-500">{{ book.author }}</span>
+                    </div>
+                </ng-template>
+            </p-select>
+            <small *ngIf="form.get('bookId')?.invalid && form.get('bookId')?.touched" class="p-error block mt-1">
+                Selecione um livro.
+            </small>
+        </div>
+
+        <div class="field mb-4">
             <label for="voiceId" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Voz</label>
-            <p-select id="voiceId" [options]="voices" formControlName="voiceId" optionLabel="name" optionValue="id"
-                placeholder="Selecione uma voz" [filter]="true" filterBy="name" [showClear]="true" appendTo="body">
+            <p-select id="voiceId" class="w-full" [options]="voices" formControlName="voiceId" optionLabel="name"
+                optionValue="id" placeholder="Selecione uma voz" [filter]="true" filterBy="name" [showClear]="true"
+                appendTo="body">
                 <ng-template pTemplate="selectedItem" let-selectedOption>
                     <div class="flex align-items-center gap-2" *ngIf="selectedOption">
                         <div>{{ selectedOption.name }}</div>
@@ -42,7 +66,7 @@
             <label for="voiceDescription"
                 class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Descrição da Voz
                 (Opcional)</label>
-            <textarea id="voiceDescription" pInputTextarea formControlName="voiceDescription" rows="3"
+            <textarea id="voiceDescription" class="w-full" pInputTextarea formControlName="voiceDescription" rows="3"
                 placeholder="Ex: Tom grave, sotaque nordestino, fala pausada...">
             </textarea>
         </div>

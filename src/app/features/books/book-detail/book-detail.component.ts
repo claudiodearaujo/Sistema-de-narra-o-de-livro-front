@@ -92,4 +92,10 @@ export class BookDetailComponent implements OnInit {
     backToList() {
         this.router.navigate(['/books']);
     }
+
+    viewCharacters() {
+        if (this.bookId) {
+            this.router.navigate(['/books', this.bookId, 'characters']);
+        }
+    }
 }

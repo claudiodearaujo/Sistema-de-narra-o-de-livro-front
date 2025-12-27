@@ -9,8 +9,12 @@ import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { MessageService, ConfirmationService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ToastModule } from 'primeng/toast';
+import { BookService } from '../../../services/book.service';
+import { Book } from '../../../models/book.model';
 import { CharacterFormComponent } from '../character-form/character-form.component';
 import { VoicePreviewComponent } from '../voice-preview/voice-preview.component';
+import { SelectModule } from 'primeng/select';
+import { FormsModule } from '@angular/forms';
 
 @Component({
     selector: 'app-character-list',
@@ -21,7 +25,9 @@ import { VoicePreviewComponent } from '../voice-preview/voice-preview.component'
         CardModule,
         ConfirmDialogModule,
         ToastModule,
-        VoicePreviewComponent
+        VoicePreviewComponent,
+        SelectModule,
+        FormsModule
     ],
     providers: [DialogService, MessageService, ConfirmationService],
     templateUrl: './character-list.component.html',
@@ -29,12 +35,15 @@ import { VoicePreviewComponent } from '../voice-preview/voice-preview.component'
 })
 export class CharacterListComponent implements OnInit {
     bookId: string = '';
+    selectedBookId: string | null = null;
     characters: Character[] = [];
+    books: Book[] = [];
     ref: DynamicDialogRef<CharacterFormComponent> | undefined | null;
 
     constructor(
         private route: ActivatedRoute,
         private characterService: CharacterService,
+        private bookService: BookService,
         private dialogService: DialogService,
         private messageService: MessageService,
         private confirmationService: ConfirmationService
@@ -42,21 +51,72 @@ export class CharacterListComponent implements OnInit {
 
     ngOnInit(): void {
         this.bookId = this.route.snapshot.paramMap.get('id') || '';
+        console.log('CharacterListComponent initialized with bookId:', this.bookId);
+        
+        // Se bookId estiver vazio, tentar pegar da rota pai (caso esteja em rota filha)
+        if (!this.bookId && this.route.parent) {
+             this.bookId = this.route.parent.snapshot.paramMap.get('id') || '';
+             console.log('Tried getting from parent route, bookId:', this.bookId);
+        }
+
         if (this.bookId) {
+            this.selectedBookId = this.bookId;
             this.loadCharacters();
+        } else {
+            // Se não tem bookId na rota, carrega a lista de livros para o filtro
+            // O próprio loadBooks se encarregará de selecionar o primeiro e carregar os personagens
+            this.loadBooks();
         }
     }
 
-    loadCharacters() {
-        this.characterService.getByBookId(this.bookId).subscribe({
-            next: (data) => {
-                this.characters = data;
+    loadBooks() {
+        this.bookService.getAll(1, 1000).subscribe({
+            next: (response) => {
+                this.books = response.data;
+                // Se temos livros e nenhum livro foi pré-selecionado (via rota), seleciona o primeiro
+                if (this.books.length > 0 && !this.bookId) {
+                    this.selectedBookId = this.books[0].id;
+                    this.bookId = this.selectedBookId;
+                    this.loadCharacters();
+                }
             },
             error: (error) => {
-                console.error('Error loading characters:', error);
-                this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Erro ao carregar personagens.' });
+                console.error('Error loading books:', error);
             }
         });
+    }
+
+    onBookChange() {
+        this.bookId = this.selectedBookId || '';
+        this.loadCharacters();
+    }
+
+    loadCharacters() {
+        if (this.bookId) {
+            console.log('Loading characters for book:', this.bookId);
+            this.characterService.getByBookId(this.bookId).subscribe({
+                next: (data) => {
+                    console.log('Characters loaded:', data);
+                    this.characters = data;
+                },
+                error: (error) => {
+                    console.error('Error loading characters:', error);
+                    this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Erro ao carregar personagens.' });
+                }
+            });
+        } else {
+            console.log('Loading all characters (global list)');
+            this.characterService.getAll().subscribe({
+                next: (data) => {
+                    console.log('All characters loaded:', data);
+                    this.characters = data;
+                },
+                error: (error) => {
+                    console.error('Error loading all characters:', error);
+                    this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Erro ao carregar todos os personagens.' });
+                }
+            });
+        }
     }
 
     openNew() {

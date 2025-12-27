@@ -1,3 +1,5 @@
+import { Voice } from './voice.model';
+
 export interface Character {
     id: string;
     bookId: string;
@@ -5,4 +7,5 @@ export interface Character {
     voiceId: string;
     voiceDescription?: string;
     previewAudioUrl?: string;
+    voice?: Voice;
 }

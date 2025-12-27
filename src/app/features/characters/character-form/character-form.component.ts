@@ -4,8 +4,10 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { DynamicDialogRef, DynamicDialogConfig } from 'primeng/dynamicdialog';
 import { CharacterService } from '../../../core/services/character.service';
 import { VoiceService } from '../../../core/services/voice.service';
+import { BookService } from '../../../services/book.service';
 import { Voice } from '../../../core/models/voice.model';
 import { Character } from '../../../core/models/character.model';
+import { Book } from '../../../models/book.model';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { TextareaModule } from 'primeng/textarea';
@@ -32,6 +34,7 @@ import { MessageService } from 'primeng/api';
 export class CharacterFormComponent implements OnInit {
     form: FormGroup;
     voices: Voice[] = [];
+    books: Book[] = [];
     bookId: string = '';
     isEditMode = false;
     characterId: string = '';
@@ -43,10 +46,12 @@ export class CharacterFormComponent implements OnInit {
         public config: DynamicDialogConfig,
         private characterService: CharacterService,
         private voiceService: VoiceService,
+        private bookService: BookService,
         private messageService: MessageService
     ) {
         this.form = this.fb.group({
             name: ['', [Validators.required, Validators.minLength(2)]],
+            bookId: ['', Validators.required],
             voiceId: ['', Validators.required],
             voiceDescription: ['']
         });
@@ -57,15 +62,20 @@ export class CharacterFormComponent implements OnInit {
         const character = this.config.data?.character as Character;
 
         this.loadVoices();
+        this.loadBooks();
 
         if (character) {
             this.isEditMode = true;
             this.characterId = character.id;
             this.form.patchValue({
                 name: character.name,
+                bookId: character.bookId,
                 voiceId: character.voiceId,
                 voiceDescription: character.voiceDescription
             });
+        } else if (this.bookId) {
+            // Se foi passado um bookId via config, pré-seleciona
+            this.form.patchValue({ bookId: this.bookId });
         }
     }
 
@@ -77,6 +87,18 @@ export class CharacterFormComponent implements OnInit {
             error: (error) => {
                 console.error('Error loading voices:', error);
                 this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Erro ao carregar vozes.' });
+            }
+        });
+    }
+
+    loadBooks() {
+        this.bookService.getAll(1, 1000).subscribe({
+            next: (response) => {
+                this.books = response.data;
+            },
+            error: (error) => {
+                console.error('Error loading books:', error);
+                this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Erro ao carregar livros.' });
             }
         });
     }
@@ -102,7 +124,8 @@ export class CharacterFormComponent implements OnInit {
                 }
             });
         } else {
-            this.characterService.create(this.bookId, formValue).subscribe({
+            const selectedBookId = formValue.bookId || this.bookId;
+            this.characterService.create(selectedBookId, formValue).subscribe({
                 next: (newCharacter) => {
                     this.loading = false;
                     this.ref.close(newCharacter);
