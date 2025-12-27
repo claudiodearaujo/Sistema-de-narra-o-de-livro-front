@@ -11,3 +11,8 @@
 :host ::ng-deep .p-orderlist-item:last-child {
     border-bottom: none;
 }
+
+.speech-item:focus-visible {
+    outline: 2px solid var(--color-agua, #0ea5e9);
+    outline-offset: 2px;
+}

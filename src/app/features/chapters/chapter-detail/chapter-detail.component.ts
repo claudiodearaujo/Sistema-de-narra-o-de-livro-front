@@ -8,6 +8,7 @@ import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { ChapterService } from '../../../services/chapter.service';
 import { Chapter, ChapterStatus } from '../../../models/chapter.model';
+import { Speech } from '../../../core/models/speech.model';
 import { SpeechListComponent } from '../../speeches/speech-list/speech-list.component';
 import { NarrationControlComponent } from '../narration-control/narration-control.component';
 import { AudioPlayerComponent } from '../audio-player/audio-player.component';
@@ -35,6 +36,7 @@ export class ChapterDetailComponent implements OnInit {
     chapter?: Chapter;
     loading = false;
     chapterId?: string;
+    selectedSpeech: Speech | null = null;
 
     constructor(
         private chapterService: ChapterService,
@@ -106,6 +108,10 @@ export class ChapterDetailComponent implements OnInit {
         } else {
             this.router.navigate(['/books']);
         }
+    }
+
+    onSpeechSelectionChange(speech: Speech | null) {
+        this.selectedSpeech = speech;
     }
 
 

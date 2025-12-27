@@ -6,6 +6,7 @@ import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { NarrationService } from '../../../core/services/narration.service';
 import { WebSocketService } from '../../../core/services/websocket.service';
+import { Speech } from '../../../core/models/speech.model';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -19,6 +20,7 @@ import { Subscription } from 'rxjs';
 export class NarrationControlComponent implements OnInit, OnDestroy {
     @Input() chapterId: string = '';
     @Input() hasSpeeches: boolean = false;
+    @Input() selectedSpeech: Speech | null = null;
 
     status: 'idle' | 'waiting' | 'active' | 'completed' | 'failed' | 'delayed' | 'prioritized' | 'paused' | 'repeat' = 'idle';
     progress: number = 0;
@@ -102,8 +104,13 @@ export class NarrationControlComponent implements OnInit, OnDestroy {
             return;
         }
 
+        if (!this.selectedSpeech) {
+            this.messageService.add({ severity: 'warn', summary: 'Selecione uma fala', detail: 'Escolha uma fala para gerar o áudio.' });
+            return;
+        }
+
         this.isProcessing = true;
-        this.narrationService.startNarration(this.chapterId).subscribe({
+        this.narrationService.startNarration(this.chapterId, this.selectedSpeech.id).subscribe({
             next: () => {
                 this.messageService.add({ severity: 'info', summary: 'Iniciado', detail: 'Geração de narração iniciada.' });
             },
@@ -126,5 +133,9 @@ export class NarrationControlComponent implements OnInit, OnDestroy {
                 this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Erro ao cancelar narração.' });
             }
         });
+    }
+
+    get isGenerateDisabled(): boolean {
+        return this.isProcessing || !this.hasSpeeches || !this.selectedSpeech;
     }
 }

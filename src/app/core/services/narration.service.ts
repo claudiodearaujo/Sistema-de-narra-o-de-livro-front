@@ -10,8 +10,9 @@ export class NarrationService {
 
     constructor(private http: HttpClient) { }
 
-    startNarration(chapterId: string): Observable<any> {
-        return this.http.post(`${this.apiUrl}/chapters/${chapterId}/narration/start`, {});
+    startNarration(chapterId: string, speechId?: string): Observable<any> {
+        const payload = speechId ? { speechId } : {};
+        return this.http.post(`${this.apiUrl}/chapters/${chapterId}/narration/start`, payload);
     }
 
     getNarrationStatus(chapterId: string): Observable<any> {

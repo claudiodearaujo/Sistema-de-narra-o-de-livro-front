@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SpeechService } from '../../../core/services/speech.service';
 import { Speech } from '../../../core/models/speech.model';
@@ -31,8 +31,10 @@ import { BulkImportComponent } from '../bulk-import/bulk-import.component';
 export class SpeechListComponent implements OnInit {
     @Input() bookId: string = '';
     @Input() chapterId: string = '';
+    @Output() selectionChange = new EventEmitter<Speech | null>();
     speeches: Speech[] = [];
     ref: DynamicDialogRef<any> | undefined | null;
+    selectedSpeechId: string | null = null;
 
     constructor(
         private speechService: SpeechService,
@@ -51,12 +53,33 @@ export class SpeechListComponent implements OnInit {
         this.speechService.getByChapterId(this.chapterId).subscribe({
             next: (data) => {
                 this.speeches = data;
+                if (this.selectedSpeechId !== null) {
+                    const selected = this.speeches.find(s => s.id === this.selectedSpeechId) || null;
+                    if (!selected) {
+                        this.clearSelection();
+                    } else {
+                        this.selectionChange.emit(selected);
+                    }
+                }
             },
             error: (error) => {
                 console.error('Error loading speeches:', error);
                 this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Erro ao carregar falas.' });
             }
         });
+    }
+
+    selectSpeech(speech: Speech) {
+        const isSameSpeech = this.selectedSpeechId === speech.id;
+        this.selectedSpeechId = isSameSpeech ? null : speech.id;
+        this.selectionChange.emit(isSameSpeech ? null : speech);
+    }
+
+    clearSelection() {
+        if (this.selectedSpeechId !== null) {
+            this.selectedSpeechId = null;
+            this.selectionChange.emit(null);
+        }
     }
 
     openNew() {
