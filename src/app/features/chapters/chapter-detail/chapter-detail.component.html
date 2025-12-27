@@ -57,7 +57,8 @@
                 <div class="space-y-3">
                     <app-narration-control [chapterId]="chapter.id"
                         [hasSpeeches]="!!chapter.speeches && chapter.speeches.length > 0"
-                        [selectedSpeech]="selectedSpeech">
+                        [selectedSpeech]="selectedSpeech"
+                        (narrationComplete)="onNarrationComplete()">
                     </app-narration-control>
 
                     <div class="text-xs text-gray-500 mt-2">

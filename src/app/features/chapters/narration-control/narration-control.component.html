@@ -1,8 +1,8 @@
 <div class="narration-control p-4 border rounded-lg bg-white dark:bg-gray-800 shadow-sm">
     <div class="flex items-center justify-between mb-4">
-        <h3 class="text-lg font-semibold text-[var(--color-metal)] dark:text-gray-200">Gerar Narração</h3>
+        <h3 class="text-lg font-semibold" [style.color]="'var(--color-metal)'">Narração da Fala</h3>
         <div class="flex gap-2">
-            <p-button label="Gerar Áudio" icon="pi pi-play" (onClick)="startNarration()"
+            <p-button *ngIf="!selectedSpeechHasAudio" label="Gerar Áudio" icon="pi pi-play" (onClick)="startNarration()"
                 [disabled]="isGenerateDisabled" severity="success">
             </p-button>
             <p-button *ngIf="isProcessing" label="Cancelar" icon="pi pi-times" (onClick)="cancelNarration()"
@@ -11,15 +11,34 @@
         </div>
     </div>
 
-        <p *ngIf="!selectedSpeech" class="text-xs text-gray-500 dark:text-gray-400 mb-3">
-            Selecione uma fala na lista para habilitar esta ação.
-        </p>
+    <p *ngIf="!selectedSpeech" class="text-xs text-gray-500 dark:text-gray-400 mb-3">
+        Selecione uma fala na lista para visualizar ou gerar o áudio.
+    </p>
 
-    <div *ngIf="isProcessing || status === 'completed'" class="progress-section">
+    <p *ngIf="selectedSpeech && !selectedSpeechHasAudio && !isProcessing" class="text-xs text-blue-600 dark:text-blue-400 mb-3">
+        <i class="pi pi-info-circle mr-1"></i>
+        Clique em "Gerar Áudio" para criar a narração desta fala.
+    </p>
+
+    <!-- Player para fala que já tem áudio -->
+    <div *ngIf="selectedSpeechHasAudio" class="audio-section mb-3">
+        <div class="mb-2">
+            <span class="text-sm font-semibold text-green-600 dark:text-green-400">
+                <i class="pi pi-check-circle mr-1"></i>
+                Áudio disponível
+            </span>
+        </div>
+        <audio controls class="w-full">
+            <source [src]="selectedSpeech?.audioUrl" type="audio/mpeg">
+            Seu navegador não suporta o elemento de áudio.
+        </audio>
+    </div>
+
+    <!-- Progresso da geração -->
+    <div *ngIf="isProcessing" class="progress-section">
         <div class="flex justify-between mb-1 text-sm text-gray-600 dark:text-gray-400">
             <span>Progresso: {{ progress }}%</span>
-            <span *ngIf="isProcessing">Processando fala {{ currentSpeechIndex }} de {{ totalSpeeches }}</span>
-            <span *ngIf="status === 'completed'" class="text-green-600 font-bold">Concluído!</span>
+            <span>Gerando áudio da fala...</span>
         </div>
         <p-progressBar [value]="progress" [showValue]="false" [style]="{'height': '10px'}"></p-progressBar>
     </div>

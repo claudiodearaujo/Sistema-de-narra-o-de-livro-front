@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { ProgressBarModule } from 'primeng/progressbar';
@@ -21,12 +21,17 @@ export class NarrationControlComponent implements OnInit, OnDestroy {
     @Input() chapterId: string = '';
     @Input() hasSpeeches: boolean = false;
     @Input() selectedSpeech: Speech | null = null;
+    @Output() narrationComplete = new EventEmitter<void>();
 
     status: 'idle' | 'waiting' | 'active' | 'completed' | 'failed' | 'delayed' | 'prioritized' | 'paused' | 'repeat' = 'idle';
     progress: number = 0;
     currentSpeechIndex: number = 0;
     totalSpeeches: number = 0;
     isProcessing: boolean = false;
+
+    get selectedSpeechHasAudio(): boolean {
+        return !!(this.selectedSpeech?.audioUrl);
+    }
 
     private subscriptions: Subscription[] = [];
 
@@ -72,7 +77,8 @@ export class NarrationControlComponent implements OnInit, OnDestroy {
                     this.status = 'completed';
                     this.isProcessing = false;
                     this.progress = 100;
-                    this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Narração concluída!' });
+                    this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Áudio da fala gerado com sucesso!' });
+                    this.narrationComplete.emit();
                 }
             }),
             this.webSocketService.onEvent('narration:failed').subscribe((data: any) => {
@@ -109,10 +115,16 @@ export class NarrationControlComponent implements OnInit, OnDestroy {
             return;
         }
 
+        if (this.selectedSpeechHasAudio) {
+            this.messageService.add({ severity: 'info', summary: 'Áudio já existe', detail: 'Esta fala já possui um áudio gerado.' });
+            return;
+        }
+
         this.isProcessing = true;
+        this.progress = 0;
         this.narrationService.startNarration(this.chapterId, this.selectedSpeech.id).subscribe({
             next: () => {
-                this.messageService.add({ severity: 'info', summary: 'Iniciado', detail: 'Geração de narração iniciada.' });
+                this.messageService.add({ severity: 'info', summary: 'Iniciado', detail: 'Geração de áudio iniciada para esta fala.' });
             },
             error: (err) => {
                 this.isProcessing = false;
@@ -136,6 +148,6 @@ export class NarrationControlComponent implements OnInit, OnDestroy {
     }
 
     get isGenerateDisabled(): boolean {
-        return this.isProcessing || !this.hasSpeeches || !this.selectedSpeech;
+        return this.isProcessing || !this.hasSpeeches || !this.selectedSpeech || this.selectedSpeechHasAudio;
     }
 }

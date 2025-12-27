@@ -114,5 +114,8 @@ export class ChapterDetailComponent implements OnInit {
         this.selectedSpeech = speech;
     }
 
-
+    onNarrationComplete() {
+        // Reload chapter to get updated audioUrl for speeches
+        this.loadChapter();
+    }
 }
