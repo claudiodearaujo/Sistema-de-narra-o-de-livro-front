@@ -10,6 +10,7 @@ import { ToastModule } from 'primeng/toast';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { BookService } from '../../../services/book.service';
 import { Book, BooksResponse } from '../../../models/book.model';
+import { take } from 'rxjs';
 
 @Component({
     selector: 'app-book-list',
@@ -58,7 +59,7 @@ export class BookListComponent implements OnInit {
             this.limit,
             this.titleFilter || undefined,
             this.authorFilter || undefined
-        ).subscribe({
+        ).pipe(take(1)).subscribe({
             next: (response: BooksResponse) => {
                 this.books = response.data;
                 this.totalRecords = response.total;

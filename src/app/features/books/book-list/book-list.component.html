@@ -34,9 +34,8 @@
                 [style.background-color]="'var(--color-fogo)'"></button>
         </div>
 
-        <p-table [value]="books" [lazy]="true" [paginator]="true" [rows]="limit" [totalRecords]="totalRecords"
-            [loading]="loading" (onLazyLoad)="onPageChange($event)" [rowsPerPageOptions]="[5, 10, 20, 50]"
-            styleClass="p-datatable-striped">
+        <p-table [value]="books" [paginator]="true" [rows]="limit" [totalRecords]="totalRecords" [loading]="loading"
+            [rowsPerPageOptions]="[5, 10, 20, 50]" styleClass="p-datatable-striped">
             <ng-template pTemplate="header">
                 <tr>
                     <th>Título</th>
