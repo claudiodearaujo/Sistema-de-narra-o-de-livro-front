@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { CharacterService } from '../../../core/services/character.service';
@@ -34,7 +34,7 @@ import { FormsModule } from '@angular/forms';
     styleUrl: './character-list.component.css'
 })
 export class CharacterListComponent implements OnInit {
-    bookId: string = '';
+    @Input() bookId: string = '';
     selectedBookId: string | null = null;
     characters: Character[] = [];
     books: Book[] = [];
@@ -50,14 +50,16 @@ export class CharacterListComponent implements OnInit {
     ) { }
 
     ngOnInit(): void {
-        this.bookId = this.route.snapshot.paramMap.get('id') || '';
-        console.log('CharacterListComponent initialized with bookId:', this.bookId);
+        // Se bookId não vier via @Input, tentar pegar da rota atual ou pai
+        if (!this.bookId) {
+            this.bookId = this.route.snapshot.paramMap.get('id') || '';
+        }
         
-        // Se bookId estiver vazio, tentar pegar da rota pai (caso esteja em rota filha)
         if (!this.bookId && this.route.parent) {
              this.bookId = this.route.parent.snapshot.paramMap.get('id') || '';
-             console.log('Tried getting from parent route, bookId:', this.bookId);
         }
+
+        console.log('Final resolved bookId:', this.bookId);
 
         if (this.bookId) {
             this.selectedBookId = this.bookId;

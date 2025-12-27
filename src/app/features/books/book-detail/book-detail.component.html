@@ -117,7 +117,7 @@
 
                 <div class="space-y-2">
                     <button pButton label="Ver Personagens" icon="pi pi-users" class="w-full" severity="secondary"
-                        [disabled]="true"></button>
+                        (click)="viewCharacters()"></button>
                     <small class="text-gray-500 block mt-2">
                         * Personagens na próxima fase
                     </small>
@@ -125,9 +125,28 @@
             </p-card>
         </div>
 
-        <!-- Chapters List (Full Width below) -->
+        <!-- Tabs for Chapters and Characters -->
         <div class="lg:col-span-3">
-            <app-chapter-list [bookId]="book.id"></app-chapter-list>
+            <p-tabs [value]="activeTab" (valueChange)="onTabChange($event)">
+                <p-tablist>
+                    <p-tab value="0">
+                        <i class="pi pi-book mr-2"></i>
+                        Capítulos
+                    </p-tab>
+                    <p-tab value="1">
+                        <i class="pi pi-users mr-2"></i>
+                        Personagens
+                    </p-tab>
+                </p-tablist>
+                <p-tabpanels>
+                    <p-tabpanel value="0">
+                        <app-chapter-list [bookId]="book.id"></app-chapter-list>
+                    </p-tabpanel>
+                    <p-tabpanel value="1">
+                        <app-character-list [bookId]="book.id"></app-character-list>
+                    </p-tabpanel>
+                </p-tabpanels>
+            </p-tabs>
         </div>
     </div>
 
