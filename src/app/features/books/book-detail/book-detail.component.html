@@ -19,34 +19,44 @@
         <!-- Main Info -->
         <div class="lg:col-span-2">
             <p-card>
-                <ng-template pTemplate="header">
-                    <div *ngIf="book.coverUrl" class="w-full h-64 overflow-hidden">
-                        <img [src]="book.coverUrl" [alt]="book.title" class="w-full h-full object-cover" />
+                <div class="flex flex-col md:flex-row gap-6">
+                    <!-- Cover Image -->
+                    <div class="w-full md:w-1/3 lg:w-1/4 shrink-0">
+                        <div *ngIf="book.coverUrl" class="rounded-lg shadow-md overflow-hidden aspect-[2/3]">
+                            <img [src]="book.coverUrl" [alt]="book.title" class="w-full h-full object-cover" />
+                        </div>
+                        <div *ngIf="!book.coverUrl"
+                            class="w-full rounded-lg shadow-md bg-gray-200 flex items-center justify-center aspect-[2/3]">
+                            <i class="pi pi-book text-6xl text-gray-400"></i>
+                        </div>
                     </div>
-                    <div *ngIf="!book.coverUrl" class="w-full h-64 bg-gray-200 flex items-center justify-center">
-                        <i class="pi pi-book text-6xl text-gray-400"></i>
-                    </div>
-                </ng-template>
 
-                <h2 class="text-2xl font-bold mb-2" style="color: var(--color-metal);">{{ book.title }}</h2>
-                <p class="text-lg mb-4" style="color: var(--color-terra);">
-                    <i class="pi pi-user mr-2"></i>{{ book.author }}
-                </p>
+                    <!-- Book Details -->
+                    <div class="flex-1">
+                        <h2 class="text-3xl font-bold mb-2" style="color: var(--color-metal);">{{ book.title }}</h2>
+                        <p class="text-xl mb-6" style="color: var(--color-terra);">
+                            <i class="pi pi-user mr-2"></i>{{ book.author }}
+                        </p>
 
-                <div class="mb-4">
-                    <h3 class="font-semibold mb-2">Descrição</h3>
-                    <div *ngIf="book.description" [innerHTML]="book.description" class="prose max-w-none"></div>
-                    <p *ngIf="!book.description" class="text-gray-500 italic">
-                        Sem descrição
-                    </p>
-                </div>
+                        <div class="mb-6">
+                            <h3 class="font-semibold mb-2 text-lg">Descrição</h3>
+                            <div *ngIf="book.description" [innerHTML]="book.description"
+                                class="prose max-w-none text-gray-700 leading-relaxed"></div>
+                            <p *ngIf="!book.description" class="text-gray-500 italic">
+                                Sem descrição
+                            </p>
+                        </div>
 
-                <div class="grid grid-cols-2 gap-4 text-sm text-gray-600">
-                    <div>
-                        <strong>Criado em:</strong> {{ book.createdAt | date: 'dd/MM/yyyy HH:mm' }}
-                    </div>
-                    <div>
-                        <strong>Atualizado em:</strong> {{ book.updatedAt | date: 'dd/MM/yyyy HH:mm' }}
+                        <div class="grid grid-cols-2 gap-4 text-sm text-gray-500 mt-auto pt-4 border-t">
+                            <div>
+                                <strong class="block text-gray-700">Criado em:</strong>
+                                {{ book.createdAt | date: 'dd/MM/yyyy HH:mm' }}
+                            </div>
+                            <div>
+                                <strong class="block text-gray-700">Atualizado em:</strong>
+                                {{ book.updatedAt | date: 'dd/MM/yyyy HH:mm' }}
+                            </div>
+                        </div>
                     </div>
                 </div>
             </p-card>
@@ -107,7 +117,7 @@
 
                 <div class="space-y-2">
                     <button pButton label="Ver Personagens" icon="pi pi-users" class="w-full" severity="secondary"
-                        (click)="viewCharacters()"></button>
+                        [disabled]="true"></button>
                     <small class="text-gray-500 block mt-2">
                         * Personagens na próxima fase
                     </small>
