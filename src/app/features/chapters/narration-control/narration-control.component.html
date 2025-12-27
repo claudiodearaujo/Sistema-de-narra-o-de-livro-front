@@ -29,7 +29,7 @@
             </span>
         </div>
         <audio controls class="w-full">
-            <source [src]="selectedSpeech?.audioUrl" type="audio/mpeg">
+            <source [src]="getAudioUrl(selectedSpeech?.audioUrl)" type="audio/mpeg">
             Seu navegador não suporta o elemento de áudio.
         </audio>
     </div>

@@ -33,6 +33,16 @@ export class NarrationControlComponent implements OnInit, OnDestroy {
         return !!(this.selectedSpeech?.audioUrl);
     }
 
+    getAudioUrl(audioUrl: string | undefined): string {
+        if (!audioUrl) return '';
+        // If it's already a full URL, return as is
+        if (audioUrl.startsWith('http://') || audioUrl.startsWith('https://')) {
+            return audioUrl;
+        }
+        // Otherwise, prepend backend URL
+        return `http://localhost:3000${audioUrl}`;
+    }
+
     private subscriptions: Subscription[] = [];
 
     constructor(
