@@ -110,13 +110,13 @@
             </ng-template>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <p-button label="Novo Livro" icon="pi pi-plus" severity="help" [outlined]="true"
-                    (onClick)="navigateToBooks()" styleClass="w-full">
+                    (onClick)="navigateToNewBook()" styleClass="w-full">
                 </p-button>
                 <p-button label="Ver Personagens" icon="pi pi-users" severity="info" [outlined]="true"
-                    styleClass="w-full">
+                    (onClick)="navigateToCharacters()" styleClass="w-full">
                 </p-button>
-                <p-button label="Configurações" icon="pi pi-cog" severity="secondary" [outlined]="true"
-                    styleClass="w-full">
+                <p-button label="Vozes" icon="pi pi-volume-up" severity="secondary" [outlined]="true"
+                    (onClick)="navigateToVoices()" styleClass="w-full">
                 </p-button>
             </div>
         </p-card>

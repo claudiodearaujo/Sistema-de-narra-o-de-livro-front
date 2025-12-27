@@ -38,7 +38,7 @@ export class DashboardComponent implements OnInit {
     loadStats() {
         this.bookService.getAll(1, 100).subscribe({
             next: (response: any) => {
-                const books = response.books || [];
+                const books = response.data || [];
                 this.stats.totalBooks = books.length;
 
                 // Count chapters and narrations
@@ -65,7 +65,7 @@ export class DashboardComponent implements OnInit {
     loadRecentBooks() {
         this.bookService.getAll(1, 5).subscribe({
             next: (response: any) => {
-                this.recentBooks = response.books || [];
+                this.recentBooks = response.data || [];
             },
             error: (err: any) => console.error('Error loading recent books:', err)
         });
@@ -111,6 +111,18 @@ export class DashboardComponent implements OnInit {
 
     navigateToBooks() {
         this.router.navigate(['/books']);
+    }
+
+    navigateToNewBook() {
+        this.router.navigate(['/books/new']);
+    }
+
+    navigateToCharacters() {
+        this.router.navigate(['/characters']);
+    }
+
+    navigateToVoices() {
+        this.router.navigate(['/voices']);
     }
 
     navigateToBook(bookId: string) {

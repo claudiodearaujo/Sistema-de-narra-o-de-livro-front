@@ -1,3 +1,5 @@
+import { Chapter } from './chapter.model';
+
 export interface Book {
     id: string;
     title: string;
@@ -6,6 +8,7 @@ export interface Book {
     coverUrl?: string;
     createdAt: Date;
     updatedAt: Date;
+    chapters?: Chapter[];
 }
 
 export interface CreateBookDto {
