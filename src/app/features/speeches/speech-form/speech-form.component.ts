@@ -98,6 +98,14 @@ export class SpeechFormComponent implements OnInit {
         this.loading = true;
         const formValue = this.form.value;
 
+        // Wrap SSML content with <speak> tag if not already present
+        if (formValue.ssmlText) {
+            const trimmedSsml = formValue.ssmlText.trim();
+            if (!trimmedSsml.startsWith('<speak>')) {
+                formValue.ssmlText = `<speak>${trimmedSsml}</speak>`;
+            }
+        }
+
         // Validate SSML before saving
         if (formValue.ssmlText) {
             this.validating = true;
