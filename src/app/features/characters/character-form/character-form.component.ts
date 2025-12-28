@@ -12,11 +12,12 @@ import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { TextareaModule } from 'primeng/textarea';
 import { SelectModule } from 'primeng/select';
-import { TabViewModule } from 'primeng/tabview';
-import { ProgressBarModule } from 'primeng/progressbar';
-import { InputNumberModule } from 'primeng/inputnumber';
 import { VoicePreviewComponent } from '../voice-preview/voice-preview.component';
 import { MessageService } from 'primeng/api';
+import { TabsModule } from 'primeng/tabs';
+import { ProgressBarModule } from 'primeng/progressbar';
+import { InputNumberModule } from 'primeng/inputnumber';
+import { TooltipModule } from 'primeng/tooltip';
 
 @Component({
     selector: 'app-character-form',
@@ -28,10 +29,11 @@ import { MessageService } from 'primeng/api';
         InputTextModule,
         TextareaModule,
         SelectModule,
-        TabViewModule,
+        VoicePreviewComponent,
+        TabsModule,
         ProgressBarModule,
         InputNumberModule,
-        VoicePreviewComponent
+        TooltipModule
     ],
     providers: [MessageService],
     templateUrl: './character-form.component.html',
@@ -47,6 +49,90 @@ export class CharacterFormComponent implements OnInit {
     loading = false;
     completionPercentage = 0;
 
+    // Opções para selects
+    genderOptions = [
+        { label: 'Masculino', value: 'Masculino' },
+        { label: 'Feminino', value: 'Feminino' },
+        { label: 'Outro', value: 'Outro' }
+    ];
+
+    bodyTypeOptions = [
+        { label: 'Magra', value: 'Magra' },
+        { label: 'Atlética', value: 'Atlética' },
+        { label: 'Média', value: 'Média' },
+        { label: 'Robusta', value: 'Robusta' },
+        { label: 'Musculosa', value: 'Musculosa' }
+    ];
+
+    postureOptions = [
+        { label: 'Erguida/Elegante', value: 'Erguida, elegante' },
+        { label: 'Relaxada', value: 'Relaxada' },
+        { label: 'Curvada', value: 'Curvada' },
+        { label: 'Rígida', value: 'Rígida' }
+    ];
+
+    faceShapeOptions = [
+        { label: 'Oval', value: 'Oval' },
+        { label: 'Redondo', value: 'Redondo' },
+        { label: 'Quadrado', value: 'Quadrado' },
+        { label: 'Retangular', value: 'Retangular' },
+        { label: 'Coração', value: 'Coração' },
+        { label: 'Diamante', value: 'Diamante' }
+    ];
+
+    eyeColorOptions = [
+        { label: 'Castanho', value: 'Castanho' },
+        { label: 'Verde', value: 'Verde' },
+        { label: 'Azul', value: 'Azul' },
+        { label: 'Mel', value: 'Mel' },
+        { label: 'Cinza', value: 'Cinza' },
+        { label: 'Preto', value: 'Preto' }
+    ];
+
+    eyeShapeOptions = [
+        { label: 'Amendoado', value: 'Amendoado' },
+        { label: 'Redondo', value: 'Redondo' },
+        { label: 'Caído', value: 'Caído' },
+        { label: 'Rasgado', value: 'Rasgado' },
+        { label: 'Saltado', value: 'Saltado' }
+    ];
+
+    hairColorOptions = [
+        { label: 'Preto', value: 'Preto' },
+        { label: 'Castanho Escuro', value: 'Castanho Escuro' },
+        { label: 'Castanho Claro', value: 'Castanho Claro' },
+        { label: 'Loiro', value: 'Loiro' },
+        { label: 'Ruivo', value: 'Ruivo' },
+        { label: 'Grisalho', value: 'Grisalho' },
+        { label: 'Branco', value: 'Branco' }
+    ];
+
+    hairTextureOptions = [
+        { label: 'Liso', value: 'Liso' },
+        { label: 'Ondulado', value: 'Ondulado' },
+        { label: 'Cacheado', value: 'Cacheado' },
+        { label: 'Crespo', value: 'Crespo' }
+    ];
+
+    hairLengthOptions = [
+        { label: 'Careca', value: 'Careca' },
+        { label: 'Muito Curto', value: 'Muito Curto' },
+        { label: 'Curto', value: 'Curto' },
+        { label: 'Médio', value: 'Médio' },
+        { label: 'Longo', value: 'Longo' },
+        { label: 'Muito Longo', value: 'Muito Longo' }
+    ];
+
+    clothingStyleOptions = [
+        { label: 'Casual', value: 'Casual' },
+        { label: 'Formal', value: 'Formal' },
+        { label: 'Esportivo', value: 'Esportivo' },
+        { label: 'Elegante', value: 'Elegante' },
+        { label: 'Boho', value: 'Boho' },
+        { label: 'Streetwear', value: 'Streetwear' },
+        { label: 'Clássico', value: 'Clássico' }
+    ];
+
     constructor(
         private fb: FormBuilder,
         public ref: DynamicDialogRef,
@@ -57,71 +143,113 @@ export class CharacterFormComponent implements OnInit {
         private messageService: MessageService
     ) {
         this.form = this.fb.group({
+            // Campos básicos obrigatórios
             name: ['', [Validators.required, Validators.minLength(2)]],
             bookId: ['', Validators.required],
             voiceId: ['', Validators.required],
             voiceDescription: [''],
+            
+            // Identidade
             identity: this.fb.group({
                 gender: [''],
                 age: [null],
-                nationality: ['']
+                nationality: [''],
+                occupation: [''],
+                birthDate: [''],
+                birthPlace: [''],
+                personality: [''],
+                background: ['']
             }),
+            
+            // Físico
             physique: this.fb.group({
                 height: [''],
+                weight: [''],
                 bodyType: [''],
                 waist: [''],
-                posture: ['']
+                posture: [''],
+                skinTone: [''],
+                skinTexture: [''],
+                scars: [''],
+                tattoos: [''],
+                birthmarks: ['']
             }),
+            
+            // Rosto
             face: this.fb.group({
                 faceShape: [''],
                 forehead: [''],
-                cheeks: [''],
+                cheekbones: [''],
                 chin: [''],
+                jaw: [''],
                 nose: [''],
                 lips: [''],
                 expression: [''],
-                skinTone: ['']
+                beard: [''],
+                mustache: [''],
+                wrinkles: [''],
+                dimples: [''],
+                freckles: ['']
             }),
+            
+            // Olhos
             eyes: this.fb.group({
-                size: [''],
-                shape: [''],
-                color: [''],
+                eyeSize: [''],
+                eyeShape: [''],
+                eyeColor: [''],
+                eyeSpacing: [''],
                 eyelashes: [''],
-                makeup: [''],
-                eyebrows: ['']
+                eyebrowShape: [''],
+                eyebrowColor: [''],
+                eyebrowThickness: [''],
+                glasses: [''],
+                makeup: ['']
             }),
+            
+            // Cabelo
             hair: this.fb.group({
-                cut: [''],
-                length: [''],
-                parting: [''],
-                texture: [''],
-                color: [''],
-                finishing: ['']
+                haircut: [''],
+                hairLength: [''],
+                hairColor: [''],
+                hairTexture: [''],
+                hairVolume: [''],
+                hairStyle: [''],
+                hairPart: [''],
+                hairShine: [''],
+                dyedColor: [''],
+                highlights: ['']
             }),
+            
+            // Vestuário
             wardrobe: this.fb.group({
-                dressBrand: [''],
-                dressModel: [''],
+                clothingStyle: [''],
+                topwear: [''],
+                topwearColor: [''],
+                topwearBrand: [''],
+                bottomwear: [''],
+                bottomwearColor: [''],
+                bottomwearBrand: [''],
+                dress: [''],
                 dressColor: [''],
-                dressFabric: [''],
-                dressFit: [''],
-                dressLength: [''],
-                dressNeckline: [''],
-                dressDetails: [''],
-                shoeBrand: [''],
-                shoeModel: [''],
-                shoeColor: [''],
-                shoeHeel: [''],
-                shoeToe: [''],
-                shoeStyle: [''],
+                dressBrand: [''],
+                footwear: [''],
+                footwearColor: [''],
+                footwearBrand: [''],
+                heelHeight: [''],
                 earrings: [''],
-                ring: [''],
                 necklace: [''],
-                bracelet: [''],
-                nails: ['']
+                rings: [''],
+                bracelets: [''],
+                watch: [''],
+                bag: [''],
+                hat: [''],
+                scarf: [''],
+                nails: [''],
+                perfume: ['']
             })
         });
 
-        // Observar mudanças no formulário para atualizar o percentual
+        // Calcular percentual quando o form mudar
         this.form.valueChanges.subscribe(() => {
             this.calculateCompletionPercentage();
         });
@@ -137,122 +265,74 @@ export class CharacterFormComponent implements OnInit {
         if (character) {
             this.isEditMode = true;
             this.characterId = character.id;
-            this.form.patchValue({
-                name: character.name,
-                bookId: character.bookId,
-                voiceId: character.voiceId,
-                voiceDescription: character.voiceDescription,
-                identity: character.identity || {},
-                physique: character.physique || {},
-                face: character.face || {},
-                eyes: character.eyes || {},
-                hair: character.hair || {},
-                wardrobe: character.wardrobe || {}
-            });
-            this.completionPercentage = character.completionPercentage || 0;
+            this.patchCharacterForm(character);
         } else if (this.bookId) {
-            // Se foi passado um bookId via config, pré-seleciona
             this.form.patchValue({ bookId: this.bookId });
         }
-
-        this.calculateCompletionPercentage();
     }
 
-    calculateCompletionPercentage(): void {
-        let totalFields = 0;
-        let filledFields = 0;
+    patchCharacterForm(character: Character) {
+        this.form.patchValue({
+            name: character.name,
+            bookId: character.bookId,
+            voiceId: character.voiceId,
+            voiceDescription: character.voiceDescription
+        });
 
-        // Campos básicos (5 campos, sendo 3 obrigatórios)
-        totalFields += 5;
-        const formValue = this.form.value;
-        if (formValue.name) filledFields++;
-        if (formValue.voiceId) filledFields++;
-        if (formValue.bookId) filledFields++;
-        if (formValue.voiceDescription) filledFields++;
-
-        // Identidade (3 campos)
-        if (formValue.identity) {
-            totalFields += 3;
-            if (formValue.identity.gender) filledFields++;
-            if (formValue.identity.age) filledFields++;
-            if (formValue.identity.nationality) filledFields++;
+        if (character.identity) {
+            this.form.get('identity')?.patchValue(character.identity);
+        }
+        if (character.physique) {
+            this.form.get('physique')?.patchValue(character.physique);
+        }
+        if (character.face) {
+            this.form.get('face')?.patchValue(character.face);
+        }
+        if (character.eyes) {
+            this.form.get('eyes')?.patchValue(character.eyes);
+        }
+        if (character.hair) {
+            this.form.get('hair')?.patchValue(character.hair);
+        }
+        if (character.wardrobe) {
+            this.form.get('wardrobe')?.patchValue(character.wardrobe);
         }
 
-        // Físico (4 campos)
-        if (formValue.physique) {
-            totalFields += 4;
-            if (formValue.physique.height) filledFields++;
-            if (formValue.physique.bodyType) filledFields++;
-            if (formValue.physique.waist) filledFields++;
-            if (formValue.physique.posture) filledFields++;
-        }
-
-        // Rosto (8 campos)
-        if (formValue.face) {
-            totalFields += 8;
-            if (formValue.face.faceShape) filledFields++;
-            if (formValue.face.forehead) filledFields++;
-            if (formValue.face.cheeks) filledFields++;
-            if (formValue.face.chin) filledFields++;
-            if (formValue.face.nose) filledFields++;
-            if (formValue.face.lips) filledFields++;
-            if (formValue.face.expression) filledFields++;
-            if (formValue.face.skinTone) filledFields++;
-        }
-
-        // Olhos (6 campos)
-        if (formValue.eyes) {
-            totalFields += 6;
-            if (formValue.eyes.size) filledFields++;
-            if (formValue.eyes.shape) filledFields++;
-            if (formValue.eyes.color) filledFields++;
-            if (formValue.eyes.eyelashes) filledFields++;
-            if (formValue.eyes.makeup) filledFields++;
-            if (formValue.eyes.eyebrows) filledFields++;
-        }
-
-        // Cabelo (6 campos)
-        if (formValue.hair) {
-            totalFields += 6;
-            if (formValue.hair.cut) filledFields++;
-            if (formValue.hair.length) filledFields++;
-            if (formValue.hair.parting) filledFields++;
-            if (formValue.hair.texture) filledFields++;
-            if (formValue.hair.color) filledFields++;
-            if (formValue.hair.finishing) filledFields++;
-        }
-
-        // Vestuário (19 campos)
-        if (formValue.wardrobe) {
-            totalFields += 19;
-            if (formValue.wardrobe.dressBrand) filledFields++;
-            if (formValue.wardrobe.dressModel) filledFields++;
-            if (formValue.wardrobe.dressColor) filledFields++;
-            if (formValue.wardrobe.dressFabric) filledFields++;
-            if (formValue.wardrobe.dressFit) filledFields++;
-            if (formValue.wardrobe.dressLength) filledFields++;
-            if (formValue.wardrobe.dressNeckline) filledFields++;
-            if (formValue.wardrobe.dressDetails) filledFields++;
-            if (formValue.wardrobe.shoeBrand) filledFields++;
-            if (formValue.wardrobe.shoeModel) filledFields++;
-            if (formValue.wardrobe.shoeColor) filledFields++;
-            if (formValue.wardrobe.shoeHeel) filledFields++;
-            if (formValue.wardrobe.shoeToe) filledFields++;
-            if (formValue.wardrobe.shoeStyle) filledFields++;
-            if (formValue.wardrobe.earrings) filledFields++;
-            if (formValue.wardrobe.ring) filledFields++;
-            if (formValue.wardrobe.necklace) filledFields++;
-            if (formValue.wardrobe.bracelet) filledFields++;
-            if (formValue.wardrobe.nails) filledFields++;
-        }
-
-        this.completionPercentage = totalFields > 0 ? Math.round((filledFields / totalFields) * 100) : 0;
+        this.completionPercentage = character.completionPercentage || 0;
     }
 
-    getPercentageColor(): string {
-        if (this.completionPercentage < 30) return 'danger';
-        if (this.completionPercentage < 70) return 'warn';
-        return 'success';
+    calculateCompletionPercentage() {
+        const fieldCounts = {
+            identity: 8,
+            physique: 10,
+            face: 13,
+            eyes: 10,
+            hair: 10,
+            wardrobe: 24
+        };
+
+        let filledCount = 0;
+        const totalFields = Object.values(fieldCounts).reduce((a, b) => a + b, 0);
+
+        ['identity', 'physique', 'face', 'eyes', 'hair', 'wardrobe'].forEach(section => {
+            const group = this.form.get(section) as FormGroup;
+            if (group) {
+                Object.keys(group.controls).forEach(key => {
+                    const value = group.get(key)?.value;
+                    if (value !== null && value !== undefined && value !== '') {
+                        filledCount++;
+                    }
+                });
+            }
+        });
+
+        this.completionPercentage = Math.round((filledCount / totalFields) * 100);
+    }
+
+    getProgressBarColor(): string {
+        if (this.completionPercentage < 30) return 'bg-red-500';
+        if (this.completionPercentage < 70) return 'bg-yellow-500';
+        return 'bg-green-500';
     }
 
     loadVoices() {
@@ -279,16 +359,47 @@ export class CharacterFormComponent implements OnInit {
         });
     }
 
+    prepareFormData() {
+        const formValue = this.form.value;
+        
+        // Remover campos vazios dos grupos aninhados
+        const cleanGroup = (group: any) => {
+            if (!group) return undefined;
+            const cleaned: any = {};
+            let hasValue = false;
+            Object.keys(group).forEach(key => {
+                if (group[key] !== null && group[key] !== undefined && group[key] !== '') {
+                    cleaned[key] = group[key];
+                    hasValue = true;
+                }
+            });
+            return hasValue ? cleaned : undefined;
+        };
+
+        return {
+            name: formValue.name,
+            bookId: formValue.bookId,
+            voiceId: formValue.voiceId,
+            voiceDescription: formValue.voiceDescription,
+            identity: cleanGroup(formValue.identity),
+            physique: cleanGroup(formValue.physique),
+            face: cleanGroup(formValue.face),
+            eyes: cleanGroup(formValue.eyes),
+            hair: cleanGroup(formValue.hair),
+            wardrobe: cleanGroup(formValue.wardrobe)
+        };
+    }
+
     save() {
         if (this.form.invalid) {
             return;
         }
 
         this.loading = true;
-        const formValue = this.form.value;
+        const formData = this.prepareFormData();
 
         if (this.isEditMode) {
-            this.characterService.update(this.characterId, formValue).subscribe({
+            this.characterService.update(this.characterId, formData).subscribe({
                 next: (updatedCharacter) => {
                     this.loading = false;
                     this.ref.close(updatedCharacter);
@@ -300,8 +411,8 @@ export class CharacterFormComponent implements OnInit {
                 }
             });
         } else {
-            const selectedBookId = formValue.bookId || this.bookId;
-            this.characterService.create(selectedBookId, formValue).subscribe({
+            const selectedBookId = formData.bookId || this.bookId;
+            this.characterService.create(selectedBookId, formData).subscribe({
                 next: (newCharacter) => {
                     this.loading = false;
                     this.ref.close(newCharacter);
