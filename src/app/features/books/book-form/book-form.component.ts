@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { ActivatedRoute, Router } from '@angular/router';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
-import { EditorModule } from 'primeng/editor';
+import { TextareaModule } from 'primeng/textarea';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { BookService } from '../../../services/book.service';
@@ -18,7 +18,7 @@ import { Book } from '../../../models/book.model';
         ReactiveFormsModule,
         InputTextModule,
         ButtonModule,
-        EditorModule,
+        TextareaModule,
         ToastModule
     ],
     providers: [MessageService],

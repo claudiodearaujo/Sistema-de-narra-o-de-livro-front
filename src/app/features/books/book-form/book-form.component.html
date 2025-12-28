@@ -40,19 +40,10 @@
                 <label for="description" class="block text-sm font-medium mb-2">
                     Descrição
                 </label>
-                <p-editor formControlName="description" [style]="{'height':'200px'}">
-                    <ng-template pTemplate="header">
-                        <span class="ql-formats">
-                            <button type="button" class="ql-bold" aria-label="Bold"></button>
-                            <button type="button" class="ql-italic" aria-label="Italic"></button>
-                            <button type="button" class="ql-underline" aria-label="Underline"></button>
-                        </span>
-                        <span class="ql-formats">
-                            <button type="button" class="ql-list" value="ordered" aria-label="Ordered List"></button>
-                            <button type="button" class="ql-list" value="bullet" aria-label="Bullet List"></button>
-                        </span>
-                    </ng-template>
-                </p-editor>
+                <textarea pInputTextarea id="description" formControlName="description" 
+                    placeholder="Digite uma descrição para o livro..." 
+                    rows="6" class="w-full" [autoResize]="true">
+                </textarea>
             </div>
 
             <!-- Cover URL -->
