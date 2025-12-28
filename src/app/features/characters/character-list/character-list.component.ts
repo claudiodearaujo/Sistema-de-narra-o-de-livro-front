@@ -133,7 +133,8 @@ export class CharacterListComponent implements OnInit {
     openNew() {
         this.ref = this.dialogService.open(CharacterFormComponent, {
             header: 'Novo Personagem',
-            width: '70%',
+            width: '90%',
+            style: { 'max-width': '1200px' },
             contentStyle: { overflow: 'auto' },
             baseZIndex: 10000,
             maximizable: true,
@@ -153,7 +154,8 @@ export class CharacterListComponent implements OnInit {
     editCharacter(character: Character) {
         this.ref = this.dialogService.open(CharacterFormComponent, {
             header: 'Editar Personagem',
-            width: '70%',
+            width: '90%',
+            style: { 'max-width': '1200px' },
             contentStyle: { overflow: 'auto' },
             baseZIndex: 10000,
             maximizable: true,
