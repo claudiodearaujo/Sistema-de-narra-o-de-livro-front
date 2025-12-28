@@ -1,77 +1,403 @@
 <div class="p-fluid">
+    <!-- Indicador de Percentual de Preenchimento -->
+    <div class="mb-4">
+        <div class="flex justify-between items-center mb-2">
+            <label class="text-sm font-medium text-gray-700 dark:text-gray-200">Preenchimento da Ficha</label>
+            <span class="text-sm font-semibold" 
+                  [ngClass]="{
+                      'text-red-600': completionPercentage < 30,
+                      'text-yellow-600': completionPercentage >= 30 && completionPercentage < 70,
+                      'text-green-600': completionPercentage >= 70
+                  }">
+                {{ completionPercentage }}%
+            </span>
+        </div>
+        <p-progressBar 
+            [value]="completionPercentage"
+            [showValue]="false"
+            [style]="{'height': '8px'}"
+            [severity]="getPercentageColor()">
+        </p-progressBar>
+    </div>
+
     <form [formGroup]="form" (ngSubmit)="save()">
-        <div class="field mb-4">
-            <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Nome do
-                Personagem</label>
-            <input id="name" type="text" class="w-full" pInputText formControlName="name"
-                placeholder="Ex: Harry Potter" />
-            <small *ngIf="form.get('name')?.invalid && form.get('name')?.touched" class="p-error block mt-1">
-                Nome é obrigatório (mínimo 2 caracteres).
-            </small>
-        </div>
+        <p-tabView>
+            <!-- Aba 1: Dados Básicos -->
+            <p-tabPanel header="Básico">
+                <div class="field mb-4">
+                    <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Nome do
+                        Personagem *</label>
+                    <input id="name" type="text" class="w-full" pInputText formControlName="name"
+                        placeholder="Ex: Maria Silva" />
+                    <small *ngIf="form.get('name')?.invalid && form.get('name')?.touched" class="p-error block mt-1">
+                        Nome é obrigatório (mínimo 2 caracteres).
+                    </small>
+                </div>
 
-        <div class="field mb-4">
-            <label for="bookId" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Livro</label>
-            <p-select id="bookId" class="w-full" [options]="books" formControlName="bookId" optionLabel="title"
-                optionValue="id" placeholder="Selecione um livro" [filter]="true" filterBy="title,author"
-                [showClear]="true" appendTo="body">
-                <ng-template pTemplate="selectedItem" let-selectedOption>
-                    <div class="flex align-items-center gap-2" *ngIf="selectedOption">
-                        <div>{{ selectedOption.title }}</div>
-                    </div>
-                </ng-template>
-                <ng-template pTemplate="item" let-book>
-                    <div class="flex flex-col">
-                        <span class="font-medium">{{ book.title }}</span>
-                        <span class="text-xs text-gray-500">{{ book.author }}</span>
-                    </div>
-                </ng-template>
-            </p-select>
-            <small *ngIf="form.get('bookId')?.invalid && form.get('bookId')?.touched" class="p-error block mt-1">
-                Selecione um livro.
-            </small>
-        </div>
+                <div class="field mb-4">
+                    <label for="bookId" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Livro *</label>
+                    <p-select id="bookId" class="w-full" [options]="books" formControlName="bookId" optionLabel="title"
+                        optionValue="id" placeholder="Selecione um livro" [filter]="true" filterBy="title,author"
+                        [showClear]="true" appendTo="body">
+                        <ng-template pTemplate="selectedItem" let-selectedOption>
+                            <div class="flex align-items-center gap-2" *ngIf="selectedOption">
+                                <div>{{ selectedOption.title }}</div>
+                            </div>
+                        </ng-template>
+                        <ng-template pTemplate="item" let-book>
+                            <div class="flex flex-col">
+                                <span class="font-medium">{{ book.title }}</span>
+                                <span class="text-xs text-gray-500">{{ book.author }}</span>
+                            </div>
+                        </ng-template>
+                    </p-select>
+                    <small *ngIf="form.get('bookId')?.invalid && form.get('bookId')?.touched" class="p-error block mt-1">
+                        Selecione um livro.
+                    </small>
+                </div>
 
-        <div class="field mb-4">
-            <label for="voiceId" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Voz</label>
-            <p-select id="voiceId" class="w-full" [options]="voices" formControlName="voiceId" optionLabel="name"
-                optionValue="id" placeholder="Selecione uma voz" [filter]="true" filterBy="name" [showClear]="true"
-                appendTo="body">
-                <ng-template pTemplate="selectedItem" let-selectedOption>
-                    <div class="flex align-items-center gap-2" *ngIf="selectedOption">
-                        <div>{{ selectedOption.name }}</div>
-                    </div>
-                </ng-template>
-                <ng-template pTemplate="item" let-voice>
-                    <div class="flex flex-col">
-                        <span class="font-medium">{{ voice.name }}</span>
-                        <span class="text-xs text-gray-500">{{ voice.gender }} - {{ voice.description }}</span>
-                    </div>
-                </ng-template>
-            </p-select>
-            <small *ngIf="form.get('voiceId')?.invalid && form.get('voiceId')?.touched" class="p-error block mt-1">
-                Selecione uma voz.
-            </small>
-        </div>
+                <div class="field mb-4">
+                    <label for="voiceId" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Voz *</label>
+                    <p-select id="voiceId" class="w-full" [options]="voices" formControlName="voiceId" optionLabel="name"
+                        optionValue="id" placeholder="Selecione uma voz" [filter]="true" filterBy="name" [showClear]="true"
+                        appendTo="body">
+                        <ng-template pTemplate="selectedItem" let-selectedOption>
+                            <div class="flex align-items-center gap-2" *ngIf="selectedOption">
+                                <div>{{ selectedOption.name }}</div>
+                            </div>
+                        </ng-template>
+                        <ng-template pTemplate="item" let-voice>
+                            <div class="flex flex-col">
+                                <span class="font-medium">{{ voice.name }}</span>
+                                <span class="text-xs text-gray-500">{{ voice.gender }} - {{ voice.description }}</span>
+                            </div>
+                        </ng-template>
+                    </p-select>
+                    <small *ngIf="form.get('voiceId')?.invalid && form.get('voiceId')?.touched" class="p-error block mt-1">
+                        Selecione uma voz.
+                    </small>
+                </div>
 
-        <div class="field mb-4" *ngIf="form.get('voiceId')?.value">
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Testar Voz
-                Selecionada</label>
-            <app-voice-preview [voiceId]="form.get('voiceId')?.value"
-                [text]="form.get('name')?.value || 'Olá, eu sou ' + (form.get('name')?.value || 'um personagem')">
-            </app-voice-preview>
-        </div>
+                <div class="field mb-4" *ngIf="form.get('voiceId')?.value">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Testar Voz
+                        Selecionada</label>
+                    <app-voice-preview [voiceId]="form.get('voiceId')?.value"
+                        [text]="'Olá, eu sou ' + (form.get('name')?.value || 'um personagem')">
+                    </app-voice-preview>
+                </div>
 
-        <div class="field mb-6">
-            <label for="voiceDescription"
-                class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Descrição da Voz
-                (Opcional)</label>
-            <textarea id="voiceDescription" class="w-full" pInputTextarea formControlName="voiceDescription" rows="3"
-                placeholder="Ex: Tom grave, sotaque nordestino, fala pausada...">
-            </textarea>
-        </div>
+                <div class="field mb-4">
+                    <label for="voiceDescription"
+                        class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Descrição da Voz</label>
+                    <textarea id="voiceDescription" class="w-full" pInputTextarea formControlName="voiceDescription" rows="3"
+                        placeholder="Ex: Tom grave, sotaque nordestino, fala pausada...">
+                    </textarea>
+                </div>
+            </p-tabPanel>
 
-        <div class="flex justify-end gap-2">
+            <!-- Aba 2: Identidade -->
+            <p-tabPanel header="Identidade" formGroupName="identity">
+                <div class="field mb-4">
+                    <label for="gender" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Gênero</label>
+                    <input id="gender" type="text" class="w-full" pInputText formControlName="gender"
+                        placeholder="Ex: Feminino" />
+                </div>
+
+                <div class="field mb-4">
+                    <label for="age" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Idade</label>
+                    <p-inputNumber id="age" class="w-full" formControlName="age" [min]="0" [max]="200"
+                        placeholder="Ex: 27" />
+                </div>
+
+                <div class="field mb-4">
+                    <label for="nationality" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Nacionalidade</label>
+                    <input id="nationality" type="text" class="w-full" pInputText formControlName="nationality"
+                        placeholder="Ex: Brasileira" />
+                </div>
+            </p-tabPanel>
+
+            <!-- Aba 3: Corpo e Postura -->
+            <p-tabPanel header="Corpo e Postura" formGroupName="physique">
+                <div class="field mb-4">
+                    <label for="height" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Altura</label>
+                    <input id="height" type="text" class="w-full" pInputText formControlName="height"
+                        placeholder="Ex: 1,70 m" />
+                </div>
+
+                <div class="field mb-4">
+                    <label for="bodyType" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Tipo de Corpo</label>
+                    <input id="bodyType" type="text" class="w-full" pInputText formControlName="bodyType"
+                        placeholder="Ex: Magra, com curvas" />
+                </div>
+
+                <div class="field mb-4">
+                    <label for="waist" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Cintura</label>
+                    <input id="waist" type="text" class="w-full" pInputText formControlName="waist"
+                        placeholder="Ex: Fina e definida" />
+                </div>
+
+                <div class="field mb-4">
+                    <label for="posture" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Postura</label>
+                    <input id="posture" type="text" class="w-full" pInputText formControlName="posture"
+                        placeholder="Ex: Erguida, elegante" />
+                </div>
+            </p-tabPanel>
+
+            <!-- Aba 4: Rosto e Pele -->
+            <p-tabPanel header="Rosto e Pele" formGroupName="face">
+                <div class="field mb-4">
+                    <label for="faceShape" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Formato do Rosto</label>
+                    <input id="faceShape" type="text" class="w-full" pInputText formControlName="faceShape"
+                        placeholder="Ex: Oval suave" />
+                </div>
+
+                <div class="field mb-4">
+                    <label for="forehead" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Testa</label>
+                    <input id="forehead" type="text" class="w-full" pInputText formControlName="forehead"
+                        placeholder="Ex: Alta, lisa e levemente curva" />
+                </div>
+
+                <div class="field mb-4">
+                    <label for="cheeks" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Maçãs do Rosto</label>
+                    <input id="cheeks" type="text" class="w-full" pInputText formControlName="cheeks"
+                        placeholder="Ex: Suaves e levemente salientes" />
+                </div>
+
+                <div class="field mb-4">
+                    <label for="chin" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Queixo</label>
+                    <input id="chin" type="text" class="w-full" pInputText formControlName="chin"
+                        placeholder="Ex: Levemente afinado" />
+                </div>
+
+                <div class="field mb-4">
+                    <label for="nose" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Nariz</label>
+                    <input id="nose" type="text" class="w-full" pInputText formControlName="nose"
+                        placeholder="Ex: Pequeno, fino e delicado" />
+                </div>
+
+                <div class="field mb-4">
+                    <label for="lips" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Lábios</label>
+                    <input id="lips" type="text" class="w-full" pInputText formControlName="lips"
+                        placeholder="Ex: Cheios e simétricos" />
+                </div>
+
+                <div class="field mb-4">
+                    <label for="expression" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Expressão</label>
+                    <input id="expression" type="text" class="w-full" pInputText formControlName="expression"
+                        placeholder="Ex: Suave, gentil" />
+                </div>
+
+                <div class="field mb-4">
+                    <label for="skinTone" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Tom de Pele</label>
+                    <input id="skinTone" type="text" class="w-full" pInputText formControlName="skinTone"
+                        placeholder="Ex: Branco claro com aparência de porcelana" />
+                </div>
+            </p-tabPanel>
+
+            <!-- Aba 5: Olhos e Maquiagem -->
+            <p-tabPanel header="Olhos e Maquiagem" formGroupName="eyes">
+                <div class="field mb-4">
+                    <label for="eyeSize" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Tamanho</label>
+                    <input id="eyeSize" type="text" class="w-full" pInputText formControlName="size"
+                        placeholder="Ex: Grandes" />
+                </div>
+
+                <div class="field mb-4">
+                    <label for="eyeShape" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Formato</label>
+                    <input id="eyeShape" type="text" class="w-full" pInputText formControlName="shape"
+                        placeholder="Ex: Amendoado e levemente afastados" />
+                </div>
+
+                <div class="field mb-4">
+                    <label for="eyeColor" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Cor</label>
+                    <input id="eyeColor" type="text" class="w-full" pInputText formControlName="color"
+                        placeholder="Ex: Verde" />
+                </div>
+
+                <div class="field mb-4">
+                    <label for="eyelashes" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Cílios</label>
+                    <input id="eyelashes" type="text" class="w-full" pInputText formControlName="eyelashes"
+                        placeholder="Ex: Longos e naturais" />
+                </div>
+
+                <div class="field mb-4">
+                    <label for="makeup" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Maquiagem</label>
+                    <input id="makeup" type="text" class="w-full" pInputText formControlName="makeup"
+                        placeholder="Ex: Delineador fino e discreto" />
+                </div>
+
+                <div class="field mb-4">
+                    <label for="eyebrows" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Sobrancelhas</label>
+                    <input id="eyebrows" type="text" class="w-full" pInputText formControlName="eyebrows"
+                        placeholder="Ex: Fina a média espessura, arqueadas" />
+                </div>
+            </p-tabPanel>
+
+            <!-- Aba 6: Cabelo -->
+            <p-tabPanel header="Cabelo" formGroupName="hair">
+                <div class="field mb-4">
+                    <label for="hairCut" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Corte</label>
+                    <input id="hairCut" type="text" class="w-full" pInputText formControlName="cut"
+                        placeholder="Ex: Long blunt bob" />
+                </div>
+
+                <div class="field mb-4">
+                    <label for="hairLength" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Comprimento</label>
+                    <input id="hairLength" type="text" class="w-full" pInputText formControlName="length"
+                        placeholder="Ex: Na altura do queixo" />
+                </div>
+
+                <div class="field mb-4">
+                    <label for="hairParting" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Divisão/Riscado</label>
+                    <input id="hairParting" type="text" class="w-full" pInputText formControlName="parting"
+                        placeholder="Ex: Central perfeitamente simétrico" />
+                </div>
+
+                <div class="field mb-4">
+                    <label for="hairTexture" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Textura</label>
+                    <input id="hairTexture" type="text" class="w-full" pInputText formControlName="texture"
+                        placeholder="Ex: Liso e escovado" />
+                </div>
+
+                <div class="field mb-4">
+                    <label for="hairColor" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Cor</label>
+                    <input id="hairColor" type="text" class="w-full" pInputText formControlName="color"
+                        placeholder="Ex: Ruivo" />
+                </div>
+
+                <div class="field mb-4">
+                    <label for="hairFinishing" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Finalização</label>
+                    <input id="hairFinishing" type="text" class="w-full" pInputText formControlName="finishing"
+                        placeholder="Ex: Brilho sutil, bem cuidado" />
+                </div>
+            </p-tabPanel>
+
+            <!-- Aba 7: Vestuário -->
+            <p-tabPanel header="Vestuário" formGroupName="wardrobe">
+                <h3 class="text-md font-semibold mb-3 mt-0">Vestimenta</h3>
+                
+                <div class="field mb-4">
+                    <label for="dressBrand" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Marca</label>
+                    <input id="dressBrand" type="text" class="w-full" pInputText formControlName="dressBrand"
+                        placeholder="Ex: Alexandre Vauthier" />
+                </div>
+
+                <div class="field mb-4">
+                    <label for="dressModel" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Modelo</label>
+                    <input id="dressModel" type="text" class="w-full" pInputText formControlName="dressModel"
+                        placeholder="Ex: Draped Jersey Mini Dress" />
+                </div>
+
+                <div class="field mb-4">
+                    <label for="dressColor" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Cor</label>
+                    <input id="dressColor" type="text" class="w-full" pInputText formControlName="dressColor"
+                        placeholder="Ex: Preto sólido" />
+                </div>
+
+                <div class="field mb-4">
+                    <label for="dressFabric" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Tecido</label>
+                    <input id="dressFabric" type="text" class="w-full" pInputText formControlName="dressFabric"
+                        placeholder="Ex: Jersey stretch opaco" />
+                </div>
+
+                <div class="field mb-4">
+                    <label for="dressFit" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Caimento</label>
+                    <input id="dressFit" type="text" class="w-full" pInputText formControlName="dressFit"
+                        placeholder="Ex: Ultra justo, modelando perfeitamente" />
+                </div>
+
+                <div class="field mb-4">
+                    <label for="dressLength" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Comprimento</label>
+                    <input id="dressLength" type="text" class="w-full" pInputText formControlName="dressLength"
+                        placeholder="Ex: Bem acima do joelho" />
+                </div>
+
+                <div class="field mb-4">
+                    <label for="dressNeckline" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Decote</label>
+                    <input id="dressNeckline" type="text" class="w-full" pInputText formControlName="dressNeckline"
+                        placeholder="Ex: Profundo em V, estruturado" />
+                </div>
+
+                <div class="field mb-4">
+                    <label for="dressDetails" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Detalhes</label>
+                    <textarea id="dressDetails" class="w-full" pInputTextarea formControlName="dressDetails" rows="2"
+                        placeholder="Ex: Sem brilho, sem estampa, zíper invisível...">
+                    </textarea>
+                </div>
+
+                <h3 class="text-md font-semibold mb-3 mt-6">Calçado</h3>
+
+                <div class="field mb-4">
+                    <label for="shoeBrand" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Marca</label>
+                    <input id="shoeBrand" type="text" class="w-full" pInputText formControlName="shoeBrand"
+                        placeholder="Ex: Saint Laurent" />
+                </div>
+
+                <div class="field mb-4">
+                    <label for="shoeModel" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Modelo</label>
+                    <input id="shoeModel" type="text" class="w-full" pInputText formControlName="shoeModel"
+                        placeholder="Ex: Zoe Patent Leather Pumps" />
+                </div>
+
+                <div class="field mb-4">
+                    <label for="shoeColor" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Cor</label>
+                    <input id="shoeColor" type="text" class="w-full" pInputText formControlName="shoeColor"
+                        placeholder="Ex: Preto brilhante" />
+                </div>
+
+                <div class="field mb-4">
+                    <label for="shoeHeel" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Salto</label>
+                    <input id="shoeHeel" type="text" class="w-full" pInputText formControlName="shoeHeel"
+                        placeholder="Ex: Agulha de 10 cm" />
+                </div>
+
+                <div class="field mb-4">
+                    <label for="shoeToe" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Bico</label>
+                    <input id="shoeToe" type="text" class="w-full" pInputText formControlName="shoeToe"
+                        placeholder="Ex: Fino" />
+                </div>
+
+                <div class="field mb-4">
+                    <label for="shoeStyle" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Estilo</label>
+                    <input id="shoeStyle" type="text" class="w-full" pInputText formControlName="shoeStyle"
+                        placeholder="Ex: Elegante, editorial" />
+                </div>
+
+                <h3 class="text-md font-semibold mb-3 mt-6">Acessórios</h3>
+
+                <div class="field mb-4">
+                    <label for="earrings" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Brincos</label>
+                    <input id="earrings" type="text" class="w-full" pInputText formControlName="earrings"
+                        placeholder="Ex: Tiffany & Co. 25 mm, prateados" />
+                </div>
+
+                <div class="field mb-4">
+                    <label for="ring" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Anel</label>
+                    <input id="ring" type="text" class="w-full" pInputText formControlName="ring"
+                        placeholder="Ex: Prateado, discreto" />
+                </div>
+
+                <div class="field mb-4">
+                    <label for="necklace" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Colar</label>
+                    <input id="necklace" type="text" class="w-full" pInputText formControlName="necklace"
+                        placeholder="Ex: Sem colares" />
+                </div>
+
+                <div class="field mb-4">
+                    <label for="bracelet" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Pulseira</label>
+                    <input id="bracelet" type="text" class="w-full" pInputText formControlName="bracelet"
+                        placeholder="Ex: Sem acessórios" />
+                </div>
+
+                <div class="field mb-4">
+                    <label for="nails" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Unhas</label>
+                    <input id="nails" type="text" class="w-full" pInputText formControlName="nails"
+                        placeholder="Ex: Longas, esmalte nude acetinado" />
+                </div>
+            </p-tabPanel>
+        </p-tabView>
+
+        <div class="flex justify-end gap-2 mt-4">
             <button pButton type="button" label="Cancelar" class="p-button-text" (click)="cancel()"></button>
             <button pButton type="submit" label="Salvar" [disabled]="form.invalid || loading"
                 [loading]="loading"></button>

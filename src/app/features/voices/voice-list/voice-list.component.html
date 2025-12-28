@@ -1,42 +1,33 @@
 <p-toast></p-toast>
-<p-confirmDialog></p-confirmDialog>
 
 <div class="container mx-auto p-6">
     <p-card>
         <ng-template pTemplate="header">
             <div class="flex justify-between items-center p-4">
-                <h2 class="text-2xl font-bold text-gray-800">Vozes Disponíveis</h2>
-                <div class="flex gap-2">
-                    <p-button icon="pi pi-plus" label="Nova Voz" routerLink="/voices/new">
-                    </p-button>
-                    <p-button icon="pi pi-refresh" label="Atualizar" severity="secondary" (onClick)="loadVoices()"
-                        [loading]="loading">
-                    </p-button>
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-800">Vozes Gemini TTS</h2>
+                    <p class="text-gray-600 mt-1">30 vozes disponíveis para narração</p>
                 </div>
             </div>
         </ng-template>
 
-        <p-table [value]="voices" [loading]="loading" [paginator]="true" [rows]="10" [showCurrentPageReport]="true"
+        <p-table [value]="voices" [loading]="loading" [paginator]="true" [rows]="15" [showCurrentPageReport]="true"
             currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} vozes"
-            [rowsPerPageOptions]="[10, 25, 50]" styleClass="p-datatable-gridlines">
+            [rowsPerPageOptions]="[15, 30]" styleClass="p-datatable-gridlines"
+            [globalFilterFields]="['name', 'gender', 'description']">
 
             <ng-template pTemplate="header">
                 <tr>
-                    <th pSortableColumn="name">
+                    <th pSortableColumn="name" style="width: 180px">
                         Nome
                         <p-sortIcon field="name"></p-sortIcon>
                     </th>
-                    <th pSortableColumn="gender">
+                    <th pSortableColumn="gender" style="width: 120px">
                         Gênero
                         <p-sortIcon field="gender"></p-sortIcon>
                     </th>
-                    <th pSortableColumn="languageCode">
-                        Idioma
-                        <p-sortIcon field="languageCode"></p-sortIcon>
-                    </th>
-                    <th>Descrição</th>
-                    <th>Provider</th>
-                    <th style="width: 150px">Ações</th>
+                    <th>Descrição / Característica</th>
+                    <th style="width: 100px">Preview</th>
                 </tr>
             </ng-template>
 
@@ -53,33 +44,26 @@
                         </p-tag>
                     </td>
                     <td>
-                        <span class="text-gray-600">{{ voice.languageCode }}</span>
+                        <span class="text-gray-700">{{ voice.description }}</span>
                     </td>
                     <td>
-                        <span class="text-gray-700">{{ voice.description || 'N/A' }}</span>
-                    </td>
-                    <td>
-                        <p-tag [value]="voice.provider" severity="secondary"></p-tag>
-                    </td>
-                    <td>
-                        <div class="flex gap-2" *ngIf="voice.provider === 'custom'">
-                            <p-button icon="pi pi-pencil" severity="info" size="small" [text]="true" [rounded]="true"
-                                (onClick)="editVoice(voice)" pTooltip="Editar" tooltipPosition="top">
-                            </p-button>
-                            <p-button icon="pi pi-trash" severity="danger" size="small" [text]="true" [rounded]="true"
-                                (onClick)="confirmDelete(voice)" pTooltip="Excluir" tooltipPosition="top">
-                            </p-button>
-                        </div>
-                        <span *ngIf="voice.provider !== 'custom'" class="text-gray-400 text-sm">
-                            -
-                        </span>
+                        <p-button 
+                            [icon]="previewingVoice === voice.id ? 'pi pi-stop' : 'pi pi-play'" 
+                            [severity]="previewingVoice === voice.id ? 'danger' : 'secondary'"
+                            size="small" 
+                            [rounded]="true"
+                            (onClick)="previewVoice(voice)" 
+                            [pTooltip]="previewingVoice === voice.id ? 'Parar' : 'Ouvir'" 
+                            tooltipPosition="top"
+                            [loading]="previewingVoice === voice.id">
+                        </p-button>
                     </td>
                 </tr>
             </ng-template>
 
             <ng-template pTemplate="emptymessage">
                 <tr>
-                    <td colspan="6" class="text-center py-8">
+                    <td colspan="4" class="text-center py-8">
                         <div class="flex flex-col items-center gap-3">
                             <i class="pi pi-info-circle text-4xl text-gray-400"></i>
                             <p class="text-gray-600">Nenhuma voz disponível</p>
@@ -91,8 +75,21 @@
 
         <ng-template pTemplate="footer">
             <div class="text-sm text-gray-600 p-2">
-                <i class="pi pi-info-circle mr-2"></i>
-                Estas vozes estão disponíveis para narração de personagens usando o Gemini TTS.
+                <div class="flex items-start gap-2">
+                    <i class="pi pi-info-circle mt-0.5"></i>
+                    <div>
+                        <p><strong>Vozes Gemini TTS:</strong> Estas são as 30 vozes fixas disponíveis na API do Google Gemini.</p>
+                        <p class="mt-1">Cada voz possui características únicas. Clique em "Play" para ouvir uma prévia.</p>
+                        <p class="mt-1">
+                            <a href="https://ai.google.dev/gemini-api/docs/speech-generation?hl=pt-br#voices" 
+                               target="_blank" 
+                               class="text-primary hover:underline">
+                                Ver documentação oficial
+                                <i class="pi pi-external-link ml-1"></i>
+                            </a>
+                        </p>
+                    </div>
+                </div>
             </div>
         </ng-template>
     </p-card>

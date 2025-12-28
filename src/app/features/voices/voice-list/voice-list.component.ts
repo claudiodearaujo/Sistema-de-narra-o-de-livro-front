@@ -1,35 +1,31 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterLink } from '@angular/router';
 import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { TooltipModule } from 'primeng/tooltip';
-import { ConfirmDialog } from 'primeng/confirmdialog';
 import { Toast } from 'primeng/toast';
-import { ConfirmationService, MessageService } from 'primeng/api';
+import { MessageService } from 'primeng/api';
 import { VoiceService } from '../../../core/services/voice.service';
-import { CustomVoiceService } from '../../../core/services/custom-voice.service';
-import { Voice } from '../../../core/models/voice.model';
+import { Voice, GEMINI_VOICES } from '../../../core/models/voice.model';
 
 @Component({
     selector: 'app-voice-list',
     standalone: true,
-    imports: [CommonModule, RouterLink, CardModule, ButtonModule, TableModule, TagModule, TooltipModule, ConfirmDialog, Toast],
-    providers: [ConfirmationService, MessageService],
+    imports: [CommonModule, CardModule, ButtonModule, TableModule, TagModule, TooltipModule, Toast],
+    providers: [MessageService],
     templateUrl: './voice-list.component.html',
     styleUrl: './voice-list.component.css'
 })
 export class VoiceListComponent implements OnInit {
     voices: Voice[] = [];
     loading = false;
+    previewingVoice: string | null = null;
+    previewAudio: HTMLAudioElement | null = null;
 
     constructor(
         private voiceService: VoiceService,
-        private customVoiceService: CustomVoiceService,
-        private router: Router,
-        private confirmationService: ConfirmationService,
         private messageService: MessageService
     ) { }
 
@@ -38,58 +34,47 @@ export class VoiceListComponent implements OnInit {
     }
 
     loadVoices() {
-        this.loading = true;
-        this.voiceService.listVoices().subscribe({
-            next: (data: Voice[]) => {
-                this.voices = data;
-                this.loading = false;
+        // Usa as vozes fixas do Gemini
+        this.voices = GEMINI_VOICES;
+    }
+
+    previewVoice(voice: Voice) {
+        if (this.previewingVoice === voice.id) {
+            // Parar preview atual
+            this.stopPreview();
+            return;
+        }
+
+        this.previewingVoice = voice.id;
+        const sampleText = `Olá! Meu nome é ${voice.name}. Esta é uma demonstração da minha voz.`;
+
+        this.voiceService.previewVoice(voice.id, sampleText).subscribe({
+            next: (response) => {
+                this.stopPreview();
+                const audioData = `data:audio/wav;base64,${response.audioBase64}`;
+                this.previewAudio = new Audio(audioData);
+                this.previewAudio.onended = () => {
+                    this.previewingVoice = null;
+                };
+                this.previewAudio.play();
             },
-            error: (error: any) => {
-                console.error('Error loading voices:', error);
-                this.loading = false;
-            }
-        });
-    }
-
-    editVoice(voice: Voice) {
-        // Navegar para a página de edição (vamos criar em seguida)
-        this.router.navigate(['/voices/edit', voice.id]);
-    }
-
-    confirmDelete(voice: Voice) {
-        this.confirmationService.confirm({
-            message: `Tem certeza que deseja excluir a voz "${voice.name}"?`,
-            header: 'Confirmar Exclusão',
-            icon: 'pi pi-exclamation-triangle',
-            acceptLabel: 'Sim, excluir',
-            rejectLabel: 'Cancelar',
-            acceptButtonStyleClass: 'p-button-danger',
-            accept: () => {
-                this.deleteVoice(voice);
-            }
-        });
-    }
-
-    deleteVoice(voice: Voice) {
-        if (!voice.id) return;
-
-        this.customVoiceService.delete(voice.id).subscribe({
-            next: () => {
-                this.messageService.add({
-                    severity: 'success',
-                    summary: 'Sucesso',
-                    detail: `Voz "${voice.name}" excluída com sucesso`
-                });
-                this.loadVoices();
-            },
-            error: (error: any) => {
+            error: (error) => {
+                this.previewingVoice = null;
                 this.messageService.add({
                     severity: 'error',
                     summary: 'Erro',
-                    detail: error.error?.error || 'Erro ao excluir voz'
+                    detail: 'Erro ao reproduzir preview da voz'
                 });
             }
         });
+    }
+
+    stopPreview() {
+        if (this.previewAudio) {
+            this.previewAudio.pause();
+            this.previewAudio = null;
+        }
+        this.previewingVoice = null;
     }
 
     getGenderSeverity(gender: string): 'success' | 'info' | 'warn' | 'danger' | 'secondary' | 'contrast' {

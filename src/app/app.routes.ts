@@ -7,7 +7,6 @@ import { BookDetailComponent } from './features/books/book-detail/book-detail.co
 import { ChapterDetailComponent } from './features/chapters/chapter-detail/chapter-detail.component';
 import { CharacterListComponent } from './features/characters/character-list/character-list.component';
 import { VoiceListComponent } from './features/voices/voice-list/voice-list.component';
-import { VoiceFormComponent } from './features/voices/voice-form/voice-form.component';
 
 export const routes: Routes = [
     {
@@ -22,9 +21,7 @@ export const routes: Routes = [
             { path: 'books/:id/characters', component: CharacterListComponent },
             { path: 'chapters/:id', component: ChapterDetailComponent },
             { path: 'characters', component: CharacterListComponent },
-            { path: 'voices', component: VoiceListComponent },
-            { path: 'voices/new', component: VoiceFormComponent },
-            { path: 'voices/edit/:id', component: VoiceFormComponent }
+            { path: 'voices', component: VoiceListComponent }
         ]
     }
 ];
