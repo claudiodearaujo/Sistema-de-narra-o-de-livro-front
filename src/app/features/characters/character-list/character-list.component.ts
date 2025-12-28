@@ -5,6 +5,7 @@ import { CharacterService } from '../../../core/services/character.service';
 import { Character } from '../../../core/models/character.model';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
+import { TagModule } from 'primeng/tag';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { MessageService, ConfirmationService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
@@ -23,6 +24,7 @@ import { FormsModule } from '@angular/forms';
         CommonModule,
         ButtonModule,
         CardModule,
+        TagModule,
         ConfirmDialogModule,
         ToastModule,
         VoicePreviewComponent,
@@ -121,10 +123,17 @@ export class CharacterListComponent implements OnInit {
         }
     }
 
+    getPercentageSeverity(percentage: number | undefined): "success" | "info" | "warn" | "danger" | "secondary" | "contrast" | undefined {
+        if (percentage === undefined) return 'secondary';
+        if (percentage < 30) return 'danger';
+        if (percentage < 70) return 'warn';
+        return 'success';
+    }
+
     openNew() {
         this.ref = this.dialogService.open(CharacterFormComponent, {
             header: 'Novo Personagem',
-            width: '50%',
+            width: '70%',
             contentStyle: { overflow: 'auto' },
             baseZIndex: 10000,
             maximizable: true,
@@ -144,7 +153,7 @@ export class CharacterListComponent implements OnInit {
     editCharacter(character: Character) {
         this.ref = this.dialogService.open(CharacterFormComponent, {
             header: 'Editar Personagem',
-            width: '50%',
+            width: '70%',
             contentStyle: { overflow: 'auto' },
             baseZIndex: 10000,
             maximizable: true,
