@@ -32,46 +32,107 @@ export class VoicePreviewComponent implements OnDestroy {
             this.messageService.add({ severity: 'warn', summary: 'Atenção', detail: 'Selecione uma voz para testar.' });
             return;
         }
-        if (!this.text) {
-            this.messageService.add({ severity: 'warn', summary: 'Atenção', detail: 'Digite um texto para testar.' });
-            return;
-        }
 
         if (this.isPlaying && this.audio) {
             this.stop();
             return;
         }
 
+        // Sempre usa o texto padrão, independente do que foi digitado
+        const previewText = `Olá! Esta é uma prévia da voz ${this.text || this.voiceId}. Como você está hoje?`;
+
         this.isLoading = true;
         try {
-            this.voiceService.previewVoice(this.voiceId, this.text).subscribe({
+            console.log('🎵 Requesting preview for voice:', this.voiceId, 'with text:', previewText);
+            this.voiceService.previewVoice(this.voiceId, previewText).subscribe({
                 next: (response) => {
-                    this.playAudio(response.audioBase64);
+                    console.log('✅ Preview response received:', {
+                        audioSize: response.audioBase64?.length || 0,
+                        format: response.format,
+                        voiceId: response.voiceId
+                    });
+                    
+                    if (!response.audioBase64) {
+                        throw new Error('Audio base64 está vazio');
+                    }
+                    
+                    this.playAudio(response.audioBase64, response.format || 'wav');
                     this.isLoading = false;
                 },
                 error: (error) => {
-                    console.error('Error generating preview:', error);
+                    console.error('❌ Error generating preview:', error);
                     this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Falha ao gerar preview da voz.' });
                     this.isLoading = false;
                 }
             });
         } catch (error) {
+            console.error('❌ Exception in preview:', error);
             this.isLoading = false;
         }
     }
 
-    playAudio(base64: string) {
-        if (this.audio) {
-            this.audio.pause();
-            this.audio = null;
-        }
+    playAudio(base64: string, format: string = 'wav') {
+        try {
+            if (this.audio) {
+                this.audio.pause();
+                this.audio = null;
+            }
 
-        this.audio = new Audio(`data:audio/mp3;base64,${base64}`);
-        this.audio.onended = () => {
+            // Mapear formato para MIME type correto
+            const mimeTypes: { [key: string]: string } = {
+                'wav': 'audio/wav',
+                'mp3': 'audio/mpeg',
+                'ogg': 'audio/ogg',
+                'webm': 'audio/webm'
+            };
+            const mimeType = mimeTypes[format.toLowerCase()] || 'audio/wav';
+
+            console.log('🔊 Creating audio element with format:', format, 'mimeType:', mimeType);
+            this.audio = new Audio(`data:${mimeType};base64,${base64}`);
+            
+            this.audio.onended = () => {
+                console.log('🎵 Audio playback ended');
+                this.isPlaying = false;
+            };
+            
+            this.audio.onerror = (error) => {
+                console.error('❌ Audio playback error:', error);
+                this.messageService.add({ 
+                    severity: 'error', 
+                    summary: 'Erro', 
+                    detail: 'Erro ao reproduzir áudio.' 
+                });
+                this.isPlaying = false;
+            };
+            
+            this.audio.onloadeddata = () => {
+                console.log('✅ Audio data loaded successfully');
+            };
+            
+            console.log('▶️ Starting audio playback...');
+            this.audio.play()
+                .then(() => {
+                    console.log('✅ Audio playing successfully');
+                    this.isPlaying = true;
+                })
+                .catch((error) => {
+                    console.error('❌ Error playing audio:', error);
+                    this.messageService.add({ 
+                        severity: 'error', 
+                        summary: 'Erro', 
+                        detail: 'Falha ao iniciar reprodução do áudio.' 
+                    });
+                    this.isPlaying = false;
+                });
+        } catch (error) {
+            console.error('❌ Exception in playAudio:', error);
+            this.messageService.add({ 
+                severity: 'error', 
+                summary: 'Erro', 
+                detail: 'Erro ao criar elemento de áudio.' 
+            });
             this.isPlaying = false;
-        };
-        this.audio.play();
-        this.isPlaying = true;
+        }
     }
 
     stop() {

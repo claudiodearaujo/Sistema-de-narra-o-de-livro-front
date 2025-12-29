@@ -46,7 +46,7 @@ export class VoiceService {
     /**
      * Gera preview de áudio para uma voz
      */
-    previewVoice(voiceId: string, text: string): Observable<{ audioBase64: string }> {
-        return this.http.post<{ audioBase64: string }>(`${this.apiUrl}/preview`, { voiceId, text });
+    previewVoice(voiceId: string, text: string): Observable<{ audioBase64: string, format: string, voiceId: string }> {
+        return this.http.post<{ audioBase64: string, format: string, voiceId: string }>(`${this.apiUrl}/preview`, { voiceId, text });
     }
 }
