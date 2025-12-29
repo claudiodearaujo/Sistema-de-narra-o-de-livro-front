@@ -39,4 +39,68 @@ export class SpeechService {
     bulkCreate(chapterId: string, text: string, strategy: string, defaultCharacterId: string): Observable<any> {
         return this.http.post(`${this.apiUrl}/chapters/${chapterId}/speeches/bulk`, { text, strategy, defaultCharacterId });
     }
+
+    spellCheck(payload: SpellCheckRequest): Observable<SpellCheckResponse> {
+        return this.http.post<SpellCheckResponse>(`${this.apiUrl}/speeches/tools/spell-check`, payload);
+    }
+
+    suggestImprovements(payload: SuggestionRequest): Observable<SuggestionResponse> {
+        return this.http.post<SuggestionResponse>(`${this.apiUrl}/speeches/tools/suggestions`, payload);
+    }
+
+    enrichWithCharacter(payload: CharacterEnrichmentRequest): Observable<CharacterEnrichmentResponse> {
+        return this.http.post<CharacterEnrichmentResponse>(`${this.apiUrl}/speeches/tools/character-context`, payload);
+    }
+
+    generateEmotionImage(payload: EmotionImageRequest): Observable<EmotionImageResponse> {
+        return this.http.post<EmotionImageResponse>(`${this.apiUrl}/speeches/tools/emotion-image`, payload);
+    }
+}
+
+export interface SpellCheckRequest {
+    text: string;
+    language?: string;
+}
+
+export interface SpellCheckResponse {
+    correctedText: string;
+    notes: string[];
+    confidence: number;
+}
+
+export interface SuggestionRequest {
+    text: string;
+    characterId?: string;
+    chapterId?: string;
+    includeContext?: boolean;
+}
+
+export interface SuggestionResponse {
+    improvedText: string;
+    suggestions: string[];
+    summary: string;
+}
+
+export interface CharacterEnrichmentRequest {
+    text?: string;
+    characterId: string;
+}
+
+export interface CharacterEnrichmentResponse {
+    enrichedText: string;
+    highlights: string[];
+}
+
+export interface EmotionImageRequest {
+    text: string;
+    characterId?: string;
+    styleHint?: string;
+}
+
+export interface EmotionImageResponse {
+    imageBase64: string;
+    mimeType: string;
+    prompt: string;
+    caption: string;
+    sentiment: string;
 }

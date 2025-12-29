@@ -41,6 +41,122 @@
             </small>
         </div>
 
+        <div class="assistant-card mb-6">
+            <div class="assistant-header">
+                <div>
+                    <p class="assistant-eyebrow">Atalhos inteligentes</p>
+                    <h3>Ferramentas para esta fala</h3>
+                </div>
+                <p class="assistant-helper">Aperfeiçoe o texto sem sair da tela.</p>
+            </div>
+
+            <div class="assistant-actions">
+                <button pButton type="button" label="Corretor ortográfico" icon="pi pi-check-square"
+                    (click)="runSpellCheck()" [loading]="spellCheckLoading"></button>
+                <button pButton type="button" label="Sugestões de melhoria" icon="pi pi-lightbulb"
+                    (click)="runSuggestions()" [loading]="suggestionLoading"></button>
+                <button pButton type="button" label="Detalhar personagem" icon="pi pi-user-edit"
+                    (click)="runCharacterEnrichment()" [disabled]="!form.get('characterId')?.value"
+                    [loading]="characterEnrichmentLoading"></button>
+                <button pButton type="button" label="Imagem do sentimento" icon="pi pi-image"
+                    class="p-button-help" (click)="generateEmotionImage()" [loading]="emotionImageLoading"></button>
+            </div>
+
+            <div class="context-toggle">
+                <label for="contextSwitch">Incluir contexto do capítulo e personagem</label>
+                <p-toggleSwitch inputId="contextSwitch" name="includeContextToggle" [(ngModel)]="includeContext" [ngModelOptions]="{standalone: true}"></p-toggleSwitch>
+            </div>
+
+            <div class="assistant-result" *ngIf="spellCheckResult">
+                <div class="result-header">
+                    <div>
+                        <h4>Correções sugeridas</h4>
+                        <p>Confiança {{ spellCheckResult.confidence | percent:'1.0-0' }}</p>
+                    </div>
+                    <div class="result-actions">
+                        <button pButton type="button" label="Aplicar" class="p-button-sm"
+                            (click)="applySpellCheck()"></button>
+                        <button pButton type="button" label="Descartar" class="p-button-text p-button-sm"
+                            (click)="spellCheckResult = undefined"></button>
+                    </div>
+                </div>
+                <pre>{{ spellCheckResult.correctedText }}</pre>
+                <ul *ngIf="spellCheckResult.notes?.length" class="result-list">
+                    <li *ngFor="let note of spellCheckResult.notes">{{ note }}</li>
+                </ul>
+            </div>
+
+            <div class="assistant-result" *ngIf="suggestionResult">
+                <div class="result-header">
+                    <div>
+                        <h4>Nova proposta de fala</h4>
+                        <p>{{ suggestionResult.summary }}</p>
+                    </div>
+                    <div class="result-actions">
+                        <button pButton type="button" label="Aplicar" class="p-button-sm"
+                            (click)="applySuggestion()"></button>
+                        <button pButton type="button" label="Descartar" class="p-button-text p-button-sm"
+                            (click)="suggestionResult = undefined"></button>
+                    </div>
+                </div>
+                <pre>{{ suggestionResult.improvedText }}</pre>
+                <ul *ngIf="suggestionResult.suggestions?.length" class="result-list">
+                    <li *ngFor="let tip of suggestionResult.suggestions">{{ tip }}</li>
+                </ul>
+            </div>
+
+            <div class="assistant-result" *ngIf="characterEnrichmentResult">
+                <div class="result-header">
+                    <div>
+                        <h4>Detalhes do personagem</h4>
+                        <p>Conteúdo pronto para colar na fala.</p>
+                    </div>
+                    <div class="result-actions">
+                        <button pButton type="button" label="Aplicar" class="p-button-sm"
+                            (click)="applyCharacterEnrichment()"></button>
+                        <button pButton type="button" label="Descartar" class="p-button-text p-button-sm"
+                            (click)="characterEnrichmentResult = undefined"></button>
+                    </div>
+                </div>
+                <pre>{{ characterEnrichmentResult.enrichedText }}</pre>
+                <ul *ngIf="characterEnrichmentResult.highlights?.length" class="result-list">
+                    <li *ngFor="let info of characterEnrichmentResult.highlights">{{ info }}</li>
+                </ul>
+            </div>
+
+            <div class="assistant-result image-result" *ngIf="emotionImageResult">
+                <div class="result-header">
+                    <div>
+                        <h4>Visual do sentimento</h4>
+                        <p>{{ emotionImageResult.caption }} ({{ emotionImageResult.sentiment }})</p>
+                    </div>
+                    <div class="result-actions">
+                        <button pButton type="button" label="Fechar" class="p-button-text p-button-sm"
+                            (click)="emotionImageResult = undefined"></button>
+                    </div>
+                </div>
+                <img *ngIf="emotionImageDataUrl" [src]="emotionImageDataUrl" [alt]="emotionImageResult.caption">
+                <small class="prompt-hint">Prompt: {{ emotionImageResult.prompt }}</small>
+            </div>
+        </div>
+
+        <div class="ssml-guide-card mb-6">
+            <button type="button" class="guide-toggle" (click)="toggleSsmlGuide()">
+                <span class="pi" [ngClass]="ssmlGuideVisible ? 'pi-chevron-up' : 'pi-chevron-down'"></span>
+                <span>Como usar SSML sem complicação</span>
+            </button>
+            <div *ngIf="ssmlGuideVisible" class="guide-body">
+                <p>SSML é como um roteiro com marcações simples. Você pode pedir pausas, enfatizar palavras ou mudar o tom.</p>
+                <ul>
+                    <li><strong>&lt;break time="500ms"&gt;</strong> adiciona uma pausa curta.</li>
+                    <li><strong>&lt;emphasis level="moderate"&gt;palavra&lt;/emphasis&gt;</strong> destaca trechos importantes.</li>
+                    <li><strong>&lt;prosody rate="slow" pitch="-2st"&gt;</strong> deixa o trecho mais lento e grave.</li>
+                    <li>Mantenha o texto dentro de <strong>&lt;speak&gt;...&lt;/speak&gt;</strong>. Sem tags exageradas: pense em direções simples.</li>
+                    <li>Teste pequenas partes primeiro; se ouvir algo estranho, ajuste o trecho específico.</li>
+                </ul>
+            </div>
+        </div>
+
         <div class="flex justify-end gap-2">
             <button pButton type="button" label="Cancelar" class="p-button-text" (click)="cancel()"></button>
             <button pButton type="submit" label="Salvar" [disabled]="form.invalid || loading || validating"
