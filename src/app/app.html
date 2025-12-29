@@ -1,1 +1,8 @@
-<router-outlet />
+<div class="app-shell">
+	<router-outlet />
+
+	<div *ngIf="routeLoading.isNavigating()" class="route-loading-backdrop" role="status" aria-live="polite">
+		<p-progressSpinner styleClass="route-loading-spinner" strokeWidth="3" ariaLabel="Carregando conteúdo" />
+		<p class="route-loading-label">Carregando interface...</p>
+	</div>
+</div>
