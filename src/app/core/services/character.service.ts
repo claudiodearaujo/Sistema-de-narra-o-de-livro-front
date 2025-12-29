@@ -35,4 +35,31 @@ export class CharacterService {
     delete(id: string): Observable<void> {
         return this.http.delete<void>(`${this.apiUrl}/characters/${id}`);
     }
+
+    /**
+     * Busca o áudio de preview existente de um personagem
+     */
+    getPreviewAudio(characterId: string): Observable<PreviewAudioResponse> {
+        return this.http.get<PreviewAudioResponse>(`${this.apiUrl}/characters/${characterId}/preview-audio`);
+    }
+
+    /**
+     * Gera e persiste o áudio de preview de um personagem
+     * Se já existir, retorna o existente (a menos que forceRegenerate seja true)
+     */
+    generatePreviewAudio(characterId: string, forceRegenerate: boolean = false): Observable<PreviewAudioResponse> {
+        return this.http.post<PreviewAudioResponse>(
+            `${this.apiUrl}/characters/${characterId}/preview-audio`,
+            { forceRegenerate }
+        );
+    }
+}
+
+export interface PreviewAudioResponse {
+    audioBase64: string;
+    format: string;
+    voiceId: string;
+    audioUrl?: string;
+    cached?: boolean;
+    hasAudio?: boolean;
 }

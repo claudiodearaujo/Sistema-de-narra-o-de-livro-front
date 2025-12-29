@@ -5,6 +5,7 @@ import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { VoiceService } from '../../../core/services/voice.service';
+import { CharacterService } from '../../../core/services/character.service';
 import { MessageService } from 'primeng/api';
 
 @Component({
@@ -17,13 +18,16 @@ import { MessageService } from 'primeng/api';
 export class VoicePreviewComponent implements OnDestroy {
     @Input() voiceId: string = '';
     @Input() text: string = '';
+    @Input() characterId: string = ''; // ID do personagem para persistir o áudio
 
     isLoading = false;
     isPlaying = false;
+    hasCachedAudio = false;
     audio: HTMLAudioElement | null = null;
 
     constructor(
         private voiceService: VoiceService,
+        private characterService: CharacterService,
         private messageService: MessageService
     ) { }
 
@@ -38,24 +42,59 @@ export class VoicePreviewComponent implements OnDestroy {
             return;
         }
 
-        // Sempre usa o texto padrão, independente do que foi digitado
-        const previewText = `Olá! Esta é uma prévia da voz ${this.text || this.voiceId}. Como você está hoje?`;
-
         this.isLoading = true;
-        try {
+
+        // Se tem characterId, usar o endpoint de personagem (com cache)
+        if (this.characterId) {
+            console.log('🎵 Requesting preview for character:', this.characterId, 'voice:', this.voiceId);
+            this.characterService.generatePreviewAudio(this.characterId).subscribe({
+                next: (response) => {
+                    console.log('✅ Character preview response:', {
+                        audioSize: response.audioBase64?.length || 0,
+                        format: response.format,
+                        cached: response.cached,
+                        audioUrl: response.audioUrl
+                    });
+
+                    if (!response.audioBase64) {
+                        throw new Error('Audio base64 está vazio');
+                    }
+
+                    this.hasCachedAudio = response.cached || false;
+                    if (response.cached) {
+                        this.messageService.add({ 
+                            severity: 'info', 
+                            summary: 'Cache', 
+                            detail: 'Usando áudio salvo anteriormente.' 
+                        });
+                    }
+
+                    this.playAudio(response.audioBase64, response.format || 'wav');
+                    this.isLoading = false;
+                },
+                error: (error) => {
+                    console.error('❌ Error generating character preview:', error);
+                    this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Falha ao gerar preview da voz.' });
+                    this.isLoading = false;
+                }
+            });
+        } else {
+            // Sem characterId, usar o endpoint de voz direto (sem persistir)
+            const previewText = `Olá! Esta é uma prévia da voz ${this.text || this.voiceId}. Como você está hoje?`;
             console.log('🎵 Requesting preview for voice:', this.voiceId, 'with text:', previewText);
+            
             this.voiceService.previewVoice(this.voiceId, previewText).subscribe({
                 next: (response) => {
-                    console.log('✅ Preview response received:', {
+                    console.log('✅ Voice preview response:', {
                         audioSize: response.audioBase64?.length || 0,
                         format: response.format,
                         voiceId: response.voiceId
                     });
-                    
+
                     if (!response.audioBase64) {
                         throw new Error('Audio base64 está vazio');
                     }
-                    
+
                     this.playAudio(response.audioBase64, response.format || 'wav');
                     this.isLoading = false;
                 },
@@ -65,9 +104,6 @@ export class VoicePreviewComponent implements OnDestroy {
                     this.isLoading = false;
                 }
             });
-        } catch (error) {
-            console.error('❌ Exception in preview:', error);
-            this.isLoading = false;
         }
     }
 
