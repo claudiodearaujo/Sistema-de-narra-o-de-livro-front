@@ -101,6 +101,8 @@ export class CharacterListComponent implements OnInit {
             this.characterService.getByBookId(this.bookId).subscribe({
                 next: (data) => {
                     console.log('Characters loaded:', data);
+                    console.log('First character voice data:', data[0]?.voice);
+                    console.log('First character voiceId:', data[0]?.voiceId);
                     this.characters = data;
                 },
                 error: (error) => {
@@ -113,6 +115,8 @@ export class CharacterListComponent implements OnInit {
             this.characterService.getAll().subscribe({
                 next: (data) => {
                     console.log('All characters loaded:', data);
+                    console.log('First character voice data:', data[0]?.voice);
+                    console.log('First character voiceId:', data[0]?.voiceId);
                     this.characters = data;
                 },
                 error: (error) => {
