@@ -31,6 +31,26 @@
             </small>
         </div>
 
+        <div class="ssml-guide-card mb-6">
+            <button type="button" class="guide-toggle" (click)="toggleSsmlGuide()">
+                <span class="pi" [ngClass]="ssmlGuideVisible ? 'pi-chevron-up' : 'pi-chevron-down'"></span>
+                <span>Como usar SSML sem complicação</span>
+            </button>
+            <div *ngIf="ssmlGuideVisible" class="guide-body">
+                <p>SSML é como um roteiro com marcações simples e os atalhos acima inserem as tags prontas para você:</p>
+                <ul>
+                    <li><strong>&lt;speak&gt;</strong> envolve toda a fala para evitar erros de validação.</li>
+                    <li><strong>&lt;break time="500ms"/&gt;</strong> cria pausas rápidas entre frases.</li>
+                    <li><strong>&lt;emphasis level="moderate"&gt;</strong> realça trechos com naturalidade.</li>
+                    <li><strong>&lt;emphasis level="strong"&gt;</strong> dá destaque máximo a palavras-chave.</li>
+                    <li><strong>&lt;prosody rate="slow"&gt;</strong> e <strong>&lt;prosody rate="fast"&gt;</strong> controlam o ritmo.</li>
+                    <li><strong>&lt;prosody rate="slow" pitch="-2st"&gt;</strong> deixa a fala lenta e com tom grave.</li>
+                    <li><strong>&lt;prosody pitch="+2st"&gt;</strong> e <strong>&lt;prosody pitch="-2st"&gt;</strong> ajustam somente o tom.</li>
+                    <li><strong>&lt;say-as interpret-as="cardinal"&gt;</strong> garante que números sejam lidos como algarismos naturais.</li>
+                </ul>
+                <p class="prompt-hint">Dicas rápidas: teste partes pequenas, combine tags com moderação e troque o trecho específico se algo soar estranho.</p>
+            </div>
+        </div>
         <div class="field mb-6">
             <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Texto / SSML</label>
             <app-ssml-editor [content]="form.get('ssmlText')?.value || form.get('text')?.value"
@@ -140,22 +160,6 @@
             </div>
         </div>
 
-        <div class="ssml-guide-card mb-6">
-            <button type="button" class="guide-toggle" (click)="toggleSsmlGuide()">
-                <span class="pi" [ngClass]="ssmlGuideVisible ? 'pi-chevron-up' : 'pi-chevron-down'"></span>
-                <span>Como usar SSML sem complicação</span>
-            </button>
-            <div *ngIf="ssmlGuideVisible" class="guide-body">
-                <p>SSML é como um roteiro com marcações simples. Você pode pedir pausas, enfatizar palavras ou mudar o tom.</p>
-                <ul>
-                    <li><strong>&lt;break time="500ms"&gt;</strong> adiciona uma pausa curta.</li>
-                    <li><strong>&lt;emphasis level="moderate"&gt;palavra&lt;/emphasis&gt;</strong> destaca trechos importantes.</li>
-                    <li><strong>&lt;prosody rate="slow" pitch="-2st"&gt;</strong> deixa o trecho mais lento e grave.</li>
-                    <li>Mantenha o texto dentro de <strong>&lt;speak&gt;...&lt;/speak&gt;</strong>. Sem tags exageradas: pense em direções simples.</li>
-                    <li>Teste pequenas partes primeiro; se ouvir algo estranho, ajuste o trecho específico.</li>
-                </ul>
-            </div>
-        </div>
 
         <div class="flex justify-end gap-2">
             <button pButton type="button" label="Cancelar" class="p-button-text" (click)="cancel()"></button>

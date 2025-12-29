@@ -30,10 +30,13 @@ export class SsmEditorComponent {
 
         let replacement = '';
 
+        const attrString = attribute?.trim();
+
         if (tag === 'break') {
-            replacement = `<break time="${attribute || '500ms'}"/>`;
+            const effectiveAttr = attrString || 'time="500ms"';
+            replacement = `<break ${effectiveAttr}/>`;
         } else {
-            const openTag = attribute ? `<${tag} ${attribute}>` : `<${tag}>`;
+            const openTag = attrString ? `<${tag} ${attrString}>` : `<${tag}>`;
             const closeTag = `</${tag}>`;
             replacement = `${openTag}${selectedText}${closeTag}`;
         }
