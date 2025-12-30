@@ -51,8 +51,16 @@ export class AuthService {
     this.isLoadingSignal.set(true);
     
     return this.http.post<AuthResponse>(`${this.apiUrl}/login`, credentials).pipe(
-      tap(response => this.handleAuthSuccess(response, credentials.rememberMe)),
-      catchError(error => this.handleError(error)),
+      tap(response => {
+        console.log('[AuthService] Login response:', response);
+        this.handleAuthSuccess(response, credentials.rememberMe);
+        console.log('[AuthService] Auth success handled, user:', this.currentUserSignal());
+      }),
+      catchError(error => {
+        console.error('[AuthService] Login error:', error);
+        this.isLoadingSignal.set(false);
+        return this.handleError(error);
+      }),
       tap(() => this.isLoadingSignal.set(false))
     );
   }

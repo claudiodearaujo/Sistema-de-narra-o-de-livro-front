@@ -63,12 +63,25 @@ export class LoginComponent {
     }
 
     this.errorMessage = null;
+    console.log('[LoginComponent] Submitting login...');
 
     this.authService.login(this.loginForm.value).subscribe({
-      next: () => {
-        this.router.navigateByUrl(this.returnUrl);
+      next: (response) => {
+        console.log('[LoginComponent] Login success, response:', response);
+        console.log('[LoginComponent] Token saved:', this.authService.getToken());
+        console.log('[LoginComponent] Is authenticated:', this.authService.isAuthenticated());
+        console.log('[LoginComponent] Navigating to:', this.returnUrl);
+        
+        // Use setTimeout to ensure Angular's change detection has completed
+        setTimeout(() => {
+          this.router.navigateByUrl(this.returnUrl).then(
+            (success) => console.log('[LoginComponent] Navigation success:', success),
+            (error) => console.error('[LoginComponent] Navigation error:', error)
+          );
+        }, 100);
       },
       error: (error) => {
+        console.error('[LoginComponent] Login error:', error);
         this.errorMessage = error.message;
       }
     });
