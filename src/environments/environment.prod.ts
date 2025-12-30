@@ -1,6 +1,6 @@
 export const environment = {
-  production: false,
-  apiUrl: 'http://localhost:3000/api',
+  production: true,
+  apiUrl: 'https://api.yoursite.com/api',  // Update with production URL
   
   // Auth configuration
   auth: {

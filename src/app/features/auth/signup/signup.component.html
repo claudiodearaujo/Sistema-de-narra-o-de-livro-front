@@ -1,0 +1,160 @@
+<div class="signup-container">
+  <div class="signup-card">
+    <div class="signup-header">
+      <h1>Criar sua conta</h1>
+      <p>Junte-se à nossa comunidade de escritores</p>
+    </div>
+
+    @if (errorMessage) {
+      <p-message severity="error" [text]="errorMessage" styleClass="w-full mb-4" />
+    }
+
+    @if (successMessage) {
+      <p-message severity="success" [text]="successMessage" styleClass="w-full mb-4" />
+    }
+
+    <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" class="signup-form">
+      <div class="field">
+        <label for="name">Nome completo</label>
+        <input
+          pInputText
+          id="name"
+          type="text"
+          formControlName="name"
+          placeholder="Seu nome"
+          class="w-full"
+        />
+        @if (f['name'].invalid && f['name'].touched) {
+          <small class="p-error">
+            @if (f['name'].errors?.['required']) {
+              Nome é obrigatório
+            } @else if (f['name'].errors?.['minlength']) {
+              Nome deve ter no mínimo 2 caracteres
+            }
+          </small>
+        }
+      </div>
+
+      <div class="field">
+        <label for="email">E-mail</label>
+        <input
+          pInputText
+          id="email"
+          type="email"
+          formControlName="email"
+          placeholder="seu@email.com"
+          class="w-full"
+        />
+        @if (f['email'].invalid && f['email'].touched) {
+          <small class="p-error">
+            @if (f['email'].errors?.['required']) {
+              E-mail é obrigatório
+            } @else if (f['email'].errors?.['email']) {
+              E-mail inválido
+            }
+          </small>
+        }
+      </div>
+
+      <div class="field">
+        <label for="username">Nome de usuário <span class="optional">(opcional)</span></label>
+        <input
+          pInputText
+          id="username"
+          type="text"
+          formControlName="username"
+          placeholder="seu_username"
+          class="w-full"
+        />
+        @if (f['username'].invalid && f['username'].touched) {
+          <small class="p-error">
+            @if (f['username'].errors?.['minlength']) {
+              Username deve ter no mínimo 3 caracteres
+            } @else if (f['username'].errors?.['pattern']) {
+              Apenas letras, números e underscore
+            }
+          </small>
+        }
+      </div>
+
+      <div class="field">
+        <label for="password">Senha</label>
+        <p-password
+          id="password"
+          formControlName="password"
+          [toggleMask]="true"
+          placeholder="Mínimo 8 caracteres"
+          styleClass="w-full"
+          inputStyleClass="w-full"
+          promptLabel="Digite uma senha"
+          weakLabel="Fraca"
+          mediumLabel="Média"
+          strongLabel="Forte"
+        />
+        @if (f['password'].invalid && f['password'].touched) {
+          <small class="p-error">
+            @if (f['password'].errors?.['required']) {
+              Senha é obrigatória
+            } @else if (f['password'].errors?.['minlength']) {
+              Senha deve ter no mínimo 8 caracteres
+            } @else if (f['password'].errors?.['passwordStrength']) {
+              Senha deve conter maiúscula, minúscula e número
+            }
+          </small>
+        }
+      </div>
+
+      <div class="field">
+        <label for="confirmPassword">Confirmar senha</label>
+        <p-password
+          id="confirmPassword"
+          formControlName="confirmPassword"
+          [feedback]="false"
+          [toggleMask]="true"
+          placeholder="Repita a senha"
+          styleClass="w-full"
+          inputStyleClass="w-full"
+        />
+        @if (f['confirmPassword'].invalid && f['confirmPassword'].touched) {
+          <small class="p-error">
+            @if (f['confirmPassword'].errors?.['required']) {
+              Confirmação é obrigatória
+            } @else if (f['confirmPassword'].errors?.['passwordMismatch']) {
+              As senhas não coincidem
+            }
+          </small>
+        }
+      </div>
+
+      <div class="field-checkbox">
+        <p-checkbox
+          formControlName="acceptTerms"
+          [binary]="true"
+          inputId="acceptTerms"
+        />
+        <label for="acceptTerms" class="ml-2">
+          Li e aceito os <a href="/terms" target="_blank">Termos de Uso</a> e 
+          <a href="/privacy" target="_blank">Política de Privacidade</a>
+        </label>
+      </div>
+      @if (f['acceptTerms'].invalid && f['acceptTerms'].touched) {
+        <small class="p-error">Você deve aceitar os termos</small>
+      }
+
+      <p-button
+        type="submit"
+        label="Criar conta"
+        styleClass="w-full mt-4"
+        [loading]="isLoading"
+        [disabled]="signupForm.invalid || isLoading"
+      />
+    </form>
+
+    <div class="signup-footer">
+      <p>
+        Já tem uma conta?
+        <a routerLink="/auth/login">Entrar</a>
+      </p>
+    </div>
+  </div>
+</div>

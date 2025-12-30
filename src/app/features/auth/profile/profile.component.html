@@ -1,0 +1,219 @@
+<div class="profile-container">
+  <div class="profile-header">
+    <a routerLink="/writer" class="back-link">
+      <i class="pi pi-arrow-left"></i>
+      Voltar
+    </a>
+    <h1>Meu Perfil</h1>
+  </div>
+
+  @if (isLoading()) {
+    <div class="loading-state">
+      <i class="pi pi-spin pi-spinner"></i>
+      <p>Carregando perfil...</p>
+    </div>
+  } @else {
+    <div class="profile-content">
+      <!-- Avatar Section -->
+      <div class="avatar-section">
+        <div class="avatar-wrapper">
+          @if (user()?.avatar) {
+            <p-avatar 
+              [image]="user()!.avatar!" 
+              size="xlarge" 
+              shape="circle"
+              styleClass="profile-avatar"
+            />
+          } @else {
+            <p-avatar 
+              [label]="getInitials()" 
+              size="xlarge" 
+              shape="circle"
+              styleClass="profile-avatar"
+            />
+          }
+        </div>
+        <p-fileUpload 
+          mode="basic" 
+          accept="image/*" 
+          [maxFileSize]="5000000"
+          chooseLabel="Alterar foto"
+          (onSelect)="onAvatarUpload($event)"
+          styleClass="avatar-upload"
+        />
+        <p class="avatar-hint">JPG, PNG ou GIF. Máx 5MB</p>
+      </div>
+
+      <!-- Tabs -->
+      <p-tabs value="0">
+        <p-tablist>
+          <p-tab value="0">Informações</p-tab>
+          <p-tab value="1">Segurança</p-tab>
+        </p-tablist>
+
+        <p-tabpanels>
+          <!-- Profile Info Tab -->
+          <p-tabpanel value="0">
+            <div class="tab-content">
+              @if (successMessage) {
+                <p-message severity="success" [text]="successMessage" styleClass="w-full mb-4" />
+              }
+              @if (errorMessage) {
+                <p-message severity="error" [text]="errorMessage" styleClass="w-full mb-4" />
+              }
+
+              <form [formGroup]="profileForm" (ngSubmit)="saveProfile()">
+                <div class="field">
+                  <label for="name">Nome completo</label>
+                  <input
+                    pInputText
+                    id="name"
+                    type="text"
+                    formControlName="name"
+                    class="w-full"
+                  />
+                  @if (pf['name'].invalid && pf['name'].touched) {
+                    <small class="p-error">Nome é obrigatório</small>
+                  }
+                </div>
+
+                <div class="field">
+                  <label for="email">E-mail</label>
+                  <input
+                    pInputText
+                    id="email"
+                    type="email"
+                    [value]="user()?.email"
+                    class="w-full"
+                    [disabled]="true"
+                  />
+                  <small class="hint">O e-mail não pode ser alterado</small>
+                </div>
+
+                <div class="field">
+                  <label for="username">Nome de usuário</label>
+                  <input
+                    pInputText
+                    id="username"
+                    type="text"
+                    formControlName="username"
+                    placeholder="seu_username"
+                    class="w-full"
+                  />
+                  @if (pf['username'].invalid && pf['username'].touched) {
+                    <small class="p-error">
+                      @if (pf['username'].errors?.['minlength']) {
+                        Mínimo 3 caracteres
+                      } @else if (pf['username'].errors?.['pattern']) {
+                        Apenas letras, números e underscore
+                      }
+                    </small>
+                  }
+                </div>
+
+                <div class="field">
+                  <label for="bio">Biografia</label>
+                  <textarea
+                    pTextarea
+                    id="bio"
+                    formControlName="bio"
+                    [rows]="4"
+                    placeholder="Conte um pouco sobre você..."
+                    class="w-full"
+                  ></textarea>
+                  <small class="hint">
+                    {{ profileForm.get('bio')?.value?.length || 0 }}/500 caracteres
+                  </small>
+                </div>
+
+                <p-button
+                  type="submit"
+                  label="Salvar alterações"
+                  [loading]="isSaving()"
+                  [disabled]="profileForm.invalid || isSaving()"
+                />
+              </form>
+            </div>
+          </p-tabpanel>
+
+          <!-- Security Tab -->
+          <p-tabpanel value="1">
+            <div class="tab-content">
+              <h3>Alterar senha</h3>
+
+              @if (passwordSuccess) {
+                <p-message severity="success" [text]="passwordSuccess" styleClass="w-full mb-4" />
+              }
+              @if (passwordError) {
+                <p-message severity="error" [text]="passwordError" styleClass="w-full mb-4" />
+              }
+
+              <form [formGroup]="passwordForm" (ngSubmit)="changePassword()">
+                <div class="field">
+                  <label for="currentPassword">Senha atual</label>
+                  <p-password
+                    id="currentPassword"
+                    formControlName="currentPassword"
+                    [feedback]="false"
+                    [toggleMask]="true"
+                    styleClass="w-full"
+                    inputStyleClass="w-full"
+                  />
+                  @if (pwf['currentPassword'].invalid && pwf['currentPassword'].touched) {
+                    <small class="p-error">Senha atual é obrigatória</small>
+                  }
+                </div>
+
+                <div class="field">
+                  <label for="newPassword">Nova senha</label>
+                  <p-password
+                    id="newPassword"
+                    formControlName="newPassword"
+                    [toggleMask]="true"
+                    styleClass="w-full"
+                    inputStyleClass="w-full"
+                    promptLabel="Digite a nova senha"
+                    weakLabel="Fraca"
+                    mediumLabel="Média"
+                    strongLabel="Forte"
+                  />
+                  @if (pwf['newPassword'].invalid && pwf['newPassword'].touched) {
+                    <small class="p-error">Mínimo 8 caracteres</small>
+                  }
+                </div>
+
+                <div class="field">
+                  <label for="confirmPassword">Confirmar nova senha</label>
+                  <p-password
+                    id="confirmPassword"
+                    formControlName="confirmPassword"
+                    [feedback]="false"
+                    [toggleMask]="true"
+                    styleClass="w-full"
+                    inputStyleClass="w-full"
+                  />
+                  @if (pwf['confirmPassword'].invalid && pwf['confirmPassword'].touched) {
+                    <small class="p-error">
+                      @if (pwf['confirmPassword'].errors?.['required']) {
+                        Confirmação é obrigatória
+                      } @else if (pwf['confirmPassword'].errors?.['passwordMismatch']) {
+                        As senhas não coincidem
+                      }
+                    </small>
+                  }
+                </div>
+
+                <p-button
+                  type="submit"
+                  label="Alterar senha"
+                  [loading]="isChangingPassword()"
+                  [disabled]="passwordForm.invalid || isChangingPassword()"
+                />
+              </form>
+            </div>
+          </p-tabpanel>
+        </p-tabpanels>
+      </p-tabs>
+    </div>
+  }
+</div>

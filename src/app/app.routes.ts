@@ -1,69 +1,56 @@
 import { Routes } from '@angular/router';
+import { authGuard } from './core/auth/guards/auth.guard';
 
-const loadLayout = () => import('./features/layout/layout.component').then(m => m.LayoutComponent);
-const loadDashboard = () => import('./features/dashboard/dashboard.component').then(m => m.DashboardComponent);
-const loadBookList = () => import('./features/books/book-list/book-list.component').then(m => m.BookListComponent);
-const loadBookForm = () => import('./features/books/book-form/book-form.component').then(m => m.BookFormComponent);
-const loadBookDetail = () => import('./features/books/book-detail/book-detail.component').then(m => m.BookDetailComponent);
-const loadChapterDetail = () => import('./features/chapters/chapter-detail/chapter-detail.component').then(m => m.ChapterDetailComponent);
-const loadCharacterList = () => import('./features/characters/character-list/character-list.component').then(m => m.CharacterListComponent);
-const loadVoiceList = () => import('./features/voices/voice-list/voice-list.component').then(m => m.VoiceListComponent);
-
+/**
+ * Application Root Routes
+ * 
+ * Structure:
+ * - /auth/*       - Authentication pages (login, signup, forgot-password, profile)
+ * - /writer/*     - Writer Area module (books, chapters, characters, voices)
+ * - /social/*     - Social Network module (future)
+ * - /unauthorized - Access denied page
+ * - /             - Redirects to /writer if authenticated, /auth/login otherwise
+ */
 export const routes: Routes = [
-    {
-        path: '',
-        loadComponent: loadLayout,
-        children: [
-            {
-                path: '',
-                pathMatch: 'full',
-                title: 'Painel',
-                loadComponent: loadDashboard
-            },
-            {
-                path: 'books',
-                title: 'Livros',
-                loadComponent: loadBookList
-            },
-            {
-                path: 'books/new',
-                title: 'Novo Livro',
-                loadComponent: loadBookForm
-            },
-            {
-                path: 'books/:id',
-                title: 'Detalhes do Livro',
-                loadComponent: loadBookDetail
-            },
-            {
-                path: 'books/:id/edit',
-                title: 'Editar Livro',
-                loadComponent: loadBookForm
-            },
-            {
-                path: 'books/:id/characters',
-                title: 'Personagens do Livro',
-                loadComponent: loadCharacterList
-            },
-            {
-                path: 'chapters/:id',
-                title: 'Capítulo',
-                loadComponent: loadChapterDetail
-            },
-            {
-                path: 'characters',
-                title: 'Personagens',
-                loadComponent: loadCharacterList
-            },
-            {
-                path: 'voices',
-                title: 'Vozes',
-                loadComponent: loadVoiceList
-            }
-        ]
-    },
-    {
-        path: '**',
-        redirectTo: ''
-    }
+  // Authentication Routes (public)
+  {
+    path: 'auth',
+    loadChildren: () => import('./features/auth/auth.routes').then(m => m.AUTH_ROUTES)
+  },
+
+  // Unauthorized page
+  {
+    path: 'unauthorized',
+    loadComponent: () => import('./features/auth/unauthorized/unauthorized.component').then(m => m.UnauthorizedComponent),
+    title: 'Acesso Negado'
+  },
+
+  // Writer Module (protected)
+  {
+    path: 'writer',
+    canActivate: [authGuard],
+    loadComponent: () => import('./layouts/main-layout/main-layout.component').then(m => m.MainLayoutComponent),
+    loadChildren: () => import('./features/writer/writer.routes').then(m => m.WRITER_ROUTES)
+  },
+
+  // Social Module - Future
+  // {
+  //   path: 'social',
+  //   canActivate: [authGuard],
+  //   loadComponent: () => import('./layouts/main-layout/main-layout.component').then(m => m.MainLayoutComponent),
+  //   loadChildren: () => import('./features/social/social.routes').then(m => m.SOCIAL_ROUTES)
+  // },
+
+  // Default redirect
+  {
+    path: '',
+    pathMatch: 'full',
+    redirectTo: 'writer'
+  },
+
+  // Wildcard redirect
+  {
+    path: '**',
+    redirectTo: 'writer'
+  }
 ];
