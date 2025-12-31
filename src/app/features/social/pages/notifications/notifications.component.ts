@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
@@ -6,22 +6,9 @@ import { AvatarModule } from 'primeng/avatar';
 import { SkeletonModule } from 'primeng/skeleton';
 import { BadgeModule } from 'primeng/badge';
 import { TabsModule } from 'primeng/tabs';
+import { Subject, takeUntil } from 'rxjs';
 
-interface Notification {
-  id: string;
-  type: 'like' | 'comment' | 'follow' | 'mention' | 'achievement' | 'system';
-  message: string;
-  actor: {
-    id: string;
-    username: string;
-    displayName: string;
-    avatar: string | null;
-  } | null;
-  targetId: string | null;
-  targetType: 'post' | 'comment' | 'book' | 'chapter' | null;
-  isRead: boolean;
-  createdAt: Date;
-}
+import { NotificationService, Notification } from '../../../../core/services/notification.service';
 
 @Component({
   selector: 'app-notifications',
@@ -38,107 +25,56 @@ interface Notification {
   templateUrl: './notifications.component.html',
   styleUrl: './notifications.component.css'
 })
-export class NotificationsComponent implements OnInit {
+export class NotificationsComponent implements OnInit, OnDestroy {
+  private readonly notificationService = inject(NotificationService);
+  private readonly destroy$ = new Subject<void>();
+
   loading = signal(true);
   notifications = signal<Notification[]>([]);
-  unreadCount = signal(0);
+  hasMore = signal(false);
+  currentPage = 1;
+  readonly pageSize = 20;
+
+  // Computed values
+  unreadCount = computed(() => this.notificationService.unreadCount());
 
   ngOnInit() {
     this.loadNotifications();
   }
 
-  async loadNotifications() {
-    this.loading.set(true);
-    
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 800));
-    
-    const mockNotifications: Notification[] = [
-      {
-        id: '1',
-        type: 'like',
-        message: 'curtiu seu post',
-        actor: {
-          id: '2',
-          username: 'joao_leitor',
-          displayName: 'João Santos',
-          avatar: null
-        },
-        targetId: 'post-1',
-        targetType: 'post',
-        isRead: false,
-        createdAt: new Date(Date.now() - 300000)
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  loadNotifications(loadMore = false) {
+    if (!loadMore) {
+      this.loading.set(true);
+      this.currentPage = 1;
+    }
+
+    this.notificationService.getNotifications(this.currentPage, this.pageSize)
+      .pipe(takeUntil(this.destroy$)).subscribe({
+      next: (response) => {
+        if (loadMore) {
+          this.notifications.update(current => [...current, ...response.notifications]);
+        } else {
+          this.notifications.set(response.notifications);
+        }
+        this.hasMore.set(this.currentPage < response.pages);
+        this.loading.set(false);
       },
-      {
-        id: '2',
-        type: 'follow',
-        message: 'começou a seguir você',
-        actor: {
-          id: '3',
-          username: 'ana_books',
-          displayName: 'Ana Costa',
-          avatar: null
-        },
-        targetId: null,
-        targetType: null,
-        isRead: false,
-        createdAt: new Date(Date.now() - 1800000)
-      },
-      {
-        id: '3',
-        type: 'comment',
-        message: 'comentou no seu post',
-        actor: {
-          id: '4',
-          username: 'pedro_fantasia',
-          displayName: 'Pedro Lima',
-          avatar: null
-        },
-        targetId: 'post-2',
-        targetType: 'post',
-        isRead: true,
-        createdAt: new Date(Date.now() - 3600000)
-      },
-      {
-        id: '4',
-        type: 'achievement',
-        message: 'Você desbloqueou a conquista "Primeiro Post"!',
-        actor: null,
-        targetId: 'achievement-1',
-        targetType: null,
-        isRead: true,
-        createdAt: new Date(Date.now() - 7200000)
-      },
-      {
-        id: '5',
-        type: 'mention',
-        message: 'mencionou você em um comentário',
-        actor: {
-          id: '5',
-          username: 'carla_escritora',
-          displayName: 'Carla Mendes',
-          avatar: null
-        },
-        targetId: 'comment-5',
-        targetType: 'comment',
-        isRead: true,
-        createdAt: new Date(Date.now() - 86400000)
-      },
-      {
-        id: '6',
-        type: 'system',
-        message: 'Bem-vindo ao Livria! Complete seu perfil para ganhar 100 LIVRA.',
-        actor: null,
-        targetId: null,
-        targetType: null,
-        isRead: true,
-        createdAt: new Date(Date.now() - 172800000)
+      error: (err: Error) => {
+        console.error('[Notifications] Error loading:', err);
+        this.loading.set(false);
       }
-    ];
-    
-    this.notifications.set(mockNotifications);
-    this.unreadCount.set(mockNotifications.filter(n => !n.isRead).length);
-    this.loading.set(false);
+    });
+  }
+
+  loadMore() {
+    if (!this.hasMore()) return;
+    this.currentPage++;
+    this.loadNotifications(true);
   }
 
   getNotificationIcon(type: string): string {
@@ -184,7 +120,7 @@ export class NotificationsComponent implements OnInit {
     if (notification.targetType === 'post' && notification.targetId) {
       return ['/social/post', notification.targetId];
     }
-    if (notification.actor) {
+    if (notification.actor?.username) {
       return ['/social/profile', notification.actor.username];
     }
     return null;
@@ -192,15 +128,44 @@ export class NotificationsComponent implements OnInit {
 
   markAsRead(notification: Notification) {
     if (!notification.isRead) {
-      notification.isRead = true;
-      this.unreadCount.update(count => count - 1);
+      this.notificationService.markAsRead(notification.id).pipe(takeUntil(this.destroy$)).subscribe({
+        next: () => {
+          // Update local state
+          this.notifications.update(list => 
+            list.map(n => n.id === notification.id ? { ...n, isRead: true } : n)
+          );
+        },
+        error: (err: Error) => console.error('[Notifications] Error marking as read:', err)
+      });
     }
   }
 
   markAllAsRead() {
-    const updated = this.notifications().map(n => ({ ...n, isRead: true }));
-    this.notifications.set(updated);
-    this.unreadCount.set(0);
+    this.notificationService.markAllAsRead().pipe(takeUntil(this.destroy$)).subscribe({
+      next: () => {
+        this.notifications.update(list => list.map(n => ({ ...n, isRead: true })));
+      },
+      error: (err: Error) => console.error('[Notifications] Error marking all as read:', err)
+    });
+  }
+
+  deleteNotification(notificationId: string, event: Event) {
+    event.stopPropagation();
+    this.notificationService.deleteNotification(notificationId).pipe(takeUntil(this.destroy$)).subscribe({
+      next: () => {
+        this.notifications.update(list => list.filter(n => n.id !== notificationId));
+      },
+      error: (err: Error) => console.error('[Notifications] Error deleting:', err)
+    });
+  }
+
+  clearAll() {
+    this.notificationService.clearAll().pipe(takeUntil(this.destroy$)).subscribe({
+      next: () => {
+        this.notifications.set([]);
+      },
+      error: (err: Error) => console.error('[Notifications] Error clearing all:', err)
+    });
   }
 
   getUnreadNotifications(): Notification[] {

@@ -21,9 +21,9 @@ export class WebSocketService {
         this.socket.emit('leave:chapter', chapterId);
     }
 
-    onEvent(event: string): Observable<any> {
+    onEvent<T = any>(event: string): Observable<T> {
         return new Observable((observer) => {
-            this.socket.on(event, (data) => {
+            this.socket.on(event, (data: T) => {
                 observer.next(data);
             });
         });
