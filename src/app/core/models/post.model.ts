@@ -94,3 +94,29 @@ export interface PaginatedResponse<T> {
 export interface FeedResponse extends PaginatedResponse<Post> {}
 
 export interface ExploreResponse extends PaginatedResponse<Post> {}
+
+/**
+ * Trending post with engagement score - Sprint 7
+ */
+export interface TrendingPost extends Post {
+  engagementScore: number;
+}
+
+export interface TrendingResponse extends PaginatedResponse<TrendingPost> {}
+
+/**
+ * Post statistics - Sprint 7
+ */
+export interface PostStats {
+  likeCount: number;
+  commentCount: number;
+  shareCount: number;
+  engagementScore: number;
+}
+
+/**
+ * Share post DTO - Sprint 7
+ */
+export interface SharePostDto {
+  content?: string;
+}

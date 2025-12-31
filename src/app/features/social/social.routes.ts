@@ -80,6 +80,13 @@ export const SOCIAL_ROUTES: Routes = [
         title: 'Conversa | Livria'
       },
 
+      // Trending - Sprint 7
+      {
+        path: 'trending',
+        loadComponent: () => import('./pages/trending/trending-page.component').then(m => m.TrendingPageComponent),
+        title: 'Em Alta | Livria'
+      },
+
       // Default redirect to feed
       {
         path: '',

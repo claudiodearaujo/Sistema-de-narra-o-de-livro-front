@@ -7,7 +7,9 @@ import {
   CreatePostDto, 
   FeedResponse, 
   ExploreResponse,
-  PaginatedResponse 
+  PaginatedResponse,
+  TrendingResponse,
+  PostStats
 } from '../models/post.model';
 
 /**
@@ -134,6 +136,48 @@ export class PostService {
     return this.http.post<{ message: string }>(this.apiUrl + '/rebuild-feed', {}).pipe(
       catchError(error => {
         console.error('[PostService] Error rebuilding feed:', error);
+        throw error;
+      })
+    );
+  }
+
+  /**
+   * Share a post (quote repost) - Sprint 7
+   */
+  sharePost(postId: string, content?: string): Observable<Post> {
+    return this.http.post<Post>(`${this.apiUrl}/${postId}/share`, { content }).pipe(
+      map(post => ({ ...post, timeAgo: this.calculateTimeAgo(post.createdAt) })),
+      catchError(error => {
+        console.error('[PostService] Error sharing post:', error);
+        throw error;
+      })
+    );
+  }
+
+  /**
+   * Get trending posts (last 24h) - Sprint 7
+   */
+  getTrending(page: number = 1, limit: number = 10): Observable<TrendingResponse> {
+    const params = new HttpParams()
+      .set('page', page.toString())
+      .set('limit', limit.toString());
+
+    return this.http.get<TrendingResponse>(this.apiUrl + '/trending', { params }).pipe(
+      map(response => this.enrichPostsWithTimeAgo(response)),
+      catchError(error => {
+        console.error('[PostService] Error fetching trending:', error);
+        throw error;
+      })
+    );
+  }
+
+  /**
+   * Get post statistics - Sprint 7
+   */
+  getPostStats(postId: string): Observable<PostStats> {
+    return this.http.get<PostStats>(`${this.apiUrl}/${postId}/stats`).pipe(
+      catchError(error => {
+        console.error('[PostService] Error fetching post stats:', error);
         throw error;
       })
     );

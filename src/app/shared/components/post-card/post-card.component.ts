@@ -15,6 +15,12 @@ import { LikeService } from '../../../core/services/like.service';
 import { AuthService } from '../../../core/auth/services/auth.service';
 import { TimeAgoPipe } from '../../pipes/time-ago.pipe';
 
+// Shared Components
+import { ShareModalComponent } from '../share-modal/share-modal.component';
+import { BookUpdateCardComponent } from '../book-update-card/book-update-card.component';
+import { ChapterPreviewCardComponent } from '../chapter-preview-card/chapter-preview-card.component';
+import { AudioPreviewPlayerComponent } from '../audio-preview-player/audio-preview-player.component';
+
 /**
  * Post Card Component
  * 
@@ -31,7 +37,11 @@ import { TimeAgoPipe } from '../../pipes/time-ago.pipe';
     AvatarModule,
     MenuModule,
     TooltipModule,
-    TimeAgoPipe
+    TimeAgoPipe,
+    ShareModalComponent,
+    BookUpdateCardComponent,
+    ChapterPreviewCardComponent,
+    AudioPreviewPlayerComponent
   ],
   template: `
     <article class="post-card bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
@@ -95,8 +105,39 @@ import { TimeAgoPipe } from '../../pipes/time-ago.pipe';
         </div>
       }
 
-      <!-- Book/Chapter Preview -->
-      @if (post.book && (post.type === 'BOOK_UPDATE' || post.type === 'CHAPTER_PREVIEW')) {
+      <!-- Book/Chapter Preview - Use specialized cards based on post type -->
+      @if (post.type === 'BOOK_UPDATE' && post.book) {
+        <div class="mx-4 mt-3">
+          <app-book-update-card 
+            [book]="post.book"
+            [description]="getBookDescription()"
+            [isNewBook]="true"
+          />
+        </div>
+      }
+
+      @if (post.type === 'CHAPTER_PREVIEW' && post.book && post.chapter) {
+        <div class="mx-4 mt-3">
+          <app-chapter-preview-card 
+            [book]="post.book"
+            [chapter]="post.chapter"
+            [excerpt]="getChapterExcerpt()"
+          />
+        </div>
+      }
+
+      @if (post.type === 'AUDIO_PREVIEW' && post.book && post.chapter && post.mediaUrl) {
+        <div class="mx-4 mt-3">
+          <app-audio-preview-player 
+            [book]="post.book"
+            [chapter]="post.chapter"
+            [audioUrl]="post.mediaUrl"
+          />
+        </div>
+      }
+
+      <!-- Standard Book/Chapter Preview for other types -->
+      @if (post.book && !['BOOK_UPDATE', 'CHAPTER_PREVIEW', 'AUDIO_PREVIEW'].includes(post.type)) {
         <div class="mx-4 mt-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600">
           <div class="flex items-center gap-3">
             @if (post.book.coverUrl) {
@@ -178,12 +219,20 @@ import { TimeAgoPipe } from '../../pipes/time-ago.pipe';
             type="button"
             icon="pi pi-share-alt"
             class="p-button-text p-button-secondary flex-1 justify-center"
-            label="Compartilhar"
+            [label]="shareButtonLabel()"
             (click)="onShareClick()"
+            [disabled]="post.type === 'SHARED'"
           ></button>
         </footer>
       }
     </article>
+
+    <!-- Share Modal -->
+    <app-share-modal 
+      [post]="post"
+      [(visible)]="shareModalVisible"
+      (shared)="onPostShared($event)"
+    />
   `,
   styles: [`
     .post-card {
@@ -227,7 +276,9 @@ export class PostCardComponent {
   // State
   isLiked = signal(false);
   localLikeCount = signal(0);
+  localShareCount = signal(0);
   likeLoading = signal(false);
+  shareModalVisible = false;
 
   // Computed
   likeButtonLabel = computed(() => {
@@ -238,6 +289,11 @@ export class PostCardComponent {
   commentButtonLabel = computed(() => {
     const count = this.post?.commentCount || 0;
     return count > 0 ? `Comentar (${count})` : 'Comentar';
+  });
+
+  shareButtonLabel = computed(() => {
+    const count = this.localShareCount();
+    return count > 0 ? `Compartilhar (${count})` : 'Compartilhar';
   });
 
   menuItems = computed((): MenuItem[] => {
@@ -264,6 +320,7 @@ export class PostCardComponent {
     // Initialize local state from post data
     this.isLiked.set(this.post?.isLiked || false);
     this.localLikeCount.set(this.post?.likeCount || 0);
+    this.localShareCount.set(this.post?.shareCount || 0);
   }
 
   ngOnChanges(): void {
@@ -271,6 +328,7 @@ export class PostCardComponent {
     if (this.post) {
       this.isLiked.set(this.post.isLiked || false);
       this.localLikeCount.set(this.post.likeCount || 0);
+      this.localShareCount.set(this.post.shareCount || 0);
     }
   }
 
@@ -316,8 +374,17 @@ export class PostCardComponent {
   }
 
   onShareClick(): void {
+    // Cannot share a post that is already a share
+    if (this.post.type === 'SHARED') {
+      return;
+    }
+    this.shareModalVisible = true;
+  }
+
+  onPostShared(sharedPost: Post): void {
+    // Update local share count
+    this.localShareCount.update(count => count + 1);
     this.shared.emit(this.post.id);
-    // TODO: Open share modal
   }
 
   onEditClick(): void {
@@ -339,5 +406,24 @@ export class PostCardComponent {
   copyLink(): void {
     const url = `${window.location.origin}/social/post/${this.post.id}`;
     navigator.clipboard.writeText(url);
+  }
+
+  // Helper methods for preview cards
+  getBookDescription(): string {
+    // Extract description from post content if it's a book update
+    if (this.post.type === 'BOOK_UPDATE') {
+      const lines = this.post.content.split('\n\n');
+      return lines.length > 1 ? lines[1] : '';
+    }
+    return '';
+  }
+
+  getChapterExcerpt(): string {
+    // Extract excerpt from post content if it's a chapter preview
+    if (this.post.type === 'CHAPTER_PREVIEW') {
+      const match = this.post.content.match(/"([^"]+)"/);
+      return match ? match[1] : '';
+    }
+    return '';
   }
 }

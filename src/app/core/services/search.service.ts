@@ -95,9 +95,9 @@ export interface SearchSuggestionsResponse {
 }
 
 /**
- * Trending response
+ * Trending tags response
  */
-export interface TrendingResponse {
+export interface TrendingTagsResponse {
   trending: string[];
 }
 
@@ -166,8 +166,8 @@ export class SearchService {
   /**
    * Get trending searches
    */
-  getTrending(): Observable<TrendingResponse> {
-    return this.http.get<TrendingResponse>(`${this.apiUrl}/trending`);
+  getTrending(): Observable<TrendingTagsResponse> {
+    return this.http.get<TrendingTagsResponse>(`${this.apiUrl}/trending`);
   }
 
   /**

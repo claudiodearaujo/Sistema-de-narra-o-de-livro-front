@@ -1,0 +1,101 @@
+import { Component, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
+
+// PrimeNG
+import { ButtonModule } from 'primeng/button';
+import { TagModule } from 'primeng/tag';
+
+// Core
+import { Post, PostBook } from '../../../core/models/post.model';
+
+/**
+ * Book Update Card Component - Sprint 7
+ * 
+ * Displays a book update post with cover, title, and action button.
+ */
+@Component({
+  selector: 'app-book-update-card',
+  standalone: true,
+  imports: [
+    CommonModule,
+    RouterLink,
+    ButtonModule,
+    TagModule
+  ],
+  template: `
+    <div class="book-update-card bg-gradient-to-r from-primary-50 to-primary-100 dark:from-primary-900/30 dark:to-primary-800/30 rounded-xl p-4 border border-primary-200 dark:border-primary-700">
+      <div class="flex items-start gap-4">
+        <!-- Book Cover -->
+        @if (book?.coverUrl) {
+          <div class="shrink-0">
+            <img 
+              [src]="book!.coverUrl" 
+              [alt]="book!.title"
+              class="w-20 h-28 object-cover rounded-lg shadow-md"
+            />
+          </div>
+        } @else {
+          <div class="w-20 h-28 bg-gray-200 dark:bg-gray-700 rounded-lg flex items-center justify-center shrink-0">
+            <i class="pi pi-book text-2xl text-gray-400"></i>
+          </div>
+        }
+
+        <!-- Book Info -->
+        <div class="flex-1 min-w-0">
+          <p-tag 
+            [value]="isNewBook ? 'Novo Livro 📚' : 'Atualização 📝'" 
+            severity="success"
+            styleClass="mb-2"
+          />
+          
+          <h3 class="font-bold text-lg text-gray-900 dark:text-white truncate mb-1">
+            {{ book?.title || 'Livro' }}
+          </h3>
+          
+          <p class="text-sm text-gray-600 dark:text-gray-300 mb-2">
+            por {{ book?.author || 'Autor desconhecido' }}
+          </p>
+
+          @if (description) {
+            <p class="text-sm text-gray-500 dark:text-gray-400 line-clamp-2 mb-3">
+              {{ description }}
+            </p>
+          }
+
+          <a 
+            [routerLink]="['/books', book?.id]"
+            pButton
+            type="button"
+            label="Ver livro"
+            icon="pi pi-arrow-right"
+            iconPos="right"
+            class="p-button-sm"
+          ></a>
+        </div>
+      </div>
+    </div>
+  `,
+  styles: [`
+    .book-update-card {
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .book-update-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .line-clamp-2 {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+  `]
+})
+export class BookUpdateCardComponent {
+  @Input() book: PostBook | undefined;
+  @Input() description: string = '';
+  @Input() isNewBook: boolean = true;
+}

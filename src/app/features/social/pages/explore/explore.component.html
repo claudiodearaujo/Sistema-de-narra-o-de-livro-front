@@ -12,6 +12,11 @@
     <p-tabpanels>
       <!-- Trending Tab -->
       <p-tabpanel value="0">
+        <!-- Trending Section - Sprint 7 -->
+        <div class="section mb-6">
+          <app-trending-section [limit]="5" />
+        </div>
+
         @if (loading()) {
           <div class="trending-skeleton">
             @for (i of [1,2,3,4,5]; track i) {

@@ -15,6 +15,7 @@ import { PostService } from '../../../../core/services/post.service';
 import { Post } from '../../../../core/models/post.model';
 import { TimeAgoPipe } from '../../../../shared/pipes/time-ago.pipe';
 import { InfiniteScrollDirective } from '../../../../shared/directives/infinite-scroll.directive';
+import { TrendingSectionComponent } from '../../../../shared/components/trending-section/trending-section.component';
 
 interface TrendingTopic {
   tag: string;
@@ -54,7 +55,8 @@ interface FeaturedBook {
     ChipModule,
     ToastModule,
     TimeAgoPipe,
-    InfiniteScrollDirective
+    InfiniteScrollDirective,
+    TrendingSectionComponent
   ],
   providers: [MessageService],
   templateUrl: './explore.component.html',
