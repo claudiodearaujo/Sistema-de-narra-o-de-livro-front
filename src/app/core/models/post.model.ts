@@ -65,6 +65,7 @@ export interface Post {
   
   // Computed
   isLiked?: boolean;
+  isBookmarked?: boolean;
   
   // UI helpers (calculated on frontend)
   timeAgo?: string;

@@ -12,8 +12,8 @@
   } @else if (profile(); as p) {
     <!-- Banner -->
     <div class="profile-banner">
-      @if (p.banner) {
-        <img [src]="p.banner" alt="Banner">
+      @if (p.bannerUrl) {
+        <img [src]="p.bannerUrl" alt="Banner">
       }
     </div>
     
@@ -22,21 +22,25 @@
       <div class="avatar-section">
         <p-avatar 
           [image]="p.avatar || undefined"
-          [label]="p.avatar ? undefined : p.displayName.charAt(0)"
+          [label]="p.avatar ? undefined : p.name.charAt(0)"
           size="xlarge"
           shape="circle"
           styleClass="profile-avatar">
         </p-avatar>
+        @if (p.isVerified) {
+          <i class="pi pi-verified verified-badge" title="Verificado"></i>
+        }
       </div>
       
       <div class="profile-actions">
-        @if (p.isOwnProfile) {
-          <p-button label="Editar Perfil" severity="secondary" outlined="true"></p-button>
+        @if (isOwnProfile()) {
+          <p-button label="Editar Perfil" severity="secondary" outlined="true" routerLink="/settings/profile"></p-button>
         } @else {
           <p-button 
-            [label]="p.isFollowing ? 'Seguindo' : 'Seguir'"
-            [severity]="p.isFollowing ? 'secondary' : 'primary'"
-            [outlined]="p.isFollowing"
+            [label]="isFollowing() ? 'Seguindo' : 'Seguir'"
+            [severity]="isFollowing() ? 'secondary' : 'primary'"
+            [outlined]="isFollowing()"
+            [loading]="loadingFollow()"
             (onClick)="toggleFollow()">
           </p-button>
           <p-button icon="pi pi-envelope" severity="secondary" outlined="true" [routerLink]="['/social/messages']"></p-button>
@@ -46,8 +50,10 @@
     
     <!-- Profile Info -->
     <div class="profile-info">
-      <h1 class="display-name">{{ p.displayName }}</h1>
-      <span class="username">&#64;{{ p.username }}</span>
+      <h1 class="display-name">{{ p.name }}</h1>
+      @if (p.username) {
+        <span class="username">&#64;{{ p.username }}</span>
+      }
       
       @if (p.bio) {
         <p class="bio">{{ p.bio }}</p>
@@ -68,25 +74,25 @@
         }
         <span class="meta-item">
           <i class="pi pi-calendar"></i>
-          Entrou em {{ formatDate(p.joinedAt) }}
+          Entrou em {{ formatDate(p.createdAt) }}
         </span>
       </div>
       
       <div class="stats">
         <button class="stat-item" (click)="openFollowers()">
-          <strong>{{ formatNumber(p.followersCount) }}</strong>
+          <strong>{{ formatNumber(p.stats.followerCount) }}</strong>
           <span>Seguidores</span>
         </button>
         <button class="stat-item" (click)="openFollowing()">
-          <strong>{{ formatNumber(p.followingCount) }}</strong>
+          <strong>{{ formatNumber(p.stats.followingCount) }}</strong>
           <span>Seguindo</span>
         </button>
         <span class="stat-item">
-          <strong>{{ p.postsCount }}</strong>
+          <strong>{{ p.stats.postCount }}</strong>
           <span>Posts</span>
         </span>
         <span class="stat-item">
-          <strong>{{ p.booksCount }}</strong>
+          <strong>{{ p.stats.bookCount }}</strong>
           <span>Livros</span>
         </span>
       </div>
@@ -94,7 +100,7 @@
       <!-- Gamification -->
       <div class="gamification-section">
         <div class="level-badge">
-          <span class="level-number">{{ p.level }}</span>
+          <span class="level-number">{{ p.stats.level }}</span>
           <span class="level-label">Nível</span>
         </div>
         <div class="xp-bar">
@@ -102,31 +108,16 @@
         </div>
         <div class="livra-balance">
           <i class="pi pi-wallet"></i>
-          <span>{{ formatNumber(p.livraBalance) }} LIVRA</span>
+          <span>{{ formatNumber(p.stats.livraBalance) }} LIVRA</span>
         </div>
       </div>
-      
-      <!-- Achievements -->
-      @if (p.achievements.length > 0) {
-        <div class="achievements-section">
-          <h3>Conquistas</h3>
-          <div class="achievements-list">
-            @for (achievement of p.achievements; track achievement.id) {
-              <div class="achievement-badge" [title]="achievement.name">
-                <i [class]="'pi ' + achievement.icon"></i>
-              </div>
-            }
-          </div>
-        </div>
-      }
     </div>
     
     <!-- Tabs -->
     <p-tabs value="0">
       <p-tablist>
-        <p-tab value="0">Posts</p-tab>
-        <p-tab value="1">Livros</p-tab>
-        <p-tab value="2">Curtidas</p-tab>
+        <p-tab value="0" (click)="onTabChange('posts')">Posts</p-tab>
+        <p-tab value="1" (click)="onTabChange('books')">Livros</p-tab>
       </p-tablist>
       <p-tabpanels>
         <p-tabpanel value="0">
@@ -134,30 +125,76 @@
             @for (post of posts(); track post.id) {
               <a [routerLink]="['/social/post', post.id]" class="post-item">
                 <p class="post-content">{{ post.content }}</p>
+                @if (post.mediaUrl) {
+                  <img [src]="post.mediaUrl" alt="Post media" class="post-media">
+                }
                 <div class="post-stats">
-                  <span><i class="pi pi-heart"></i> {{ post.likesCount }}</span>
-                  <span><i class="pi pi-comment"></i> {{ post.commentsCount }}</span>
+                  <span><i class="pi pi-heart"></i> {{ post.likeCount }}</span>
+                  <span><i class="pi pi-comment"></i> {{ post.commentCount }}</span>
                 </div>
               </a>
             } @empty {
-              <div class="empty-posts">
-                <p>Nenhum post ainda.</p>
+              @if (!loadingPosts()) {
+                <div class="empty-posts">
+                  <p>Nenhum post ainda.</p>
+                </div>
+              }
+            }
+            
+            @if (loadingPosts()) {
+              <div class="loading-more">
+                <i class="pi pi-spin pi-spinner"></i>
+                Carregando...
               </div>
+            }
+            
+            @if (hasMorePosts() && !loadingPosts() && posts().length > 0) {
+              <button class="load-more-btn" pButton label="Carregar mais" (click)="loadMorePosts()"></button>
             }
           </div>
         </p-tabpanel>
         
         <p-tabpanel value="1">
-          <div class="books-placeholder">
-            <i class="pi pi-book"></i>
-            <p>Livros do autor aparecerão aqui.</p>
-          </div>
-        </p-tabpanel>
-        
-        <p-tabpanel value="2">
-          <div class="likes-placeholder">
-            <i class="pi pi-heart"></i>
-            <p>Posts curtidos aparecerão aqui.</p>
+          <div class="books-list">
+            @for (book of books(); track book.id) {
+              <a [routerLink]="['/books', book.id]" class="book-item">
+                @if (book.coverUrl) {
+                  <img [src]="book.coverUrl" alt="Capa" class="book-cover">
+                } @else {
+                  <div class="book-cover-placeholder">
+                    <i class="pi pi-book"></i>
+                  </div>
+                }
+                <div class="book-info">
+                  <h3 class="book-title">{{ book.title }}</h3>
+                  @if (book.genre) {
+                    <span class="book-genre">{{ book.genre }}</span>
+                  }
+                  @if (book.description) {
+                    <p class="book-description">{{ book.description }}</p>
+                  }
+                  <span class="book-chapters">{{ book.chapterCount }} capítulos</span>
+                </div>
+              </a>
+            } @empty {
+              @if (!loadingBooks()) {
+                <div class="empty-books">
+                  <i class="pi pi-book"></i>
+                  <p>Nenhum livro ainda.</p>
+                </div>
+              }
+            }
+            
+            @if (loadingBooks()) {
+              <div class="loading-more">
+                <i class="pi pi-spin pi-spinner"></i>
+                Carregando...
+              </div>
+            }
+            
+            @if (hasMoreBooks() && !loadingBooks() && books().length > 0) {
+              <button class="load-more-btn" pButton label="Carregar mais" (click)="loadMoreBooks()"></button>
+            }
           </div>
         </p-tabpanel>
       </p-tabpanels>

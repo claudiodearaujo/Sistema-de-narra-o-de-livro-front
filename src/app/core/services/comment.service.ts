@@ -23,6 +23,7 @@ export interface Comment {
   content: string;
   parentId: string | null;
   likeCount: number;
+  isLiked?: boolean;
   createdAt: Date;
   updatedAt: Date;
   user: CommentUser;

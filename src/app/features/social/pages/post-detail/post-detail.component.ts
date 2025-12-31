@@ -1,7 +1,8 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { Subject, takeUntil, forkJoin } from 'rxjs';
 import { ButtonModule } from 'primeng/button';
 import { AvatarModule } from 'primeng/avatar';
 import { TextareaModule } from 'primeng/textarea';
@@ -9,36 +10,10 @@ import { SkeletonModule } from 'primeng/skeleton';
 import { MenuModule } from 'primeng/menu';
 import { MenuItem } from 'primeng/api';
 
-interface Author {
-  id: string;
-  username: string;
-  displayName: string;
-  avatar: string | null;
-}
-
-interface Comment {
-  id: string;
-  content: string;
-  author: Author;
-  likesCount: number;
-  isLiked: boolean;
-  createdAt: Date;
-  replies: Comment[];
-}
-
-interface Post {
-  id: string;
-  content: string;
-  imageUrl: string | null;
-  author: Author;
-  likesCount: number;
-  commentsCount: number;
-  sharesCount: number;
-  isLiked: boolean;
-  isBookmarked: boolean;
-  createdAt: Date;
-  comments: Comment[];
-}
+import { PostService } from '../../../../core/services/post.service';
+import { Post } from '../../../../core/models/post.model';
+import { CommentService, Comment } from '../../../../core/services/comment.service';
+import { LikeService } from '../../../../core/services/like.service';
 
 @Component({
   selector: 'app-post-detail',
@@ -56,102 +31,65 @@ interface Post {
   templateUrl: './post-detail.component.html',
   styleUrl: './post-detail.component.css'
 })
-export class PostDetailComponent implements OnInit {
+export class PostDetailComponent implements OnInit, OnDestroy {
+  private readonly route = inject(ActivatedRoute);
+  private readonly postService = inject(PostService);
+  private readonly commentService = inject(CommentService);
+  private readonly likeService = inject(LikeService);
+  private readonly destroy$ = new Subject<void>();
+
   loading = signal(true);
   post = signal<Post | null>(null);
+  comments = signal<Comment[]>([]);
   commentText = signal('');
   replyingTo = signal<string | null>(null);
+  replyText = signal('');
+  submittingComment = signal(false);
+  likingPost = signal(false);
+  likingComments = signal<Set<string>>(new Set());
   
   menuItems: MenuItem[] = [
-    { label: 'Compartilhar', icon: 'pi pi-share-alt' },
-    { label: 'Salvar', icon: 'pi pi-bookmark' },
-    { label: 'Denunciar', icon: 'pi pi-flag' }
+    { label: 'Compartilhar', icon: 'pi pi-share-alt', command: () => this.sharePost() },
+    { label: 'Salvar', icon: 'pi pi-bookmark', command: () => this.toggleBookmark() },
+    { separator: true },
+    { label: 'Denunciar', icon: 'pi pi-flag', command: () => this.reportPost() }
   ];
 
-  constructor(private route: ActivatedRoute) {}
-
   ngOnInit() {
-    this.route.params.subscribe(params => {
+    this.route.params.pipe(takeUntil(this.destroy$)).subscribe(params => {
       const postId = params['id'];
       this.loadPost(postId);
     });
   }
 
-  async loadPost(postId: string) {
-    this.loading.set(true);
-    
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 800));
-    
-    this.post.set({
-      id: postId,
-      content: 'Acabei de terminar de ler "O Nome do Vento" e estou completamente apaixonada! A forma como Patrick Rothfuss constrói o universo e desenvolve o personagem de Kvothe é simplesmente magistral. Alguém mais aqui é fã da Crônica do Matador do Rei?',
-      imageUrl: null,
-      author: {
-        id: '1',
-        username: 'maria_escritora',
-        displayName: 'Maria Silva',
-        avatar: null
-      },
-      likesCount: 156,
-      commentsCount: 23,
-      sharesCount: 12,
-      isLiked: false,
-      isBookmarked: false,
-      createdAt: new Date(Date.now() - 3600000),
-      comments: [
-        {
-          id: '1',
-          content: 'Também amo esse livro! O segundo volume é ainda melhor na minha opinião.',
-          author: {
-            id: '2',
-            username: 'joao_leitor',
-            displayName: 'João Santos',
-            avatar: null
-          },
-          likesCount: 12,
-          isLiked: false,
-          createdAt: new Date(Date.now() - 1800000),
-          replies: [
-            {
-              id: '1-1',
-              content: 'Concordo! "O Temor do Sábio" é incrível.',
-              author: {
-                id: '3',
-                username: 'ana_books',
-                displayName: 'Ana Costa',
-                avatar: null
-              },
-              likesCount: 5,
-              isLiked: false,
-              createdAt: new Date(Date.now() - 900000),
-              replies: []
-            }
-          ]
-        },
-        {
-          id: '2',
-          content: 'Ainda estou esperando o terceiro livro... 😅',
-          author: {
-            id: '4',
-            username: 'pedro_fantasia',
-            displayName: 'Pedro Lima',
-            avatar: null
-          },
-          likesCount: 45,
-          isLiked: true,
-          createdAt: new Date(Date.now() - 600000),
-          replies: []
-        }
-      ]
-    });
-    
-    this.loading.set(false);
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
-  formatTimeAgo(date: Date): string {
+  loadPost(postId: string) {
+    this.loading.set(true);
+    
+    forkJoin({
+      post: this.postService.getPostById(postId),
+      comments: this.commentService.getComments(postId)
+    }).pipe(takeUntil(this.destroy$)).subscribe({
+      next: ({ post, comments }) => {
+        this.post.set(post);
+        this.comments.set(comments.comments);
+        this.loading.set(false);
+      },
+      error: (err) => {
+        console.error('Failed to load post:', err);
+        this.loading.set(false);
+      }
+    });
+  }
+
+  formatTimeAgo(date: Date | string): string {
+    const d = typeof date === 'string' ? new Date(date) : date;
     const now = new Date();
-    const diffMs = now.getTime() - date.getTime();
+    const diffMs = now.getTime() - d.getTime();
     const diffMins = Math.floor(diffMs / 60000);
     const diffHours = Math.floor(diffMs / 3600000);
     const diffDays = Math.floor(diffMs / 86400000);
@@ -161,52 +99,160 @@ export class PostDetailComponent implements OnInit {
     if (diffHours < 24) return `${diffHours}h`;
     if (diffDays < 7) return `${diffDays}d`;
     
-    return date.toLocaleDateString('pt-BR');
+    return d.toLocaleDateString('pt-BR');
   }
 
   toggleLike() {
     const p = this.post();
-    if (p) {
-      this.post.set({
-        ...p,
-        isLiked: !p.isLiked,
-        likesCount: p.isLiked ? p.likesCount - 1 : p.likesCount + 1
-      });
-    }
+    if (!p || this.likingPost()) return;
+    
+    this.likingPost.set(true);
+    
+    this.likeService.toggleLike(p.id).pipe(takeUntil(this.destroy$)).subscribe({
+      next: (response) => {
+        this.post.set({
+          ...p,
+          isLiked: response.liked,
+          likeCount: response.likeCount
+        });
+        this.likingPost.set(false);
+      },
+      error: () => this.likingPost.set(false)
+    });
   }
 
   toggleBookmark() {
     const p = this.post();
-    if (p) {
-      this.post.set({
-        ...p,
-        isBookmarked: !p.isBookmarked
-      });
-    }
+    if (!p) return;
+    
+    // TODO: Implement bookmark service
+    this.post.set({
+      ...p,
+      isBookmarked: !p.isBookmarked
+    });
   }
 
   toggleCommentLike(comment: Comment) {
-    comment.isLiked = !comment.isLiked;
-    comment.likesCount += comment.isLiked ? 1 : -1;
+    const likingSet = new Set(this.likingComments());
+    if (likingSet.has(comment.id)) return;
+    
+    likingSet.add(comment.id);
+    this.likingComments.set(likingSet);
+    
+    this.commentService.toggleCommentLike(comment.id).pipe(takeUntil(this.destroy$)).subscribe({
+      next: (response) => {
+        this.comments.update(comments => 
+          comments.map(c => {
+            if (c.id === comment.id) {
+              return {
+                ...c,
+                isLiked: response.liked,
+                likeCount: response.likeCount
+              };
+            }
+            // Check replies
+            if (c.replies) {
+              return {
+                ...c,
+                replies: c.replies.map(r => 
+                  r.id === comment.id 
+                    ? { ...r, isLiked: response.liked, likeCount: response.likeCount }
+                    : r
+                )
+              };
+            }
+            return c;
+          })
+        );
+        
+        const newSet = new Set(this.likingComments());
+        newSet.delete(comment.id);
+        this.likingComments.set(newSet);
+      },
+      error: () => {
+        const newSet = new Set(this.likingComments());
+        newSet.delete(comment.id);
+        this.likingComments.set(newSet);
+      }
+    });
   }
 
   startReply(commentId: string) {
     this.replyingTo.set(commentId);
+    this.replyText.set('');
   }
 
   cancelReply() {
     this.replyingTo.set(null);
-    this.commentText.set('');
+    this.replyText.set('');
   }
 
   submitComment() {
-    if (!this.commentText().trim()) return;
+    const p = this.post();
+    if (!this.commentText().trim() || !p || this.submittingComment()) return;
     
-    // TODO: Submit comment to API
-    console.log('Submitting comment:', this.commentText(), 'replyingTo:', this.replyingTo());
+    this.submittingComment.set(true);
     
-    this.commentText.set('');
-    this.replyingTo.set(null);
+    this.commentService.createComment(p.id, { content: this.commentText() }).pipe(takeUntil(this.destroy$)).subscribe({
+      next: (newComment) => {
+        this.comments.update(comments => [newComment, ...comments]);
+        this.post.set({
+          ...p,
+          commentCount: p.commentCount + 1
+        });
+        this.commentText.set('');
+        this.submittingComment.set(false);
+      },
+      error: () => this.submittingComment.set(false)
+    });
+  }
+
+  submitReply(parentId: string) {
+    const p = this.post();
+    if (!this.replyText().trim() || !p || this.submittingComment()) return;
+    
+    this.submittingComment.set(true);
+    
+    this.commentService.createComment(p.id, { content: this.replyText(), parentId }).pipe(takeUntil(this.destroy$)).subscribe({
+      next: (newReply: Comment) => {
+        this.comments.update(comments => 
+          comments.map(c => {
+            if (c.id === parentId) {
+              return {
+                ...c,
+                replies: [...(c.replies || []), newReply]
+              };
+            }
+            return c;
+          })
+        );
+        this.replyingTo.set(null);
+        this.replyText.set('');
+        this.submittingComment.set(false);
+      },
+      error: () => this.submittingComment.set(false)
+    });
+  }
+
+  sharePost() {
+    const p = this.post();
+    if (!p) return;
+    
+    if (navigator.share) {
+      navigator.share({
+        title: 'Post de ' + p.user.name,
+        text: p.content.substring(0, 100),
+        url: window.location.href
+      });
+    } else {
+      navigator.clipboard.writeText(window.location.href);
+      // TODO: Show toast notification
+    }
+  }
+
+  reportPost() {
+    // TODO: Implement report functionality
+    console.log('Report post');
   }
 
   goBack() {

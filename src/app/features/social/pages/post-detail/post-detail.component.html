@@ -26,24 +26,25 @@
     <div class="post-card">
       <div class="post-header">
         <p-avatar 
-          [image]="p.author.avatar || undefined"
-          [label]="p.author.avatar ? undefined : p.author.displayName.charAt(0)"
+          [image]="p.user.avatar || undefined"
+          [label]="p.user.avatar ? undefined : p.user.name.charAt(0)"
           size="large"
           shape="circle">
         </p-avatar>
         <div class="post-user-info">
-          <a [routerLink]="['/social/profile', p.author.username]" class="user-name">
-            {{ p.author.displayName }}
+          <a [routerLink]="['/social/profile', p.user.username]" class="user-name">
+            {{ p.user.name }}
           </a>
-          <span class="user-handle">&#64;{{ p.author.username }}</span>
+          <span class="user-handle">&#64;{{ p.user.username }}</span>
         </div>
-        <p-button icon="pi pi-ellipsis-h" [text]="true" severity="secondary"></p-button>
+        <p-button icon="pi pi-ellipsis-h" [text]="true" severity="secondary" (onClick)="menu.toggle($event)"></p-button>
+        <p-menu #menu [model]="menuItems" [popup]="true"></p-menu>
       </div>
       
       <div class="post-content">
         <p>{{ p.content }}</p>
-        @if (p.imageUrl) {
-          <img [src]="p.imageUrl" [alt]="'Imagem do post'" class="post-image">
+        @if (p.mediaUrl) {
+          <img [src]="p.mediaUrl" [alt]="'Imagem do post'" class="post-image">
         }
       </div>
       
@@ -52,9 +53,9 @@
       </div>
       
       <div class="post-metrics">
-        <span><strong>{{ p.likesCount }}</strong> curtidas</span>
-        <span><strong>{{ p.commentsCount }}</strong> comentários</span>
-        <span><strong>{{ p.sharesCount }}</strong> compartilhamentos</span>
+        <span><strong>{{ p.likeCount }}</strong> curtidas</span>
+        <span><strong>{{ p.commentCount }}</strong> comentários</span>
+        <span><strong>{{ p.shareCount }}</strong> compartilhamentos</span>
       </div>
       
       <div class="post-actions">
@@ -67,12 +68,14 @@
           [icon]="p.isLiked ? 'pi pi-heart-fill' : 'pi pi-heart'" 
           [text]="true" 
           [severity]="p.isLiked ? 'danger' : 'secondary'"
+          [loading]="likingPost()"
           (onClick)="toggleLike()">
         </p-button>
         <p-button 
           icon="pi pi-share-alt" 
           [text]="true" 
-          severity="secondary">
+          severity="secondary"
+          (onClick)="sharePost()">
         </p-button>
         <p-button 
           [icon]="p.isBookmarked ? 'pi pi-bookmark-fill' : 'pi pi-bookmark'" 
@@ -107,6 +110,7 @@
       <p-button 
         icon="pi pi-send" 
         [disabled]="!commentText().trim()"
+        [loading]="submittingComment()"
         (onClick)="submitComment()">
       </p-button>
     </div>
@@ -115,18 +119,18 @@
     <div class="comments-section">
       <h3>Comentários</h3>
       
-      @for (comment of p.comments; track comment.id) {
+      @for (comment of comments(); track comment.id) {
         <div class="comment-card">
           <p-avatar 
-            [image]="comment.author.avatar || undefined"
-            [label]="comment.author.avatar ? undefined : comment.author.displayName.charAt(0)"
+            [image]="comment.user.avatar || undefined"
+            [label]="comment.user.avatar ? undefined : comment.user.name.charAt(0)"
             shape="circle">
           </p-avatar>
           
           <div class="comment-body">
             <div class="comment-header">
-              <a [routerLink]="['/social/profile', comment.author.username]" class="comment-author">
-                {{ comment.author.displayName }}
+              <a [routerLink]="['/social/profile', comment.user.username]" class="comment-author">
+                {{ comment.user.name }}
               </a>
               <span class="comment-time">{{ formatTimeAgo(comment.createdAt) }}</span>
             </div>
@@ -137,9 +141,10 @@
               <button 
                 class="action-btn" 
                 [class.liked]="comment.isLiked"
+                [disabled]="likingComments().has(comment.id)"
                 (click)="toggleCommentLike(comment)">
                 <i [class]="comment.isLiked ? 'pi pi-heart-fill' : 'pi pi-heart'"></i>
-                {{ comment.likesCount }}
+                {{ comment.likeCount }}
               </button>
               <button class="action-btn" (click)="startReply(comment.id)">
                 <i class="pi pi-reply"></i>
@@ -147,22 +152,44 @@
               </button>
             </div>
             
+            <!-- Reply Input -->
+            @if (replyingTo() === comment.id) {
+              <div class="reply-composer">
+                <textarea 
+                  pInputTextarea 
+                  [(ngModel)]="replyText"
+                  placeholder="Escreva sua resposta..."
+                  [autoResize]="true"
+                  rows="1">
+                </textarea>
+                <div class="reply-actions">
+                  <p-button label="Cancelar" [text]="true" severity="secondary" (onClick)="cancelReply()"></p-button>
+                  <p-button 
+                    label="Responder" 
+                    [disabled]="!replyText().trim()"
+                    [loading]="submittingComment()"
+                    (onClick)="submitReply(comment.id)">
+                  </p-button>
+                </div>
+              </div>
+            }
+            
             <!-- Replies -->
-            @if (comment.replies.length > 0) {
+            @if (comment.replies && comment.replies.length > 0) {
               <div class="replies-list">
                 @for (reply of comment.replies; track reply.id) {
                   <div class="reply-card">
                     <p-avatar 
-                      [image]="reply.author.avatar || undefined"
-                      [label]="reply.author.avatar ? undefined : reply.author.displayName.charAt(0)"
+                      [image]="reply.user.avatar || undefined"
+                      [label]="reply.user.avatar ? undefined : reply.user.name.charAt(0)"
                       size="normal"
                       shape="circle">
                     </p-avatar>
                     
                     <div class="reply-body">
                       <div class="comment-header">
-                        <a [routerLink]="['/social/profile', reply.author.username]" class="comment-author">
-                          {{ reply.author.displayName }}
+                        <a [routerLink]="['/social/profile', reply.user.username]" class="comment-author">
+                          {{ reply.user.name }}
                         </a>
                         <span class="comment-time">{{ formatTimeAgo(reply.createdAt) }}</span>
                       </div>
@@ -171,9 +198,10 @@
                         <button 
                           class="action-btn" 
                           [class.liked]="reply.isLiked"
+                          [disabled]="likingComments().has(reply.id)"
                           (click)="toggleCommentLike(reply)">
                           <i [class]="reply.isLiked ? 'pi pi-heart-fill' : 'pi pi-heart'"></i>
-                          {{ reply.likesCount }}
+                          {{ reply.likeCount }}
                         </button>
                       </div>
                     </div>
@@ -185,6 +213,7 @@
         </div>
       } @empty {
         <div class="no-comments">
+          <i class="pi pi-comments"></i>
           <p>Seja o primeiro a comentar!</p>
         </div>
       }
