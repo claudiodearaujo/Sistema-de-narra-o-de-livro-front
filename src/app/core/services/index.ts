@@ -4,6 +4,7 @@ export * from './comment.service';
 export * from './custom-voice.service';
 export * from './follow.service';
 export * from './like.service';
+export * from './message.service';
 export * from './narration.service';
 export * from './notification.service';
 export * from './post.service';

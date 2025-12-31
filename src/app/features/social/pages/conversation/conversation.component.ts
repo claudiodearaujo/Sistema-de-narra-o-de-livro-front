@@ -1,17 +1,35 @@
-import { Component, signal, OnInit, ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
+import { Component, signal, OnInit, OnDestroy, ViewChild, ElementRef, AfterViewChecked, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { Subject, takeUntil, debounceTime, distinctUntilChanged } from 'rxjs';
 
 // PrimeNG
 import { ButtonModule } from 'primeng/button';
 import { AvatarModule } from 'primeng/avatar';
 import { InputTextModule } from 'primeng/inputtext';
+import { MessageModule } from 'primeng/message';
+import { SkeletonModule } from 'primeng/skeleton';
+
+import { MessageService, Message, ConversationParticipant } from '../../../../core/services/message.service';
+import { WebSocketService } from '../../../../core/services/websocket.service';
+import { AuthService } from '../../../../core/auth/services/auth.service';
+
+/**
+ * Formatted message for display
+ */
+interface DisplayMessage {
+  id: string;
+  content: string;
+  isMe: boolean;
+  time: string;
+  isRead: boolean;
+}
 
 /**
  * Conversation Component
  * 
- * Direct message conversation between two users.
+ * Direct message conversation between two users with real-time updates.
  */
 @Component({
   selector: 'app-conversation',
@@ -21,29 +39,99 @@ import { InputTextModule } from 'primeng/inputtext';
     FormsModule,
     ButtonModule,
     AvatarModule,
-    InputTextModule
+    InputTextModule,
+    MessageModule,
+    SkeletonModule
   ],
   templateUrl: './conversation.component.html',
   styleUrl: './conversation.component.css'
 })
-export class ConversationComponent implements OnInit, AfterViewChecked {
+export class ConversationComponent implements OnInit, OnDestroy, AfterViewChecked {
   @ViewChild('messagesContainer') private messagesContainer!: ElementRef;
+  
+  private readonly messageService = inject(MessageService);
+  private readonly wsService = inject(WebSocketService);
+  private readonly authService = inject(AuthService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  
+  private readonly destroy$ = new Subject<void>();
+  private readonly typing$ = new Subject<string>();
 
   loading = signal(true);
-  otherUser = signal<any>(null);
-  messages = signal<any[]>([]);
+  error = signal<string | null>(null);
+  sending = signal(false);
+  loadingMore = signal(false);
+  
+  participant = signal<ConversationParticipant | null>(null);
+  messages = signal<Message[]>([]);
   newMessage = '';
   
+  page = signal(1);
+  hasMore = signal(false);
+  
   private shouldScroll = false;
+  private userId: string = '';
+  private currentUserId: string = '';
 
-  constructor(
-    private route: ActivatedRoute,
-    private router: Router
-  ) {}
+  // Computed display messages
+  readonly displayMessages = computed(() => {
+    return this.messages().map(msg => this.formatMessage(msg));
+  });
+  
+  // Online status
+  readonly isOnline = computed(() => {
+    const p = this.participant();
+    return p ? this.messageService.isOnline(p.id) : false;
+  });
+  
+  // Typing indicator
+  readonly isTyping = this.messageService.isUserTyping;
 
   ngOnInit(): void {
-    const userId = this.route.snapshot.params['userId'];
-    this.loadConversation(userId);
+    this.userId = this.route.snapshot.params['userId'];
+    this.currentUserId = this.authService.currentUser()?.id || '';
+    
+    // Connect WebSocket if needed
+    if (!this.wsService.isConnected()) {
+      this.wsService.connect();
+    }
+    
+    // Join conversation room
+    this.messageService.setActiveConversation(this.userId);
+    
+    // Setup typing debounce
+    this.typing$.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      takeUntil(this.destroy$)
+    ).subscribe(text => {
+      this.messageService.sendTyping(this.userId, text.length > 0);
+    });
+    
+    // Listen for new messages via WebSocket
+    this.wsService.on<{ message: Message }>('message:new').pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(data => {
+      if (data.message.senderId === this.userId) {
+        this.messages.update(msgs => [...msgs, data.message]);
+        this.shouldScroll = true;
+        // Mark as read since we're viewing
+        this.messageService.markAsRead(this.userId).subscribe();
+      }
+    });
+    
+    this.loadConversation();
+  }
+
+  ngOnDestroy(): void {
+    // Leave conversation room
+    this.messageService.leaveConversation(this.userId);
+    this.messageService.sendTyping(this.userId, false);
+    
+    this.destroy$.next();
+    this.destroy$.complete();
+    this.typing$.complete();
   }
 
   ngAfterViewChecked(): void {
@@ -53,48 +141,114 @@ export class ConversationComponent implements OnInit, AfterViewChecked {
     }
   }
 
-  private loadConversation(userId: string): void {
-    setTimeout(() => {
-      this.otherUser.set({
-        id: userId,
-        name: 'Maria Silva',
-        username: 'mariasilva',
-        initials: 'MS',
-        isOnline: true
-      });
+  private loadConversation(): void {
+    this.loading.set(true);
+    this.error.set(null);
+    
+    this.messageService.getMessages(this.userId, 1, 50).pipe(
+      takeUntil(this.destroy$)
+    ).subscribe({
+      next: (response) => {
+        this.participant.set(response.participant);
+        this.messages.set(response.messages.reverse()); // Oldest first for display
+        this.hasMore.set(response.hasMore);
+        this.loading.set(false);
+        this.shouldScroll = true;
+        
+        // Mark messages as read
+        this.messageService.markAsRead(this.userId).subscribe();
+        
+        // Check online status
+        this.wsService.checkPresence([this.userId]);
+      },
+      error: (err) => {
+        console.error('Error loading conversation:', err);
+        this.error.set('Não foi possível carregar a conversa. Tente novamente.');
+        this.loading.set(false);
+      }
+    });
+  }
 
-      this.messages.set([
-        { id: '1', senderId: userId, content: 'Oi! Vi que você começou um novo livro.', time: '10:30', isMe: false },
-        { id: '2', senderId: 'me', content: 'Oi Maria! Sim, estou trabalhando em um suspense.', time: '10:32', isMe: true },
-        { id: '3', senderId: userId, content: 'Que legal! Eu adoro suspense. Posso ler os primeiros capítulos?', time: '10:33', isMe: false },
-        { id: '4', senderId: 'me', content: 'Claro! Vou te enviar o link assim que publicar.', time: '10:35', isMe: true },
-        { id: '5', senderId: userId, content: 'Perfeito! Mal posso esperar 📚', time: '10:36', isMe: false },
-      ]);
+  loadMore(): void {
+    if (this.loadingMore() || !this.hasMore()) return;
+    
+    this.loadingMore.set(true);
+    const nextPage = this.page() + 1;
+    
+    this.messageService.getMessages(this.userId, nextPage, 50).pipe(
+      takeUntil(this.destroy$)
+    ).subscribe({
+      next: (response) => {
+        // Prepend older messages
+        this.messages.update(msgs => [...response.messages.reverse(), ...msgs]);
+        this.page.set(nextPage);
+        this.hasMore.set(response.hasMore);
+        this.loadingMore.set(false);
+      },
+      error: () => {
+        this.loadingMore.set(false);
+      }
+    });
+  }
 
-      this.loading.set(false);
-      this.shouldScroll = true;
-    }, 500);
+  private formatMessage(msg: Message): DisplayMessage {
+    return {
+      id: msg.id,
+      content: msg.content,
+      isMe: msg.senderId === this.currentUserId,
+      time: this.formatTime(msg.createdAt),
+      isRead: msg.isRead
+    };
+  }
+
+  private formatTime(date: Date | string): string {
+    const d = typeof date === 'string' ? new Date(date) : date;
+    return d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+  }
+
+  onTyping(): void {
+    this.typing$.next(this.newMessage);
   }
 
   sendMessage(): void {
-    if (!this.newMessage.trim()) return;
+    const content = this.newMessage.trim();
+    if (!content || this.sending()) return;
 
-    const newMsg = {
-      id: Date.now().toString(),
-      senderId: 'me',
-      content: this.newMessage,
-      time: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
-      isMe: true
-    };
+    this.sending.set(true);
+    
+    this.messageService.sendMessage(this.userId, content).pipe(
+      takeUntil(this.destroy$)
+    ).subscribe({
+      next: (response) => {
+        this.messages.update(msgs => [...msgs, response.message]);
+        this.newMessage = '';
+        this.shouldScroll = true;
+        this.sending.set(false);
+        this.messageService.sendTyping(this.userId, false);
+      },
+      error: (err) => {
+        console.error('Error sending message:', err);
+        this.sending.set(false);
+        // Could show toast error here
+      }
+    });
+  }
 
-    this.messages.update(msgs => [...msgs, newMsg]);
-    this.newMessage = '';
-    this.shouldScroll = true;
+  deleteMessage(messageId: string): void {
+    this.messageService.deleteMessage(messageId).pipe(
+      takeUntil(this.destroy$)
+    ).subscribe({
+      next: () => {
+        this.messages.update(msgs => msgs.filter(m => m.id !== messageId));
+      }
+    });
   }
 
   private scrollToBottom(): void {
     try {
-      this.messagesContainer.nativeElement.scrollTop = this.messagesContainer.nativeElement.scrollHeight;
+      if (this.messagesContainer?.nativeElement) {
+        this.messagesContainer.nativeElement.scrollTop = this.messagesContainer.nativeElement.scrollHeight;
+      }
     } catch (err) {}
   }
 
@@ -103,6 +257,20 @@ export class ConversationComponent implements OnInit, AfterViewChecked {
   }
 
   goToProfile(): void {
-    this.router.navigate(['/social/profile', this.otherUser()?.username]);
+    const p = this.participant();
+    if (p?.username) {
+      this.router.navigate(['/social/profile', p.username]);
+    } else if (p?.id) {
+      this.router.navigate(['/social/profile', p.id]);
+    }
+  }
+
+  retry(): void {
+    this.loadConversation();
+  }
+
+  getInitials(name: string | undefined): string {
+    if (!name) return '?';
+    return name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
   }
 }

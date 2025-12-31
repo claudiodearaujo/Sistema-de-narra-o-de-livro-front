@@ -3,13 +3,23 @@
   <div class="conversation-header">
     <button pButton class="p-button-text p-button-rounded" icon="pi pi-arrow-left" (click)="goBack()"></button>
     
-    @if (otherUser()) {
+    @if (participant()) {
       <div class="user-info" (click)="goToProfile()">
-        <p-avatar [label]="otherUser()?.initials" shape="circle"></p-avatar>
+        <p-avatar 
+          [image]="participant()?.avatar || undefined"
+          [label]="participant()?.avatar ? undefined : getInitials(participant()?.name)" 
+          shape="circle">
+        </p-avatar>
         <div class="user-details">
-          <span class="user-name">{{ otherUser()?.name }}</span>
-          <span class="user-status" [class.online]="otherUser()?.isOnline">
-            {{ otherUser()?.isOnline ? 'Online' : 'Offline' }}
+          <span class="user-name">{{ participant()?.name }}</span>
+          <span class="user-status" [class.online]="isOnline()" [class.typing]="isTyping()">
+            @if (isTyping()) {
+              digitando...
+            } @else if (isOnline()) {
+              Online
+            } @else {
+              Offline
+            }
           </span>
         </div>
       </div>
@@ -18,42 +28,85 @@
     <button pButton class="p-button-text p-button-rounded" icon="pi pi-ellipsis-v"></button>
   </div>
 
-  <!-- Messages -->
-  <div class="messages-container" #messagesContainer>
-    @if (loading()) {
-      <div class="loading">
-        <i class="pi pi-spin pi-spinner"></i>
-        Carregando mensagens...
-      </div>
-    } @else {
-      <div class="messages-list">
-        @for (message of messages(); track message.id) {
-          <div class="message" [class.mine]="message.isMe" [class.theirs]="!message.isMe">
-            <div class="message-bubble">
-              <p>{{ message.content }}</p>
-              <span class="message-time">{{ message.time }}</span>
-            </div>
+  <!-- Error State -->
+  @if (error()) {
+    <div class="error-container">
+      <p-message severity="error" [text]="error()!" styleClass="w-full mb-3"></p-message>
+      <p-button label="Tentar novamente" icon="pi pi-refresh" (onClick)="retry()"></p-button>
+    </div>
+  } @else {
+    <!-- Messages -->
+    <div class="messages-container" #messagesContainer>
+      @if (loading()) {
+        <div class="loading">
+          <i class="pi pi-spin pi-spinner"></i>
+          Carregando mensagens...
+        </div>
+      } @else {
+        <!-- Load More Button -->
+        @if (hasMore()) {
+          <div class="load-more-top">
+            <p-button 
+              label="Carregar anteriores" 
+              [loading]="loadingMore()" 
+              [text]="true" 
+              size="small"
+              (onClick)="loadMore()">
+            </p-button>
           </div>
         }
-      </div>
-    }
-  </div>
+        
+        <div class="messages-list">
+          @for (message of displayMessages(); track message.id) {
+            <div class="message" [class.mine]="message.isMe" [class.theirs]="!message.isMe">
+              <div class="message-bubble">
+                <p>{{ message.content }}</p>
+                <div class="message-meta">
+                  <span class="message-time">{{ message.time }}</span>
+                  @if (message.isMe && message.isRead) {
+                    <i class="pi pi-check-circle read-indicator" title="Lida"></i>
+                  }
+                </div>
+              </div>
+            </div>
+          } @empty {
+            <div class="empty-messages">
+              <i class="pi pi-comments"></i>
+              <p>Nenhuma mensagem ainda.</p>
+              <p class="hint">Envie uma mensagem para começar a conversa!</p>
+            </div>
+          }
+        </div>
+        
+        <!-- Typing Indicator -->
+        @if (isTyping()) {
+          <div class="typing-indicator">
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+          </div>
+        }
+      }
+    </div>
 
-  <!-- Input -->
-  <div class="message-input">
-    <button pButton class="p-button-text p-button-rounded" icon="pi pi-image"></button>
-    <input 
-      type="text" 
-      pInputText 
-      [(ngModel)]="newMessage" 
-      placeholder="Digite uma mensagem..."
-      (keyup.enter)="sendMessage()">
-    <button 
-      pButton 
-      class="p-button-rounded send-btn" 
-      icon="pi pi-send"
-      [disabled]="!newMessage.trim()"
-      (click)="sendMessage()">
-    </button>
-  </div>
+    <!-- Input -->
+    <div class="message-input">
+      <button pButton class="p-button-text p-button-rounded" icon="pi pi-image"></button>
+      <input 
+        type="text" 
+        pInputText 
+        [(ngModel)]="newMessage" 
+        placeholder="Digite uma mensagem..."
+        (keyup.enter)="sendMessage()"
+        (input)="onTyping()">
+      <button 
+        pButton 
+        class="p-button-rounded send-btn" 
+        icon="pi pi-send"
+        [disabled]="!newMessage.trim() || sending()"
+        [loading]="sending()"
+        (click)="sendMessage()">
+      </button>
+    </div>
+  }
 </div>
