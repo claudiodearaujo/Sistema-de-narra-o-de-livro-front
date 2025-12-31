@@ -6,9 +6,23 @@ import { AvatarModule } from 'primeng/avatar';
 import { SkeletonModule } from 'primeng/skeleton';
 import { BadgeModule } from 'primeng/badge';
 import { TabsModule } from 'primeng/tabs';
+import { SelectButtonModule } from 'primeng/selectbutton';
+import { TooltipModule } from 'primeng/tooltip';
+import { FormsModule } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
 
-import { NotificationService, Notification } from '../../../../core/services/notification.service';
+import { 
+  NotificationService, 
+  Notification, 
+  NotificationType, 
+  GroupedNotification 
+} from '../../../../core/services/notification.service';
+
+interface FilterOption {
+  label: string;
+  value: NotificationType | null;
+  icon: string;
+}
 
 @Component({
   selector: 'app-notifications',
@@ -16,11 +30,14 @@ import { NotificationService, Notification } from '../../../../core/services/not
   imports: [
     CommonModule,
     RouterLink,
+    FormsModule,
     ButtonModule,
     AvatarModule,
     SkeletonModule,
     BadgeModule,
-    TabsModule
+    TabsModule,
+    SelectButtonModule,
+    TooltipModule
   ],
   templateUrl: './notifications.component.html',
   styleUrl: './notifications.component.css'
@@ -34,9 +51,39 @@ export class NotificationsComponent implements OnInit, OnDestroy {
   hasMore = signal(false);
   currentPage = 1;
   readonly pageSize = 20;
+  
+  // Grouping toggle
+  groupingEnabled = signal(true);
+  
+  // Filter by type
+  selectedFilter = signal<NotificationType | null>(null);
+  filterOptions: FilterOption[] = [
+    { label: 'Todas', value: null, icon: 'pi pi-bell' },
+    { label: 'Curtidas', value: 'LIKE', icon: 'pi pi-heart' },
+    { label: 'Comentários', value: 'COMMENT', icon: 'pi pi-comment' },
+    { label: 'Seguidores', value: 'FOLLOW', icon: 'pi pi-user-plus' },
+    { label: 'Menções', value: 'MENTION', icon: 'pi pi-at' }
+  ];
 
   // Computed values
   unreadCount = computed(() => this.notificationService.unreadCount());
+  
+  // Grouped notifications
+  groupedNotifications = computed(() => {
+    if (!this.groupingEnabled()) {
+      return null;
+    }
+    const notifs = this.filteredNotifications();
+    return this.notificationService.groupNotifications(notifs);
+  });
+  
+  // Filtered notifications
+  filteredNotifications = computed(() => {
+    const filter = this.selectedFilter();
+    const notifs = this.notifications();
+    if (!filter) return notifs;
+    return notifs.filter(n => n.type === filter);
+  });
 
   ngOnInit() {
     this.loadNotifications();
@@ -78,32 +125,28 @@ export class NotificationsComponent implements OnInit, OnDestroy {
   }
 
   getNotificationIcon(type: string): string {
-    switch (type) {
-      case 'like': return 'pi pi-heart-fill';
-      case 'comment': return 'pi pi-comment';
-      case 'follow': return 'pi pi-user-plus';
-      case 'mention': return 'pi pi-at';
-      case 'achievement': return 'pi pi-trophy';
-      case 'system': return 'pi pi-bell';
-      default: return 'pi pi-bell';
-    }
+    return 'pi ' + this.notificationService.getNotificationIcon(type as NotificationType);
   }
 
   getNotificationColor(type: string): string {
-    switch (type) {
-      case 'like': return '#e74c3c';
-      case 'comment': return '#3498db';
-      case 'follow': return '#9b59b6';
-      case 'mention': return '#e67e22';
-      case 'achievement': return '#f1c40f';
-      case 'system': return '#1abc9c';
-      default: return 'var(--text-color-secondary)';
-    }
+    const colors: Record<string, string> = {
+      LIKE: '#e74c3c',
+      COMMENT: '#3498db',
+      FOLLOW: '#9b59b6',
+      MENTION: '#e67e22',
+      MESSAGE: '#6366f1',
+      ACHIEVEMENT: '#f1c40f',
+      LIVRA_EARNED: '#f97316',
+      SYSTEM: '#1abc9c',
+      BOOK_UPDATE: '#f59e0b'
+    };
+    return colors[type.toUpperCase()] || 'var(--text-color-secondary)';
   }
 
-  formatTimeAgo(date: Date): string {
+  formatTimeAgo(date: Date | string): string {
+    const d = typeof date === 'string' ? new Date(date) : date;
     const now = new Date();
-    const diffMs = now.getTime() - date.getTime();
+    const diffMs = now.getTime() - d.getTime();
     const diffMins = Math.floor(diffMs / 60000);
     const diffHours = Math.floor(diffMs / 3600000);
     const diffDays = Math.floor(diffMs / 86400000);
@@ -113,24 +156,48 @@ export class NotificationsComponent implements OnInit, OnDestroy {
     if (diffHours < 24) return `${diffHours}h`;
     if (diffDays < 7) return `${diffDays}d`;
     
-    return date.toLocaleDateString('pt-BR');
+    return d.toLocaleDateString('pt-BR');
   }
 
-  getNotificationLink(notification: Notification): string[] | null {
-    if (notification.targetType === 'post' && notification.targetId) {
-      return ['/social/post', notification.targetId];
+  getNotificationLink(notification: Notification | GroupedNotification): string[] | null {
+    const data = 'data' in notification ? notification.data : null;
+    if (notification.targetType === 'post' && (notification.targetId || data?.postId)) {
+      return ['/social/post', notification.targetId || data?.postId];
     }
-    if (notification.actor?.username) {
-      return ['/social/profile', notification.actor.username];
+    // For grouped notifications, check actors
+    if ('actors' in notification && notification.actors.length > 0) {
+      const actor = notification.actors[0];
+      if (actor.username) {
+        return ['/social/profile', actor.username];
+      }
     }
     return null;
   }
 
-  markAsRead(notification: Notification) {
-    if (!notification.isRead) {
+  toggleGrouping(): void {
+    this.groupingEnabled.update(v => !v);
+  }
+
+  setFilter(type: NotificationType | null): void {
+    this.selectedFilter.set(type);
+  }
+
+  markAsRead(notification: Notification | GroupedNotification) {
+    // For grouped notifications, mark all as read
+    if ('notifications' in notification && notification.notifications) {
+      const unreadIds = notification.notifications
+        .filter(n => !n.isRead)
+        .map(n => n.id);
+      
+      for (const id of unreadIds) {
+        this.notificationService.markAsRead(id).pipe(takeUntil(this.destroy$)).subscribe();
+      }
+      this.notifications.update(list => 
+        list.map(n => unreadIds.includes(n.id) ? { ...n, isRead: true } : n)
+      );
+    } else if (!notification.isRead) {
       this.notificationService.markAsRead(notification.id).pipe(takeUntil(this.destroy$)).subscribe({
         next: () => {
-          // Update local state
           this.notifications.update(list => 
             list.map(n => n.id === notification.id ? { ...n, isRead: true } : n)
           );

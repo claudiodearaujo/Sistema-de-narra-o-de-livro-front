@@ -74,6 +74,23 @@ export interface MarkReadResponse {
 }
 
 /**
+ * Grouped notification (for display)
+ */
+export interface GroupedNotification {
+  id: string;
+  type: NotificationType;
+  title: string;
+  message: string;
+  isRead: boolean;
+  createdAt: Date;
+  count: number;
+  actors: NotificationActor[];
+  targetId?: string;
+  targetType?: 'post' | 'comment' | 'book' | 'chapter' | null;
+  notifications: Notification[];
+}
+
+/**
  * Service for managing notifications
  */
 @Injectable({
@@ -259,5 +276,91 @@ export class NotificationService implements OnDestroy {
       SYSTEM: 'text-gray-500'
     };
     return colors[type] || 'text-gray-500';
+  }
+
+  /**
+   * Group similar notifications together
+   * Groups notifications of the same type for the same target within a time window
+   */
+  groupNotifications(notifications: Notification[], windowMinutes: number = 60): GroupedNotification[] {
+    const groups: Map<string, GroupedNotification> = new Map();
+
+    for (const notif of notifications) {
+      // Create a grouping key based on type and target
+      const targetId = notif.data?.postId || notif.data?.bookId || notif.data?.chapterId || '';
+      const key = `${notif.type}:${targetId}`;
+
+      const existing = groups.get(key);
+      
+      if (existing) {
+        // Check if within time window
+        const timeDiff = Math.abs(
+          new Date(existing.createdAt).getTime() - new Date(notif.createdAt).getTime()
+        );
+        const withinWindow = timeDiff < windowMinutes * 60 * 1000;
+
+        if (withinWindow && notif.actor && !existing.actors.find(a => a.id === notif.actor?.id)) {
+          existing.count++;
+          existing.actors.push(notif.actor);
+          existing.notifications.push(notif);
+          existing.isRead = existing.isRead && notif.isRead;
+          
+          // Update message for grouped notifications
+          if (existing.count === 2) {
+            existing.message = this.getGroupedMessage(existing.type, existing.actors);
+          } else if (existing.count > 2) {
+            existing.message = this.getGroupedMessage(existing.type, existing.actors);
+          }
+        } else if (!withinWindow) {
+          // Outside time window, create new group
+          groups.set(`${key}:${notif.id}`, this.createGroupFromNotification(notif));
+        }
+      } else {
+        groups.set(key, this.createGroupFromNotification(notif));
+      }
+    }
+
+    // Sort by most recent
+    return Array.from(groups.values()).sort(
+      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    );
+  }
+
+  private createGroupFromNotification(notif: Notification): GroupedNotification {
+    return {
+      id: notif.id,
+      type: notif.type,
+      title: notif.title,
+      message: notif.message,
+      isRead: notif.isRead,
+      createdAt: notif.createdAt,
+      count: 1,
+      actors: notif.actor ? [notif.actor] : [],
+      targetId: notif.data?.postId || notif.data?.bookId,
+      targetType: notif.targetType,
+      notifications: [notif]
+    };
+  }
+
+  private getGroupedMessage(type: NotificationType, actors: NotificationActor[]): string {
+    const firstName = actors[0]?.name || 'Alguém';
+    const othersCount = actors.length - 1;
+
+    switch (type) {
+      case 'LIKE':
+        return othersCount === 1
+          ? `${firstName} e ${actors[1]?.name} curtiram seu post`
+          : `${firstName} e mais ${othersCount} pessoas curtiram seu post`;
+      case 'COMMENT':
+        return othersCount === 1
+          ? `${firstName} e ${actors[1]?.name} comentaram no seu post`
+          : `${firstName} e mais ${othersCount} pessoas comentaram no seu post`;
+      case 'FOLLOW':
+        return othersCount === 1
+          ? `${firstName} e ${actors[1]?.name} começaram a seguir você`
+          : `${firstName} e mais ${othersCount} pessoas começaram a seguir você`;
+      default:
+        return `${firstName} e mais ${othersCount} pessoas`;
+    }
   }
 }

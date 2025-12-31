@@ -1,4 +1,4 @@
-import { Component, computed, signal, OnInit, OnDestroy, HostListener } from '@angular/core';
+import { Component, computed, signal, OnInit, OnDestroy, HostListener, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule, RouterOutlet, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
@@ -14,6 +14,9 @@ import { MenuModule } from 'primeng/menu';
 import { MenuItem } from 'primeng/api';
 
 import { AuthService } from '../../../core/auth/services/auth.service';
+import { NotificationService } from '../../../core/services/notification.service';
+import { MessageService } from '../../../core/services/message.service';
+import { WebSocketService } from '../../../core/services/websocket.service';
 
 /**
  * Social Layout Component
@@ -42,12 +45,27 @@ import { AuthService } from '../../../core/auth/services/auth.service';
   styleUrl: './social-layout.component.css'
 })
 export class SocialLayoutComponent implements OnInit, OnDestroy {
+  private readonly authService = inject(AuthService);
+  private readonly notificationService = inject(NotificationService);
+  private readonly messageService = inject(MessageService);
+  private readonly wsService = inject(WebSocketService);
+  private readonly router = inject(Router);
+
   // Signals
   isMobile = signal(false);
   showRightSidebar = signal(true);
-  notificationCount = signal('3');
-  messageCount = signal('1');
   currentUser = computed(() => this.authService.currentUser());
+
+  // Real-time counts from services
+  readonly notificationCount = computed(() => {
+    const count = this.notificationService.unreadCount();
+    return count > 0 ? (count > 99 ? '99+' : count.toString()) : '';
+  });
+
+  readonly messageCount = computed(() => {
+    const count = this.messageService.unreadCount();
+    return count > 0 ? (count > 99 ? '99+' : count.toString()) : '';
+  });
 
   // Navigation items
   navItems = [
@@ -71,15 +89,21 @@ export class SocialLayoutComponent implements OnInit, OnDestroy {
   private routerSubscription?: Subscription;
   private currentRoute = '';
 
-  constructor(
-    private router: Router,
-    private authService: AuthService
-  ) {
+  constructor() {
     this.checkMobile();
     this.initUserMenu();
   }
 
   ngOnInit(): void {
+    // Connect WebSocket for real-time updates
+    if (!this.wsService.isConnected()) {
+      this.wsService.connect();
+    }
+
+    // Load initial counts
+    this.notificationService.getCount().subscribe();
+    this.messageService.getUnreadCount().subscribe();
+
     // Track current route for active state
     this.routerSubscription = this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
