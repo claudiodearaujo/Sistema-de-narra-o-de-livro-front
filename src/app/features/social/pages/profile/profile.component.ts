@@ -10,7 +10,7 @@ import { CardModule } from 'primeng/card';
 import { DialogModule } from 'primeng/dialog';
 
 import { ProfileService, UserProfile, UserPost, UserBook } from '../../../../core/services/profile.service';
-import { FollowService } from '../../../../core/services/follow.service';
+import { FollowService, FollowResponse } from '../../../../core/services/follow.service';
 import { AuthService } from '../../../../core/auth/services/auth.service';
 
 @Component({
@@ -195,7 +195,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
       : this.followService.follow(p.id);
     
     action$.pipe(takeUntil(this.destroy$)).subscribe({
-      next: (response) => {
+      next: (response: FollowResponse) => {
         this.profile.set({
           ...p,
           isFollowing: response.following,

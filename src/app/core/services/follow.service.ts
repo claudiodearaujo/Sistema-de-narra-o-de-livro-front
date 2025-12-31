@@ -68,6 +68,20 @@ export class FollowService {
   private readonly apiUrl = `${environment.apiUrl}/users`;
 
   /**
+   * Follow a user
+   */
+  follow(userId: string): Observable<FollowResponse> {
+    return this.http.post<FollowResponse>(`${this.apiUrl}/${userId}/follow`, {});
+  }
+
+  /**
+   * Unfollow a user
+   */
+  unfollow(userId: string): Observable<FollowResponse> {
+    return this.http.delete<FollowResponse>(`${this.apiUrl}/${userId}/follow`);
+  }
+
+  /**
    * Toggle follow on a user
    */
   toggleFollow(userId: string): Observable<FollowResponse> {
