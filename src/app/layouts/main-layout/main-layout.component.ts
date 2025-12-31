@@ -7,6 +7,7 @@ import { AvatarModule } from 'primeng/avatar';
 import { ButtonModule } from 'primeng/button';
 import { MenuModule } from 'primeng/menu';
 import { AuthService } from '../../core/auth/services/auth.service';
+import { LivraBalanceComponent } from '../../shared/components/livra-balance/livra-balance.component';
 
 /**
  * Main layout for authenticated areas of the application.
@@ -22,7 +23,8 @@ import { AuthService } from '../../core/auth/services/auth.service';
     MenubarModule,
     AvatarModule,
     ButtonModule,
-    MenuModule
+    MenuModule,
+    LivraBalanceComponent
   ],
   templateUrl: './main-layout.component.html',
   styleUrl: './main-layout.component.css'

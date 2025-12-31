@@ -40,6 +40,14 @@ export const routes: Routes = [
     loadChildren: () => import('./features/social/social.routes').then(m => m.SOCIAL_ROUTES)
   },
 
+  // Livras Module (Sprint 8)
+  {
+    path: 'livras',
+    canActivate: [authGuard],
+    loadComponent: () => import('./layouts/main-layout/main-layout.component').then(m => m.MainLayoutComponent),
+    loadChildren: () => import('./features/livras/livras.routes').then(m => m.LIVRAS_ROUTES)
+  },
+
   // Default redirect
   {
     path: '',
