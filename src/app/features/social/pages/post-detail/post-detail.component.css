@@ -1,0 +1,270 @@
+.post-detail-container {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Header */
+.detail-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.5rem 0;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid var(--surface-border);
+}
+
+.detail-header h2 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+/* Post Card */
+.post-card {
+  background: var(--surface-card);
+  border-radius: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.post-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem;
+}
+
+.post-user-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.user-name {
+  font-weight: 600;
+  color: var(--text-color);
+  text-decoration: none;
+}
+
+.user-name:hover {
+  text-decoration: underline;
+}
+
+.user-handle {
+  font-size: 0.85rem;
+  color: var(--text-color-secondary);
+}
+
+.post-content {
+  padding: 0 1rem;
+}
+
+.post-content p {
+  margin: 0;
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+.post-image {
+  width: 100%;
+  max-height: 500px;
+  object-fit: cover;
+  margin-top: 1rem;
+  border-radius: 0.5rem;
+}
+
+.post-timestamp {
+  padding: 1rem;
+  font-size: 0.9rem;
+  color: var(--text-color-secondary);
+  border-bottom: 1px solid var(--surface-border);
+}
+
+.post-metrics {
+  display: flex;
+  gap: 1.5rem;
+  padding: 0.75rem 1rem;
+  font-size: 0.9rem;
+  color: var(--text-color-secondary);
+  border-bottom: 1px solid var(--surface-border);
+}
+
+.post-metrics strong {
+  color: var(--text-color);
+}
+
+.post-actions {
+  display: flex;
+  justify-content: space-around;
+  padding: 0.5rem;
+}
+
+/* Comment Composer */
+.comment-composer {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: var(--surface-card);
+  border-radius: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.composer-input-wrapper {
+  flex: 1;
+  position: relative;
+}
+
+.composer-input-wrapper textarea {
+  width: 100%;
+  resize: none;
+}
+
+.cancel-reply {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-color-secondary);
+}
+
+.cancel-reply:hover {
+  color: var(--text-color);
+}
+
+/* Comments Section */
+.comments-section {
+  background: var(--surface-card);
+  border-radius: 0.75rem;
+  padding: 1rem;
+}
+
+.comments-section h3 {
+  margin: 0 0 1rem 0;
+  font-size: 1rem;
+}
+
+.comment-card {
+  display: flex;
+  gap: 0.75rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--surface-border);
+}
+
+.comment-card:last-child {
+  border-bottom: none;
+}
+
+.comment-body {
+  flex: 1;
+}
+
+.comment-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.comment-author {
+  font-weight: 600;
+  color: var(--text-color);
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.comment-author:hover {
+  text-decoration: underline;
+}
+
+.comment-time {
+  font-size: 0.8rem;
+  color: var(--text-color-secondary);
+}
+
+.comment-text {
+  margin: 0 0 0.5rem 0;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+.comment-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: none;
+  border: none;
+  font-size: 0.85rem;
+  color: var(--text-color-secondary);
+  cursor: pointer;
+  padding: 0;
+}
+
+.action-btn:hover {
+  color: var(--text-color);
+}
+
+.action-btn.liked {
+  color: #e74c3c;
+}
+
+/* Replies */
+.replies-list {
+  margin-top: 0.75rem;
+  padding-left: 0.5rem;
+  border-left: 2px solid var(--surface-border);
+}
+
+.reply-card {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.5rem 0;
+}
+
+.reply-body {
+  flex: 1;
+}
+
+/* No Comments */
+.no-comments {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-color-secondary);
+}
+
+/* Skeleton */
+.post-skeleton {
+  padding: 1rem;
+  background: var(--surface-card);
+  border-radius: 0.75rem;
+}
+
+.skeleton-header {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.skeleton-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.skeleton-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.mt-1 {
+  margin-top: 0.25rem;
+}
+
+.mt-3 {
+  margin-top: 0.75rem;
+}

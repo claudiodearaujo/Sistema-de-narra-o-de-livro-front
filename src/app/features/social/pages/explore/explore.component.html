@@ -1,0 +1,133 @@
+<div class="explore-container">
+  <p-tabs value="0">
+    <p-tablist>
+      <p-tab value="0">Em Alta</p-tab>
+      <p-tab value="1">Pessoas</p-tab>
+      <p-tab value="2">Livros</p-tab>
+    </p-tablist>
+    <p-tabpanels>
+      <!-- Trending Tab -->
+      <p-tabpanel value="0">
+        @if (loading()) {
+          <div class="trending-skeleton">
+            @for (i of [1,2,3,4,5]; track i) {
+              <div class="trending-item-skeleton">
+                <p-skeleton width="100%" height="3rem"></p-skeleton>
+              </div>
+            }
+          </div>
+        } @else {
+          <div class="section">
+            <h3 class="section-title">Tópicos em Alta</h3>
+            <div class="trending-list">
+              @for (topic of trendingTopics(); track topic.tag) {
+                <a [routerLink]="['/social/search']" [queryParams]="{q: '#' + topic.tag}" class="trending-item">
+                  <span class="trending-tag">#{{ topic.tag }}</span>
+                  <span class="trending-count">{{ formatNumber(topic.posts) }} posts</span>
+                </a>
+              }
+            </div>
+          </div>
+          
+          <div class="section">
+            <h3 class="section-title">Gêneros Populares</h3>
+            <div class="genres-grid">
+              @for (genre of popularGenres(); track genre) {
+                <p-chip [label]="genre" styleClass="genre-chip"></p-chip>
+              }
+            </div>
+          </div>
+        }
+      </p-tabpanel>
+      
+      <!-- People Tab -->
+      <p-tabpanel value="1">
+        @if (loading()) {
+          <div class="users-skeleton">
+            @for (i of [1,2,3]; track i) {
+              <div class="user-card-skeleton">
+                <p-skeleton shape="circle" size="4rem"></p-skeleton>
+                <p-skeleton width="60%" height="1rem" class="mt-2"></p-skeleton>
+                <p-skeleton width="40%" height="0.8rem" class="mt-1"></p-skeleton>
+              </div>
+            }
+          </div>
+        } @else {
+          <div class="section">
+            <h3 class="section-title">Sugestões para Você</h3>
+            <div class="users-grid">
+              @for (user of suggestedUsers(); track user.id) {
+                <div class="user-card">
+                  <p-avatar 
+                    [image]="user.avatar || undefined"
+                    [label]="user.avatar ? undefined : user.displayName.charAt(0)"
+                    size="xlarge"
+                    shape="circle">
+                  </p-avatar>
+                  <a [routerLink]="['/social/profile', user.username]" class="user-name">
+                    {{ user.displayName }}
+                  </a>
+                  <span class="user-username">&#64;{{ user.username }}</span>
+                  <span class="user-followers">{{ formatNumber(user.followersCount) }} seguidores</span>
+                  @if (user.bio) {
+                    <p class="user-bio">{{ user.bio }}</p>
+                  }
+                  <p-button 
+                    [label]="user.isFollowing ? 'Seguindo' : 'Seguir'"
+                    [severity]="user.isFollowing ? 'secondary' : 'primary'"
+                    [outlined]="user.isFollowing"
+                    size="small"
+                    (onClick)="toggleFollow(user)">
+                  </p-button>
+                </div>
+              }
+            </div>
+          </div>
+        }
+      </p-tabpanel>
+      
+      <!-- Books Tab -->
+      <p-tabpanel value="2">
+        @if (loading()) {
+          <div class="books-skeleton">
+            @for (i of [1,2]; track i) {
+              <div class="book-card-skeleton">
+                <p-skeleton width="100px" height="150px"></p-skeleton>
+                <p-skeleton width="80%" height="1rem" class="mt-2"></p-skeleton>
+                <p-skeleton width="60%" height="0.8rem" class="mt-1"></p-skeleton>
+              </div>
+            }
+          </div>
+        } @else {
+          <div class="section">
+            <h3 class="section-title">Livros em Destaque</h3>
+            <div class="books-grid">
+              @for (book of featuredBooks(); track book.id) {
+                <a [routerLink]="['/books', book.id]" class="book-card">
+                  <div class="book-cover">
+                    @if (book.cover) {
+                      <img [src]="book.cover" [alt]="book.title">
+                    } @else {
+                      <div class="book-cover-placeholder">
+                        <i class="pi pi-book"></i>
+                      </div>
+                    }
+                  </div>
+                  <div class="book-info">
+                    <span class="book-title">{{ book.title }}</span>
+                    <span class="book-author">{{ book.author }}</span>
+                    <div class="book-rating">
+                      <i class="pi pi-star-fill"></i>
+                      <span>{{ book.rating }}</span>
+                      <span class="reviews-count">({{ book.reviewsCount }})</span>
+                    </div>
+                  </div>
+                </a>
+              }
+            </div>
+          </div>
+        }
+      </p-tabpanel>
+    </p-tabpanels>
+  </p-tabs>
+</div>

@@ -1,0 +1,196 @@
+.search-container {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.search-header {
+  margin-bottom: 1.5rem;
+}
+
+.search-input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: var(--surface-card);
+  border-radius: 2rem;
+  border: 2px solid var(--surface-border);
+  transition: border-color 0.2s;
+}
+
+.search-input-wrapper:focus-within {
+  border-color: var(--primary-color);
+}
+
+.search-input-wrapper input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-size: 1rem;
+  outline: none;
+}
+
+.search-input-wrapper .pi-search {
+  color: var(--text-color-secondary);
+}
+
+.clear-btn {
+  color: var(--text-color-secondary);
+}
+
+.search-suggestions {
+  background: var(--surface-card);
+  padding: 1.5rem;
+  border-radius: 0.75rem;
+}
+
+.search-suggestions h3 {
+  margin: 0 0 1rem 0;
+  font-size: 1.1rem;
+}
+
+.suggestion-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.tag-btn {
+  text-transform: capitalize;
+}
+
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 3rem;
+  color: var(--text-color-secondary);
+}
+
+.empty-results {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-color-secondary);
+}
+
+.users-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: var(--surface-card);
+  border-radius: 0.5rem;
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.user-item:hover {
+  background: var(--surface-hover);
+}
+
+.user-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.user-name {
+  font-weight: 600;
+}
+
+.user-username {
+  font-size: 0.85rem;
+  color: var(--text-color-secondary);
+}
+
+.user-followers {
+  font-size: 0.85rem;
+  color: var(--text-color-secondary);
+  margin-right: 1rem;
+}
+
+.posts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.post-item {
+  padding: 1rem;
+  background: var(--surface-card);
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.post-item:hover {
+  background: var(--surface-hover);
+}
+
+.post-author {
+  font-weight: 600;
+  color: var(--primary-color);
+}
+
+.post-preview {
+  margin: 0.5rem 0;
+}
+
+.post-likes {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.85rem;
+  color: var(--text-color-secondary);
+}
+
+.books-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.book-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: var(--surface-card);
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.book-item:hover {
+  background: var(--surface-hover);
+}
+
+.book-icon {
+  font-size: 2rem;
+}
+
+.book-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.book-title {
+  font-weight: 600;
+}
+
+.book-author {
+  font-size: 0.9rem;
+  color: var(--text-color-secondary);
+}
+
+.book-chapters {
+  font-size: 0.85rem;
+  color: var(--text-color-secondary);
+}

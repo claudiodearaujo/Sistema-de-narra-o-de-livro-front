@@ -1,0 +1,127 @@
+<div class="notifications-container">
+  <div class="notifications-header">
+    <h1>Notificações</h1>
+    @if (unreadCount() > 0) {
+      <p-button 
+        label="Marcar todas como lidas" 
+        [text]="true" 
+        size="small"
+        (onClick)="markAllAsRead()">
+      </p-button>
+    }
+  </div>
+
+  @if (loading()) {
+    <div class="notifications-skeleton">
+      @for (i of [1,2,3,4,5]; track i) {
+        <div class="notification-skeleton">
+          <p-skeleton shape="circle" size="3rem"></p-skeleton>
+          <div class="skeleton-content">
+            <p-skeleton width="80%" height="1rem"></p-skeleton>
+            <p-skeleton width="60%" height="0.8rem" class="mt-2"></p-skeleton>
+          </div>
+        </div>
+      }
+    </div>
+  } @else {
+    <p-tabs value="0">
+      <p-tablist>
+        <p-tab value="0">
+          Todas
+          @if (unreadCount() > 0) {
+            <p-badge [value]="unreadCount().toString()" severity="danger" class="ml-2"></p-badge>
+          }
+        </p-tab>
+        <p-tab value="1">Não lidas</p-tab>
+      </p-tablist>
+      <p-tabpanels>
+        <p-tabpanel value="0">
+          <div class="notifications-list">
+            @for (notification of notifications(); track notification.id) {
+              @if (getNotificationLink(notification); as link) {
+                <a 
+                  [routerLink]="link"
+                  class="notification-item"
+                  [class.unread]="!notification.isRead"
+                  (click)="markAsRead(notification)">
+                  <ng-container *ngTemplateOutlet="notificationContent; context: { $implicit: notification }"></ng-container>
+                </a>
+              } @else {
+                <div 
+                  class="notification-item"
+                  [class.unread]="!notification.isRead"
+                  (click)="markAsRead(notification)">
+                  <ng-container *ngTemplateOutlet="notificationContent; context: { $implicit: notification }"></ng-container>
+                </div>
+              }
+            } @empty {
+              <div class="empty-state">
+                <i class="pi pi-bell empty-icon"></i>
+                <h3>Nenhuma notificação</h3>
+                <p>Você não tem notificações ainda.</p>
+              </div>
+            }
+          </div>
+        </p-tabpanel>
+        
+        <p-tabpanel value="1">
+          <div class="notifications-list">
+            @for (notification of getUnreadNotifications(); track notification.id) {
+              @if (getNotificationLink(notification); as link) {
+                <a 
+                  [routerLink]="link"
+                  class="notification-item unread"
+                  (click)="markAsRead(notification)">
+                  <ng-container *ngTemplateOutlet="notificationContent; context: { $implicit: notification }"></ng-container>
+                </a>
+              } @else {
+                <div 
+                  class="notification-item unread"
+                  (click)="markAsRead(notification)">
+                  <ng-container *ngTemplateOutlet="notificationContent; context: { $implicit: notification }"></ng-container>
+                </div>
+              }
+            } @empty {
+              <div class="empty-state">
+                <i class="pi pi-check-circle empty-icon"></i>
+                <h3>Tudo lido!</h3>
+                <p>Você não tem notificações não lidas.</p>
+              </div>
+            }
+          </div>
+        </p-tabpanel>
+      </p-tabpanels>
+    </p-tabs>
+  }
+</div>
+
+<!-- Notification Content Template -->
+<ng-template #notificationContent let-notification>
+  <div class="notification-icon" [style.backgroundColor]="getNotificationColor(notification.type)">
+    <i [class]="getNotificationIcon(notification.type)"></i>
+  </div>
+  
+  <div class="notification-body">
+    @if (notification.actor) {
+      <p-avatar 
+        [image]="notification.actor.avatar || undefined"
+        [label]="notification.actor.avatar ? undefined : notification.actor.displayName.charAt(0)"
+        size="normal"
+        shape="circle">
+      </p-avatar>
+    }
+    
+    <div class="notification-text">
+      @if (notification.actor) {
+        <span class="actor-name">{{ notification.actor.displayName }}</span>
+      }
+      <span>{{ notification.message }}</span>
+    </div>
+  </div>
+  
+  <span class="notification-time">{{ formatTimeAgo(notification.createdAt) }}</span>
+  
+  @if (!notification.isRead) {
+    <span class="unread-dot"></span>
+  }
+</ng-template>

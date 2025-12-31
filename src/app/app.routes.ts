@@ -33,13 +33,12 @@ export const routes: Routes = [
     loadChildren: () => import('./features/writer/writer.routes').then(m => m.WRITER_ROUTES)
   },
 
-  // Social Module - Future
-  // {
-  //   path: 'social',
-  //   canActivate: [authGuard],
-  //   loadComponent: () => import('./layouts/main-layout/main-layout.component').then(m => m.MainLayoutComponent),
-  //   loadChildren: () => import('./features/social/social.routes').then(m => m.SOCIAL_ROUTES)
-  // },
+  // Social Module
+  {
+    path: 'social',
+    canActivate: [authGuard],
+    loadChildren: () => import('./features/social/social.routes').then(m => m.SOCIAL_ROUTES)
+  },
 
   // Default redirect
   {

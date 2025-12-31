@@ -1,0 +1,238 @@
+.explore-container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.section {
+  margin-bottom: 2rem;
+}
+
+.section-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0 0 1rem 0;
+  color: var(--text-color);
+}
+
+/* Trending */
+.trending-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.trending-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background: var(--surface-card);
+  border-radius: 0.5rem;
+  text-decoration: none;
+  transition: background-color 0.2s;
+}
+
+.trending-item:hover {
+  background: var(--surface-hover);
+}
+
+.trending-tag {
+  font-weight: 600;
+  color: var(--primary-color);
+}
+
+.trending-count {
+  font-size: 0.85rem;
+  color: var(--text-color-secondary);
+}
+
+.trending-skeleton,
+.trending-item-skeleton {
+  margin-bottom: 0.5rem;
+}
+
+/* Genres */
+.genres-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+:host ::ng-deep .genre-chip {
+  cursor: pointer;
+}
+
+:host ::ng-deep .genre-chip:hover {
+  background: var(--primary-color);
+  color: white;
+}
+
+/* Users */
+.users-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.user-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 1.5rem;
+  background: var(--surface-card);
+  border-radius: 0.75rem;
+  gap: 0.5rem;
+}
+
+.user-name {
+  font-weight: 600;
+  color: var(--text-color);
+  text-decoration: none;
+  margin-top: 0.5rem;
+}
+
+.user-name:hover {
+  text-decoration: underline;
+}
+
+.user-username {
+  font-size: 0.85rem;
+  color: var(--text-color-secondary);
+}
+
+.user-followers {
+  font-size: 0.8rem;
+  color: var(--text-color-secondary);
+}
+
+.user-bio {
+  font-size: 0.85rem;
+  color: var(--text-color-secondary);
+  margin: 0.5rem 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.users-skeleton {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.user-card-skeleton {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.5rem;
+  background: var(--surface-card);
+  border-radius: 0.75rem;
+}
+
+/* Books */
+.books-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 1rem;
+}
+
+.book-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--surface-card);
+  border-radius: 0.75rem;
+  overflow: hidden;
+  text-decoration: none;
+  transition: transform 0.2s;
+}
+
+.book-card:hover {
+  transform: translateY(-4px);
+}
+
+.book-cover {
+  aspect-ratio: 2/3;
+  overflow: hidden;
+}
+
+.book-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.book-cover-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface-ground);
+  color: var(--text-color-secondary);
+}
+
+.book-cover-placeholder i {
+  font-size: 2rem;
+}
+
+.book-info {
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.book-title {
+  font-weight: 600;
+  color: var(--text-color);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.book-author {
+  font-size: 0.85rem;
+  color: var(--text-color-secondary);
+}
+
+.book-rating {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.85rem;
+  color: #f1c40f;
+}
+
+.book-rating span {
+  color: var(--text-color);
+}
+
+.reviews-count {
+  color: var(--text-color-secondary);
+  font-size: 0.8rem;
+}
+
+.books-skeleton {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 1rem;
+}
+
+.book-card-skeleton {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.75rem;
+  background: var(--surface-card);
+  border-radius: 0.75rem;
+}
+
+.mt-1 {
+  margin-top: 0.25rem;
+}
+
+.mt-2 {
+  margin-top: 0.5rem;
+}

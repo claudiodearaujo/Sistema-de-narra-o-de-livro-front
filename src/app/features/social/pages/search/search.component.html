@@ -1,0 +1,107 @@
+<div class="search-container">
+  <div class="search-header">
+    <div class="search-input-wrapper">
+      <i class="pi pi-search"></i>
+      <input 
+        type="text" 
+        pInputText 
+        [(ngModel)]="searchQuery" 
+        placeholder="Buscar escritores, livros, posts..."
+        (keyup.enter)="search()"
+        autofocus>
+      @if (searchQuery) {
+        <button pButton class="p-button-text p-button-rounded clear-btn" icon="pi pi-times" (click)="clearSearch()"></button>
+      }
+    </div>
+  </div>
+
+  @if (!hasSearched()) {
+    <!-- Recent Searches / Suggestions -->
+    <div class="search-suggestions">
+      <h3>🔥 Em alta</h3>
+      <div class="suggestion-tags">
+        @for (tag of trendingTags; track tag) {
+          <button pButton class="p-button-outlined p-button-sm tag-btn" [label]="tag" (click)="searchTag(tag)"></button>
+        }
+      </div>
+    </div>
+  } @else {
+    <!-- Search Results -->
+    @if (loading()) {
+      <div class="loading">
+        <i class="pi pi-spin pi-spinner"></i>
+        Buscando...
+      </div>
+    } @else {
+      <p-tabs value="0">
+        <p-tablist>
+          <p-tab value="0">Escritores ({{ users().length }})</p-tab>
+          <p-tab value="1">Posts ({{ posts().length }})</p-tab>
+          <p-tab value="2">Livros ({{ books().length }})</p-tab>
+        </p-tablist>
+        <p-tabpanels>
+          <p-tabpanel value="0">
+            @if (users().length === 0) {
+              <div class="empty-results">
+                <p>Nenhum escritor encontrado</p>
+              </div>
+            } @else {
+              <div class="users-list">
+                @for (user of users(); track user.id) {
+                  <div class="user-item" (click)="goToProfile(user.username)">
+                    <p-avatar [label]="user.initials" shape="circle" size="large"></p-avatar>
+                    <div class="user-info">
+                      <span class="user-name">{{ user.name }}</span>
+                      <span class="user-username">@{{ user.username }}</span>
+                    </div>
+                    <span class="user-followers">{{ user.followers }} seguidores</span>
+                    <button pButton label="Seguir" class="p-button-outlined p-button-sm"></button>
+                  </div>
+                }
+              </div>
+            }
+          </p-tabpanel>
+
+          <p-tabpanel value="1">
+            @if (posts().length === 0) {
+              <div class="empty-results">
+                <p>Nenhum post encontrado</p>
+              </div>
+            } @else {
+              <div class="posts-list">
+                @for (post of posts(); track post.id) {
+                  <div class="post-item" (click)="goToPost(post.id)">
+                    <span class="post-author">{{ post.author }}</span>
+                    <p class="post-preview">{{ post.preview }}</p>
+                    <span class="post-likes"><i class="pi pi-heart"></i> {{ post.likes }}</span>
+                  </div>
+                }
+              </div>
+            }
+          </p-tabpanel>
+
+          <p-tabpanel value="2">
+            @if (books().length === 0) {
+              <div class="empty-results">
+                <p>Nenhum livro encontrado</p>
+              </div>
+            } @else {
+              <div class="books-list">
+                @for (book of books(); track book.id) {
+                  <div class="book-item">
+                    <div class="book-icon">📚</div>
+                    <div class="book-info">
+                      <span class="book-title">{{ book.title }}</span>
+                      <span class="book-author">por {{ book.author }}</span>
+                      <span class="book-chapters">{{ book.chapters }} capítulos</span>
+                    </div>
+                  </div>
+                }
+              </div>
+            }
+          </p-tabpanel>
+        </p-tabpanels>
+      </p-tabs>
+    }
+  }
+</div>
