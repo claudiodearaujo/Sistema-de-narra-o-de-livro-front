@@ -136,6 +136,25 @@
           }
         </div>
       }
+
+      <!-- Achievements (Sprint 10) -->
+      @if (achievements().length > 0) {
+        <div class="achievements-section">
+          <div class="section-header">
+            <h3>🏆 Conquistas</h3>
+            <a routerLink="/achievements" class="see-all">Ver todas</a>
+          </div>
+          <div class="achievements-grid">
+            @for (ua of achievements(); track ua.id) {
+              <div class="achievement-badge" 
+                   [pTooltip]="ua.achievement.name + ': ' + ua.achievement.description" 
+                   tooltipPosition="top">
+                <span class="achievement-icon">{{ ua.achievement.icon }}</span>
+              </div>
+            }
+          </div>
+        </div>
+      }
     </div>
     
     <!-- Tabs -->

@@ -8,10 +8,13 @@ import { AvatarModule } from 'primeng/avatar';
 import { SkeletonModule } from 'primeng/skeleton';
 import { CardModule } from 'primeng/card';
 import { DialogModule } from 'primeng/dialog';
+import { TooltipModule } from 'primeng/tooltip';
 
 import { ProfileService, UserProfile, UserPost, UserBook } from '../../../../core/services/profile.service';
 import { FollowService, FollowResponse } from '../../../../core/services/follow.service';
 import { AuthService } from '../../../../core/auth/services/auth.service';
+import { AchievementService } from '../../../../core/services/achievement.service';
+import { UserAchievement } from '../../../../core/models/achievement.model';
 
 @Component({
   selector: 'app-profile',
@@ -24,7 +27,8 @@ import { AuthService } from '../../../../core/auth/services/auth.service';
     AvatarModule,
     SkeletonModule,
     CardModule,
-    DialogModule
+    DialogModule,
+    TooltipModule
   ],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css'
@@ -34,12 +38,14 @@ export class ProfileComponent implements OnInit, OnDestroy {
   private readonly profileService = inject(ProfileService);
   private readonly followService = inject(FollowService);
   private readonly authService = inject(AuthService);
+  private readonly achievementService = inject(AchievementService);
   private readonly destroy$ = new Subject<void>();
 
   loading = signal(true);
   profile = signal<UserProfile | null>(null);
   posts = signal<UserPost[]>([]);
   books = signal<UserBook[]>([]);
+  achievements = signal<UserAchievement[]>([]);
   
   // Error states
   error = signal<string | null>(null);
@@ -105,6 +111,9 @@ export class ProfileComponent implements OnInit, OnDestroy {
         this.posts.set(posts.posts);
         this.hasMorePosts.set(posts.pagination.hasMore);
         this.loading.set(false);
+        
+        // Load achievements for profile
+        this.loadAchievements(profile.id);
       },
       error: (err) => {
         console.error('Failed to load profile:', err);
@@ -231,5 +240,16 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   openFollowing() {
     this.showFollowingDialog.set(true);
+  }
+
+  loadAchievements(userId: string) {
+    this.achievementService.getUserAchievements(userId).pipe(takeUntil(this.destroy$)).subscribe({
+      next: (response) => {
+        this.achievements.set(response.achievements.slice(0, 6)); // Show max 6
+      },
+      error: (err) => {
+        console.error('Failed to load achievements:', err);
+      }
+    });
   }
 }

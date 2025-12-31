@@ -8,4 +8,11 @@ export const LIVRAS_ROUTES: Routes = [
         (m) => m.LivrasPageComponent
       ),
   },
+  {
+    path: 'success',
+    loadComponent: () =>
+      import('./pages/livra-success-page/livra-success-page.component').then(
+        (m) => m.LivraSuccessPageComponent
+      ),
+  },
 ];

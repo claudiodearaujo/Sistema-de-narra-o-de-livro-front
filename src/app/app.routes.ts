@@ -48,6 +48,22 @@ export const routes: Routes = [
     loadChildren: () => import('./features/livras/livras.routes').then(m => m.LIVRAS_ROUTES)
   },
 
+  // Subscription Module (Sprint 9)
+  {
+    path: 'subscription',
+    canActivate: [authGuard],
+    loadComponent: () => import('./layouts/main-layout/main-layout.component').then(m => m.MainLayoutComponent),
+    loadChildren: () => import('./features/subscription/subscription.routes').then(m => m.subscriptionRoutes)
+  },
+
+  // Achievements Module (Sprint 10)
+  {
+    path: 'achievements',
+    canActivate: [authGuard],
+    loadComponent: () => import('./layouts/main-layout/main-layout.component').then(m => m.MainLayoutComponent),
+    loadChildren: () => import('./features/achievements/achievements.routes').then(m => m.achievementRoutes)
+  },
+
   // Default redirect
   {
     path: '',

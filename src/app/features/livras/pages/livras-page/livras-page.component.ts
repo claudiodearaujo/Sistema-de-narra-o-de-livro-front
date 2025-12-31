@@ -18,6 +18,7 @@ import {
   LivraTransactionType,
   getTransactionTypeInfo,
 } from '../../../../core/models/livra.model';
+import { LivraPackagesComponent } from '../../../subscription/components/livra-packages/livra-packages.component';
 
 @Component({
   selector: 'app-livras-page',
@@ -34,6 +35,7 @@ import {
     TooltipModule,
     DividerModule,
     TimelineModule,
+    LivraPackagesComponent,
   ],
   template: `
     <div class="livras-page">
@@ -117,6 +119,11 @@ import {
             <span class="how-to-amount">+10 ou mais</span>
           </div>
         </div>
+      </p-card>
+
+      <!-- Buy Livras Section (Sprint 9) -->
+      <p-card styleClass="buy-livras-card">
+        <app-livra-packages />
       </p-card>
 
       <!-- Transaction History -->
