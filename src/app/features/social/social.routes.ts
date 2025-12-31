@@ -87,6 +87,27 @@ export const SOCIAL_ROUTES: Routes = [
         title: 'Em Alta | Livria'
       },
 
+      // Groups - Sprint 11
+      {
+        path: 'groups',
+        loadComponent: () => import('./pages/groups/group-list.component').then(m => m.GroupListComponent),
+        title: 'Grupos | Livria'
+      },
+
+      // Group Detail
+      {
+        path: 'groups/:id',
+        loadComponent: () => import('./pages/groups/group-detail.component').then(m => m.GroupDetailComponent),
+        title: 'Grupo | Livria'
+      },
+
+      // Campaign Detail
+      {
+        path: 'campaigns/:id',
+        loadComponent: () => import('./pages/campaigns/campaign-detail.component').then(m => m.CampaignDetailComponent),
+        title: 'Campanha | Livria'
+      },
+
       // Default redirect to feed
       {
         path: '',

@@ -1,8 +1,10 @@
 // Core Services - Public API
+export * from './campaign.service';
 export * from './character.service';
 export * from './comment.service';
 export * from './custom-voice.service';
 export * from './follow.service';
+export * from './group.service';
 export * from './like.service';
 export * from './livra.service';
 export * from './message.service';

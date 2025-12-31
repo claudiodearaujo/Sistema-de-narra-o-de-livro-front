@@ -71,6 +71,7 @@ export class SocialLayoutComponent implements OnInit, OnDestroy {
   navItems = [
     { label: 'Feed', icon: 'pi pi-home', route: '/social/feed' },
     { label: 'Explorar', icon: 'pi pi-compass', route: '/social/explore' },
+    { label: 'Grupos', icon: 'pi pi-users', route: '/social/groups' },
     { label: 'Buscar', icon: 'pi pi-search', route: '/social/search' },
     { label: 'Notificações', icon: 'pi pi-bell', route: '/social/notifications' },
     { label: 'Mensagens', icon: 'pi pi-envelope', route: '/social/messages' },
@@ -80,6 +81,7 @@ export class SocialLayoutComponent implements OnInit, OnDestroy {
   mobileNavItems = [
     { label: 'Feed', icon: 'pi pi-home', route: '/social/feed' },
     { label: 'Explorar', icon: 'pi pi-compass', route: '/social/explore' },
+    { label: 'Grupos', icon: 'pi pi-users', route: '/social/groups' },
     { label: 'Buscar', icon: 'pi pi-search', route: '/social/search' },
     { label: 'Perfil', icon: 'pi pi-user', route: '/social/profile' },
   ];
