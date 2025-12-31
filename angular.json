@@ -27,7 +27,10 @@
                 "glob": "**/*",
                 "input": "src/assets",
                 "output": "assets"
-              }
+              },
+              "src/manifest.webmanifest",
+              "src/offline.html",
+              "src/sw.js"
             ],
             "styles": [
               "src/styles.css"

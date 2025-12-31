@@ -1,12 +1,11 @@
 import { Component, inject, signal, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { DialogModule } from 'primeng/dialog';
-import { ButtonModule } from 'primeng/button';
-import { InputTextareaModule } from 'primeng/inputtextarea';
-import { SelectButtonModule } from 'primeng/selectbutton';
-import { FileUploadModule } from 'primeng/fileupload';
-import { MessageModule } from 'primeng/message';
+import { Dialog } from 'primeng/dialog';
+import { Button } from 'primeng/button';
+import { Textarea } from 'primeng/textarea';
+import { SelectButton } from 'primeng/selectbutton';
+import { Message } from 'primeng/message';
 import { StoryService, CreateStoryDto, StoryType, Story } from '../../../../core';
 
 @Component({
@@ -15,12 +14,11 @@ import { StoryService, CreateStoryDto, StoryType, Story } from '../../../../core
   imports: [
     CommonModule,
     FormsModule,
-    DialogModule,
-    ButtonModule,
-    InputTextareaModule,
-    SelectButtonModule,
-    FileUploadModule,
-    MessageModule,
+    Dialog,
+    Button,
+    Textarea,
+    SelectButton,
+    Message,
   ],
   template: `
     <p-dialog 
@@ -33,7 +31,7 @@ import { StoryService, CreateStoryDto, StoryType, Story } from '../../../../core
     >
       <!-- Story Type Selection -->
       <div class="type-selection mb-4">
-        <p-selectButton 
+        <p-selectbutton 
           [options]="storyTypes" 
           [(ngModel)]="selectedType"
           optionLabel="label" 

@@ -12,6 +12,7 @@ export * from './narration.service';
 export * from './notification.service';
 export * from './post.service';
 export * from './profile.service';
+export * from './pwa.service';
 export * from './route-loading.service';
 export * from './search.service';
 export * from './speech.service';
