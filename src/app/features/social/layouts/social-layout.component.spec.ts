@@ -14,7 +14,15 @@ describe('SocialLayoutComponent', () => {
 
   beforeEach(async () => {
     const authSpy = jasmine.createSpyObj('AuthService', ['currentUser', 'logout']);
-    authSpy.currentUser.and.returnValue({ id: '1', name: 'Test User', email: 'test@example.com' });
+    authSpy.currentUser.and.returnValue({ 
+      id: '1', 
+      name: 'Test User', 
+      email: 'test@example.com',
+      role: 'USER',
+      isVerified: true,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    });
 
     await TestBed.configureTestingModule({
       imports: [
@@ -42,16 +50,19 @@ describe('SocialLayoutComponent', () => {
   it('should initialize with correct default signals', () => {
     expect(component.notificationCount()).toBe('3');
     expect(component.messageCount()).toBe('1');
-    expect(component.currentUser()).toEqual({ id: '1', name: 'Test User', email: 'test@example.com' });
+    const user = component.currentUser();
+    expect(user?.id).toBe('1');
+    expect(user?.name).toBe('Test User');
+    expect(user?.email).toBe('test@example.com');
   });
 
   it('should check mobile on init', () => {
-    // Mock window.innerWidth
-    spyOnProperty(window, 'innerWidth').and.returnValue(500);
+    // Mock window.innerWidth using Object.defineProperty since spyOnProperty can't be called twice
+    Object.defineProperty(window, 'innerWidth', { value: 500, writable: true, configurable: true });
     component.onResize();
     expect(component.isMobile()).toBeTrue();
 
-    spyOnProperty(window, 'innerWidth').and.returnValue(1024);
+    Object.defineProperty(window, 'innerWidth', { value: 1024, writable: true, configurable: true });
     component.onResize();
     expect(component.isMobile()).toBeFalse();
   });
