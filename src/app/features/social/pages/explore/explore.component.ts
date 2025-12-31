@@ -1,12 +1,20 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { TabsModule } from 'primeng/tabs';
 import { AvatarModule } from 'primeng/avatar';
 import { SkeletonModule } from 'primeng/skeleton';
 import { ChipModule } from 'primeng/chip';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
+
+// Core
+import { PostService } from '../../../../core/services/post.service';
+import { Post } from '../../../../core/models/post.model';
+import { TimeAgoPipe } from '../../../../shared/pipes/time-ago.pipe';
+import { InfiniteScrollDirective } from '../../../../shared/directives/infinite-scroll.directive';
 
 interface TrendingTopic {
   tag: string;
@@ -43,27 +51,123 @@ interface FeaturedBook {
     TabsModule,
     AvatarModule,
     SkeletonModule,
-    ChipModule
+    ChipModule,
+    ToastModule,
+    TimeAgoPipe,
+    InfiniteScrollDirective
   ],
+  providers: [MessageService],
   templateUrl: './explore.component.html',
   styleUrl: './explore.component.css'
 })
 export class ExploreComponent implements OnInit {
+  private readonly router = inject(Router);
+  private readonly postService = inject(PostService);
+  private readonly messageService = inject(MessageService);
+
+  // Posts state
+  posts = signal<Post[]>([]);
+  loadingPosts = signal(false);
+  loadingMore = signal(false);
+  page = signal(1);
+  hasMore = signal(true);
+
+  // Other content state
   loading = signal(true);
   trendingTopics = signal<TrendingTopic[]>([]);
   suggestedUsers = signal<SuggestedUser[]>([]);
   featuredBooks = signal<FeaturedBook[]>([]);
   popularGenres = signal<string[]>([]);
 
+  // Computed
+  isScrollDisabled = computed(() => 
+    this.loadingPosts() || this.loadingMore() || !this.hasMore()
+  );
+
   ngOnInit() {
     this.loadExploreData();
+    this.loadExplorePosts();
+  }
+
+  /**
+   * Load trending posts from API
+   */
+  loadExplorePosts(): void {
+    this.loadingPosts.set(true);
+
+    this.postService.getExplore(1, 20).subscribe({
+      next: (response) => {
+        this.posts.set(response.posts);
+        this.hasMore.set(response.pagination.hasMore);
+        this.page.set(1);
+        this.loadingPosts.set(false);
+      },
+      error: (err) => {
+        console.error('[ExploreComponent] Error loading posts:', err);
+        this.loadingPosts.set(false);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Erro',
+          detail: 'Não foi possível carregar os posts em destaque'
+        });
+      }
+    });
+  }
+
+  /**
+   * Load more posts (infinite scroll)
+   */
+  loadMorePosts(): void {
+    if (this.loadingMore() || !this.hasMore()) return;
+
+    const nextPage = this.page() + 1;
+    this.loadingMore.set(true);
+
+    this.postService.getExplore(nextPage, 20).subscribe({
+      next: (response) => {
+        this.posts.update(posts => [...posts, ...response.posts]);
+        this.hasMore.set(response.pagination.hasMore);
+        this.page.set(nextPage);
+        this.loadingMore.set(false);
+      },
+      error: (err) => {
+        console.error('[ExploreComponent] Error loading more posts:', err);
+        this.loadingMore.set(false);
+      }
+    });
+  }
+
+  /**
+   * Toggle like on a post
+   */
+  togglePostLike(post: Post): void {
+    const previousState = post.isLiked;
+    const previousCount = post.likeCount;
+
+    post.isLiked = !previousState;
+    post.likeCount += post.isLiked ? 1 : -1;
+    this.posts.update(posts => [...posts]);
+
+    this.postService.toggleLike(post.id).subscribe({
+      next: (response) => {
+        post.isLiked = response.liked;
+        post.likeCount = response.likeCount;
+        this.posts.update(posts => [...posts]);
+      },
+      error: () => {
+        post.isLiked = previousState;
+        post.likeCount = previousCount;
+        this.posts.update(posts => [...posts]);
+      }
+    });
   }
 
   async loadExploreData() {
     this.loading.set(true);
     
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    // Simulate API call for trending topics, users, books
+    // TODO: Replace with real API calls when endpoints are ready
+    await new Promise(resolve => setTimeout(resolve, 500));
     
     this.trendingTopics.set([
       { tag: 'FantasiaEpica', posts: 1243 },
@@ -143,5 +247,23 @@ export class ExploreComponent implements OnInit {
       u.id === user.id ? { ...u, isFollowing: !u.isFollowing } : u
     );
     this.suggestedUsers.set(updated);
+  }
+
+  goToPost(postId: string): void {
+    this.router.navigate(['/social/post', postId]);
+  }
+
+  goToProfile(username: string): void {
+    this.router.navigate(['/social/profile', username]);
+  }
+
+  getInitials(name: string): string {
+    if (!name) return '?';
+    return name
+      .split(' ')
+      .map(n => n[0])
+      .join('')
+      .substring(0, 2)
+      .toUpperCase();
   }
 }

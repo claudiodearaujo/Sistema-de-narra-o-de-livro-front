@@ -1,9 +1,13 @@
 <div class="explore-container">
+  <!-- Toast for notifications -->
+  <p-toast></p-toast>
+  
   <p-tabs value="0">
     <p-tablist>
       <p-tab value="0">Em Alta</p-tab>
-      <p-tab value="1">Pessoas</p-tab>
-      <p-tab value="2">Livros</p-tab>
+      <p-tab value="1">Posts</p-tab>
+      <p-tab value="2">Pessoas</p-tab>
+      <p-tab value="3">Livros</p-tab>
     </p-tablist>
     <p-tabpanels>
       <!-- Trending Tab -->
@@ -39,9 +43,98 @@
           </div>
         }
       </p-tabpanel>
+
+      <!-- Posts Tab (NEW) -->
+      <p-tabpanel value="1">
+        @if (loadingPosts() && posts().length === 0) {
+          <div class="posts-skeleton">
+            @for (i of [1,2,3]; track i) {
+              <div class="post-skeleton">
+                <div class="skeleton-header">
+                  <p-skeleton shape="circle" size="3rem"></p-skeleton>
+                  <div class="skeleton-info">
+                    <p-skeleton width="150px" height="1rem"></p-skeleton>
+                    <p-skeleton width="100px" height="0.8rem"></p-skeleton>
+                  </div>
+                </div>
+                <p-skeleton width="100%" height="4rem" styleClass="mt-3"></p-skeleton>
+              </div>
+            }
+          </div>
+        } @else {
+          <div class="section">
+            <h3 class="section-title">Posts em Destaque</h3>
+            
+            @for (post of posts(); track post.id) {
+              <div class="post-card">
+                <div class="post-header">
+                  <p-avatar 
+                    [label]="getInitials(post.user.name)" 
+                    [image]="post.user.avatar || ''"
+                    shape="circle" 
+                    size="normal"
+                    (click)="goToProfile(post.user.username || post.user.id)">
+                  </p-avatar>
+                  <div class="post-user-info">
+                    <span class="user-name" (click)="goToProfile(post.user.username || post.user.id)">
+                      {{ post.user.name }}
+                    </span>
+                    <span class="post-time">{{ post.createdAt | timeAgo }}</span>
+                  </div>
+                </div>
+                
+                <div class="post-content">
+                  <p>{{ post.content }}</p>
+                  @if (post.mediaUrl) {
+                    <img [src]="post.mediaUrl" alt="Post image" class="post-image">
+                  }
+                </div>
+                
+                <div class="post-stats">
+                  <span>{{ post.likeCount }} curtidas</span>
+                  <span>{{ post.commentCount }} comentários</span>
+                </div>
+                
+                <div class="post-actions">
+                  <button 
+                    pButton 
+                    class="p-button-text" 
+                    [icon]="post.isLiked ? 'pi pi-heart-fill' : 'pi pi-heart'"
+                    [class.liked]="post.isLiked"
+                    label="Curtir"
+                    (click)="togglePostLike(post)">
+                  </button>
+                  <button 
+                    pButton 
+                    class="p-button-text" 
+                    icon="pi pi-comment"
+                    label="Comentar"
+                    (click)="goToPost(post.id)">
+                  </button>
+                </div>
+              </div>
+            }
+            
+            <!-- Infinite Scroll -->
+            <div 
+              appInfiniteScroll 
+              (scrolled)="loadMorePosts()"
+              [disabled]="isScrollDisabled()"
+              class="sentinel">
+            </div>
+            
+            @if (loadingMore()) {
+              <div class="loading-more">
+                <i class="pi pi-spin pi-spinner"></i>
+                <span>Carregando mais...</span>
+              </div>
+            }
+          </div>
+        }
+      </p-tabpanel>
       
       <!-- People Tab -->
-      <p-tabpanel value="1">
+      <p-tabpanel value="2">
         @if (loading()) {
           <div class="users-skeleton">
             @for (i of [1,2,3]; track i) {
@@ -87,7 +180,7 @@
       </p-tabpanel>
       
       <!-- Books Tab -->
-      <p-tabpanel value="2">
+      <p-tabpanel value="3">
         @if (loading()) {
           <div class="books-skeleton">
             @for (i of [1,2]; track i) {

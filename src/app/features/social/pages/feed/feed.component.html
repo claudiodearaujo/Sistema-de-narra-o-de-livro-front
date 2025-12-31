@@ -1,4 +1,7 @@
 <div class="feed-container">
+  <!-- Toast for notifications -->
+  <p-toast></p-toast>
+  
   <!-- Story Bar Placeholder -->
   <div class="story-bar">
     <div class="story-item your-story">
@@ -34,6 +37,15 @@
     <button pButton class="p-button-text" icon="pi pi-image" pTooltip="Adicionar imagem"></button>
   </div>
 
+  <!-- Error State -->
+  @if (error()) {
+    <div class="error-state">
+      <i class="pi pi-exclamation-circle error-icon"></i>
+      <p>{{ error() }}</p>
+      <button pButton label="Tentar novamente" icon="pi pi-refresh" (click)="refresh()"></button>
+    </div>
+  }
+
   <!-- Loading Skeleton -->
   @if (loading() && posts().length === 0) {
     @for (i of [1, 2, 3]; track i) {
@@ -57,28 +69,29 @@
   }
 
   <!-- Posts -->
-  @for (post of posts(); track post.id) {
+  @for (post of posts(); track trackByPostId($index, post)) {
     <div class="post-card">
       <div class="post-header">
         <p-avatar 
-          [label]="post.user.initials" 
+          [label]="getInitials(post.user.name)" 
+          [image]="post.user.avatar || ''"
           shape="circle" 
           size="normal"
-          (click)="goToProfile(post.user.username)">
+          (click)="goToProfile(post.user.username || post.user.id)">
         </p-avatar>
         <div class="post-user-info">
-          <span class="user-name" (click)="goToProfile(post.user.username)">
+          <span class="user-name" (click)="goToProfile(post.user.username || post.user.id)">
             {{ post.user.name }}
           </span>
-          <span class="post-time">{{ post.timeAgo }}</span>
+          <span class="post-time">{{ post.createdAt | timeAgo }}</span>
         </div>
         <button pButton class="p-button-text p-button-rounded" icon="pi pi-ellipsis-h"></button>
       </div>
       
       <div class="post-content">
         <p>{{ post.content }}</p>
-        @if (post.imageUrl) {
-          <img [src]="post.imageUrl" alt="Post image" class="post-image">
+        @if (post.mediaUrl) {
+          <img [src]="post.mediaUrl" alt="Post image" class="post-image">
         }
       </div>
       
@@ -114,7 +127,7 @@
   }
 
   <!-- Empty State -->
-  @if (posts().length === 0 && !loading()) {
+  @if (posts().length === 0 && !loading() && !error()) {
     <div class="empty-state">
       <i class="pi pi-inbox empty-icon"></i>
       <h3>Seu feed está vazio</h3>
@@ -123,14 +136,30 @@
     </div>
   }
 
-  <!-- Load More Sentinel -->
-  <div #sentinel class="sentinel"></div>
+  <!-- Infinite Scroll Sentinel -->
+  <div 
+    appInfiniteScroll 
+    (scrolled)="loadMore()"
+    [disabled]="isScrollDisabled()"
+    [threshold]="0.1"
+    rootMargin="200px"
+    class="sentinel">
+  </div>
 
   <!-- Loading More -->
-  @if (loading() && posts().length > 0) {
+  @if (loadingMore()) {
     <div class="loading-more">
       <i class="pi pi-spin pi-spinner"></i>
       <span>Carregando mais posts...</span>
     </div>
   }
 </div>
+
+<!-- Post Composer Modal -->
+<app-post-composer
+  [visible]="showPostComposer()"
+  [userName]="currentUser()?.name || 'Usuário'"
+  [userAvatar]="currentUser()?.avatar || ''"
+  (visibleChange)="showPostComposer.set($event)"
+  (postCreated)="onPostCreated($event)">
+</app-post-composer>

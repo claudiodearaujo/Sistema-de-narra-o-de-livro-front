@@ -1,4 +1,4 @@
-import { Component, signal, OnInit, OnDestroy, ElementRef, ViewChild } from '@angular/core';
+import { Component, signal, OnInit, OnDestroy, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 
@@ -7,6 +7,16 @@ import { ButtonModule } from 'primeng/button';
 import { SkeletonModule } from 'primeng/skeleton';
 import { AvatarModule } from 'primeng/avatar';
 import { TooltipModule } from 'primeng/tooltip';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
+
+// Core
+import { PostService } from '../../../../core/services/post.service';
+import { Post } from '../../../../core/models/post.model';
+import { TimeAgoPipe } from '../../../../shared/pipes/time-ago.pipe';
+import { InfiniteScrollDirective } from '../../../../shared/directives/infinite-scroll.directive';
+import { PostComposerComponent } from '../../../../shared/components/post-composer/post-composer.component';
+import { AuthService } from '../../../../core/auth/services/auth.service';
 
 /**
  * Feed Component
@@ -26,157 +36,200 @@ import { TooltipModule } from 'primeng/tooltip';
     ButtonModule,
     SkeletonModule,
     AvatarModule,
-    TooltipModule
+    TooltipModule,
+    ToastModule,
+    TimeAgoPipe,
+    InfiniteScrollDirective,
+    PostComposerComponent
   ],
+  providers: [MessageService],
   templateUrl: './feed.component.html',
   styleUrl: './feed.component.css'
 })
 export class FeedComponent implements OnInit, OnDestroy {
-  @ViewChild('sentinel') sentinel!: ElementRef;
+  private readonly router = inject(Router);
+  private readonly postService = inject(PostService);
+  private readonly messageService = inject(MessageService);
+  private readonly authService = inject(AuthService);
 
   // State signals
   posts = signal<Post[]>([]);
   loading = signal(false);
+  loadingMore = signal(false);
   page = signal(1);
   hasMore = signal(true);
+  error = signal<string | null>(null);
+  showPostComposer = signal(false);
 
-  // Story mock data
+  // Story mock data (will be replaced with real data later)
   storyUsers = [1, 2, 3, 4, 5];
 
-  private observer?: IntersectionObserver;
-
-  constructor(private router: Router) {}
+  // Computed
+  isScrollDisabled = computed(() => 
+    this.loading() || this.loadingMore() || !this.hasMore()
+  );
+  currentUser = computed(() => this.authService.currentUser());
 
   ngOnInit(): void {
     this.loadPosts();
-    this.setupIntersectionObserver();
   }
 
   ngOnDestroy(): void {
-    this.observer?.disconnect();
+    // Cleanup if needed
   }
 
-  private setupIntersectionObserver(): void {
-    setTimeout(() => {
-      if (!this.sentinel?.nativeElement) return;
-
-      this.observer = new IntersectionObserver(
-        (entries) => {
-          if (entries[0].isIntersecting && !this.loading() && this.hasMore()) {
-            this.loadMore();
-          }
-        },
-        { threshold: 0.1 }
-      );
-
-      this.observer.observe(this.sentinel.nativeElement);
-    }, 100);
-  }
-
+  /**
+   * Load initial posts from API
+   */
   loadPosts(): void {
     this.loading.set(true);
+    this.error.set(null);
 
-    setTimeout(() => {
-      const mockPosts: Post[] = [
-        {
-          id: '1',
-          user: { id: '1', name: 'Maria Silva', username: 'mariasilva', initials: 'MS' },
-          content: 'Acabei de terminar o capítulo 10 do meu novo livro! 📚 Estou muito animada com o rumo que a história está tomando. O que vocês acham de suspenses com reviravoltas?',
-          likeCount: 42,
-          commentCount: 8,
-          isLiked: false,
-          timeAgo: '2h'
-        },
-        {
-          id: '2',
-          user: { id: '2', name: 'João Pereira', username: 'joaopereira', initials: 'JP' },
-          content: 'Dica para escritores: sempre mantenha um bloco de notas por perto. As melhores ideias surgem nos momentos mais inesperados! ✍️',
-          likeCount: 156,
-          commentCount: 23,
-          isLiked: true,
-          timeAgo: '5h'
-        },
-        {
-          id: '3',
-          user: { id: '3', name: 'Ana Costa', username: 'anacosta', initials: 'AC' },
-          content: 'Novo capítulo disponível! "A Sombra do Passado" está cada vez mais intenso. Quem já leu?',
-          imageUrl: 'https://picsum.photos/600/400?random=1',
-          likeCount: 89,
-          commentCount: 15,
-          isLiked: false,
-          timeAgo: '8h'
-        }
-      ];
-
-      this.posts.set(mockPosts);
-      this.loading.set(false);
-    }, 1000);
-  }
-
-  loadMore(): void {
-    if (this.loading() || !this.hasMore()) return;
-
-    this.page.update(p => p + 1);
-    this.loading.set(true);
-
-    setTimeout(() => {
-      if (this.page() > 3) {
-        this.hasMore.set(false);
+    this.postService.getFeed(1, 20).subscribe({
+      next: (response) => {
+        this.posts.set(response.posts);
+        this.hasMore.set(response.pagination.hasMore);
+        this.page.set(1);
         this.loading.set(false);
-        return;
+      },
+      error: (err) => {
+        console.error('[FeedComponent] Error loading posts:', err);
+        this.error.set('Erro ao carregar o feed. Tente novamente.');
+        this.loading.set(false);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Erro',
+          detail: 'Não foi possível carregar o feed'
+        });
       }
-
-      const morePosts: Post[] = [
-        {
-          id: `${this.page()}-1`,
-          user: { id: '4', name: 'User ' + this.page(), username: 'user' + this.page(), initials: 'U' + this.page() },
-          content: 'Este é um post carregado na página ' + this.page(),
-          likeCount: Math.floor(Math.random() * 100),
-          commentCount: Math.floor(Math.random() * 20),
-          isLiked: false,
-          timeAgo: this.page() + 'd'
-        }
-      ];
-
-      this.posts.update(posts => [...posts, ...morePosts]);
-      this.loading.set(false);
-    }, 1000);
+    });
   }
 
+  /**
+   * Load more posts (infinite scroll)
+   */
+  loadMore(): void {
+    if (this.loadingMore() || !this.hasMore()) return;
+
+    const nextPage = this.page() + 1;
+    this.loadingMore.set(true);
+
+    this.postService.getFeed(nextPage, 20).subscribe({
+      next: (response) => {
+        this.posts.update(posts => [...posts, ...response.posts]);
+        this.hasMore.set(response.pagination.hasMore);
+        this.page.set(nextPage);
+        this.loadingMore.set(false);
+      },
+      error: (err) => {
+        console.error('[FeedComponent] Error loading more posts:', err);
+        this.loadingMore.set(false);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Erro',
+          detail: 'Não foi possível carregar mais posts'
+        });
+      }
+    });
+  }
+
+  /**
+   * Refresh feed
+   */
+  refresh(): void {
+    this.page.set(1);
+    this.loadPosts();
+  }
+
+  /**
+   * Toggle like on a post (optimistic update)
+   */
   toggleLike(post: Post): void {
-    post.isLiked = !post.isLiked;
+    const previousState = post.isLiked;
+    const previousCount = post.likeCount;
+
+    // Optimistic update
+    post.isLiked = !previousState;
     post.likeCount += post.isLiked ? 1 : -1;
+
+    // Update signal
+    this.posts.update(posts => [...posts]);
+
+    this.postService.toggleLike(post.id).subscribe({
+      next: (response) => {
+        // Update with server response
+        post.isLiked = response.liked;
+        post.likeCount = response.likeCount;
+        this.posts.update(posts => [...posts]);
+      },
+      error: (err) => {
+        console.error('[FeedComponent] Error toggling like:', err);
+        // Rollback
+        post.isLiked = previousState;
+        post.likeCount = previousCount;
+        this.posts.update(posts => [...posts]);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Erro',
+          detail: 'Não foi possível curtir o post'
+        });
+      }
+    });
   }
 
+  /**
+   * Open post composer modal
+   */
   openPostModal(): void {
-    console.log('Open post modal');
+    this.showPostComposer.set(true);
   }
 
+  /**
+   * Handle new post created
+   */
+  onPostCreated(post: Post): void {
+    // Add new post to the beginning of the feed
+    this.posts.update(posts => [post, ...posts]);
+  }
+
+  /**
+   * Navigate to user profile
+   */
   goToProfile(username: string): void {
     this.router.navigate(['/social/profile', username]);
   }
 
+  /**
+   * Navigate to post detail
+   */
   goToPost(postId: string): void {
     this.router.navigate(['/social/post', postId]);
   }
 
+  /**
+   * Navigate to explore page
+   */
   goToExplore(): void {
     this.router.navigate(['/social/explore']);
   }
-}
 
-interface Post {
-  id: string;
-  user: {
-    id: string;
-    name: string;
-    username: string;
-    initials: string;
-  };
-  content: string;
-  imageUrl?: string;
-  likeCount: number;
-  commentCount: number;
-  isLiked: boolean;
-  timeAgo: string;
+  /**
+   * Get user initials for avatar fallback
+   */
+  getInitials(name: string): string {
+    if (!name) return '?';
+    return name
+      .split(' ')
+      .map(n => n[0])
+      .join('')
+      .substring(0, 2)
+      .toUpperCase();
+  }
+
+  /**
+   * Track posts by ID for ngFor
+   */
+  trackByPostId(index: number, post: Post): string {
+    return post.id;
+  }
 }

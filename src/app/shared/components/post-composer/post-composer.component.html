@@ -1,0 +1,97 @@
+<p-dialog 
+  header="Criar Post" 
+  [(visible)]="visible" 
+  [modal]="true"
+  [dismissableMask]="true"
+  [closable]="!submitting()"
+  [style]="{width: '500px', maxWidth: '95vw'}"
+  (onHide)="close()">
+  
+  <div class="composer-content">
+    <!-- User Info -->
+    <div class="composer-header">
+      <p-avatar 
+        [image]="userAvatar || ''"
+        [label]="!userAvatar ? getInitials() : ''"
+        shape="circle"
+        size="normal">
+      </p-avatar>
+      <span class="user-name">{{ userName || 'Você' }}</span>
+    </div>
+
+    <!-- Content Input -->
+    <textarea
+      pTextarea
+      class="content-input"
+      [ngModel]="content()"
+      (ngModelChange)="onContentChange($event)"
+      placeholder="No que você está pensando?"
+      [rows]="4"
+      [autoResize]="true"
+      [maxlength]="MAX_CHARACTERS"
+      [disabled]="submitting()">
+    </textarea>
+
+    <!-- Character Counter -->
+    <div class="character-counter" [class.warning]="remainingCharacters < 100" [class.danger]="remainingCharacters < 0">
+      {{ remainingCharacters }} caracteres restantes
+    </div>
+
+    <!-- Image URL Input -->
+    @if (showImageInput()) {
+      <div class="image-input-container">
+        <input
+          type="url"
+          pInputText
+          class="image-url-input"
+          [ngModel]="mediaUrl()"
+          (ngModelChange)="onMediaUrlChange($event)"
+          placeholder="Cole a URL da imagem..."
+          [disabled]="submitting()">
+        @if (mediaUrl()) {
+          <div class="image-preview">
+            <img [src]="mediaUrl()" alt="Preview" (error)="mediaUrl.set('')">
+          </div>
+        }
+      </div>
+    }
+  </div>
+
+  <!-- Actions -->
+  <ng-template pTemplate="footer">
+    <div class="composer-footer">
+      <div class="action-buttons">
+        <button 
+          pButton 
+          class="p-button-text p-button-rounded"
+          icon="pi pi-image"
+          [class.active]="showImageInput()"
+          pTooltip="Adicionar imagem"
+          tooltipPosition="top"
+          (click)="toggleImageInput()"
+          [disabled]="submitting()">
+        </button>
+        <!-- Future: emoji picker, polls, etc -->
+      </div>
+      
+      <div class="submit-buttons">
+        <button 
+          pButton 
+          class="p-button-text"
+          label="Cancelar"
+          (click)="close()"
+          [disabled]="submitting()">
+        </button>
+        <button 
+          pButton 
+          label="Publicar"
+          icon="pi pi-send"
+          iconPos="right"
+          [disabled]="!isValid || submitting()"
+          [loading]="submitting()"
+          (click)="submit()">
+        </button>
+      </div>
+    </div>
+  </ng-template>
+</p-dialog>

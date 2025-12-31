@@ -2,6 +2,7 @@
 export * from './character.service';
 export * from './custom-voice.service';
 export * from './narration.service';
+export * from './post.service';
 export * from './route-loading.service';
 export * from './speech.service';
 export * from './ssml.service';
