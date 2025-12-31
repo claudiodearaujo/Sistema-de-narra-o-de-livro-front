@@ -1,4 +1,4 @@
-import { Component, signal, OnInit, OnDestroy, inject, computed } from '@angular/core';
+import { Component, signal, OnInit, OnDestroy, inject, computed, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 
@@ -13,10 +13,14 @@ import { MessageService } from 'primeng/api';
 // Core
 import { PostService } from '../../../../core/services/post.service';
 import { Post } from '../../../../core/models/post.model';
+import { UserStories } from '../../../../core/models/story.model';
 import { TimeAgoPipe } from '../../../../shared/pipes/time-ago.pipe';
 import { InfiniteScrollDirective } from '../../../../shared/directives/infinite-scroll.directive';
 import { PostComposerComponent } from '../../../../shared/components/post-composer/post-composer.component';
 import { AuthService } from '../../../../core/auth/services/auth.service';
+import { StoryBarComponent } from '../../components/story-bar/story-bar.component';
+import { StoryViewerComponent } from '../../components/story-viewer/story-viewer.component';
+import { StoryCreatorComponent } from '../../components/story-creator/story-creator.component';
 
 /**
  * Feed Component
@@ -40,7 +44,10 @@ import { AuthService } from '../../../../core/auth/services/auth.service';
     ToastModule,
     TimeAgoPipe,
     InfiniteScrollDirective,
-    PostComposerComponent
+    PostComposerComponent,
+    StoryBarComponent,
+    StoryViewerComponent,
+    StoryCreatorComponent
   ],
   providers: [MessageService],
   templateUrl: './feed.component.html',
@@ -61,8 +68,13 @@ export class FeedComponent implements OnInit, OnDestroy {
   error = signal<string | null>(null);
   showPostComposer = signal(false);
 
-  // Story mock data (will be replaced with real data later)
-  storyUsers = [1, 2, 3, 4, 5];
+  // Stories state
+  showStoryViewer = signal(false);
+  storyViewerData = signal<UserStories[]>([]);
+  storyViewerStartIndex = signal(0);
+
+  @ViewChild('storyCreator') storyCreator!: StoryCreatorComponent;
+  @ViewChild('storyBar') storyBar!: StoryBarComponent;
 
   // Computed
   isScrollDisabled = computed(() => 
@@ -231,5 +243,48 @@ export class FeedComponent implements OnInit, OnDestroy {
    */
   trackByPostId(index: number, post: Post): string {
     return post.id;
+  }
+
+  /**
+   * Open story creator modal
+   */
+  openStoryCreator(): void {
+    this.storyCreator?.open();
+  }
+
+  /**
+   * Open story viewer for a user's stories
+   */
+  openStoryViewer(userStories: UserStories): void {
+    if (!this.storyBar) return;
+    
+    const allStories = (this.storyBar as any).userStories() || [];
+    const index = allStories.findIndex((s: UserStories) => s.userId === userStories.userId);
+    
+    this.storyViewerData.set(allStories);
+    this.storyViewerStartIndex.set(Math.max(0, index));
+    this.showStoryViewer.set(true);
+  }
+
+  /**
+   * Close story viewer
+   */
+  closeStoryViewer(): void {
+    this.showStoryViewer.set(false);
+    // Refresh stories after viewing
+    this.storyBar?.loadStories();
+  }
+
+  /**
+   * Handle story created
+   */
+  onStoryCreated(): void {
+    this.messageService.add({
+      severity: 'success',
+      summary: 'Sucesso',
+      detail: 'Story publicado com sucesso!'
+    });
+    // Refresh story bar
+    this.storyBar?.loadStories();
   }
 }

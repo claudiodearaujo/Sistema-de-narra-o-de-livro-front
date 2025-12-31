@@ -16,6 +16,7 @@ export * from './route-loading.service';
 export * from './search.service';
 export * from './speech.service';
 export * from './ssml.service';
+export * from './story.service';
 export * from './subscription.service';
 export * from './voice.service';
 export * from './websocket.service';

@@ -2,27 +2,12 @@
   <!-- Toast for notifications -->
   <p-toast></p-toast>
   
-  <!-- Story Bar Placeholder -->
-  <div class="story-bar">
-    <div class="story-item your-story">
-      <div class="story-avatar add">
-        <i class="pi pi-plus"></i>
-      </div>
-      <span>Seu Story</span>
-    </div>
-    @for (i of storyUsers; track i) {
-      <div class="story-item">
-        <div class="story-avatar" [class.unviewed]="i % 2 === 0">
-          <p-avatar 
-            [label]="'U' + i" 
-            shape="circle" 
-            size="large">
-          </p-avatar>
-        </div>
-        <span>User {{ i }}</span>
-      </div>
-    }
-  </div>
+  <!-- Story Bar -->
+  <app-story-bar 
+    #storyBar
+    (createStory)="openStoryCreator()"
+    (viewStory)="openStoryViewer($event)"
+  />
 
   <!-- Post Composer -->
   <div class="post-composer">
@@ -163,3 +148,19 @@
   (visibleChange)="showPostComposer.set($event)"
   (postCreated)="onPostCreated($event)">
 </app-post-composer>
+
+<!-- Story Creator Modal -->
+<app-story-creator 
+  #storyCreator
+  (created)="onStoryCreated()"
+/>
+
+<!-- Story Viewer -->
+@if (showStoryViewer()) {
+  <app-story-viewer
+    [userStories]="storyViewerData()"
+    [startIndex]="storyViewerStartIndex()"
+    [currentUserId]="currentUser()?.id || ''"
+    (close)="closeStoryViewer()"
+  />
+}
