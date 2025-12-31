@@ -5,16 +5,18 @@ import { environment } from '../../../environments/environment';
 
 /**
  * User profile statistics
+ * Note: Field names match backend response (posts, followers, etc.)
  */
 export interface ProfileStats {
-  postCount: number;
-  followerCount: number;
-  followingCount: number;
-  bookCount: number;
+  posts: number;
+  followers: number;
+  following: number;
+  books: number;
   totalLikes: number;
-  level: number;
-  xp: number;
-  livraBalance: number;
+  // Future Sprint 8 fields - optional until implemented
+  level?: number;
+  xp?: number;
+  livraBalance?: number;
 }
 
 /**
@@ -56,10 +58,9 @@ export interface UserPost {
   content: string;
   mediaUrl: string | null;
   likeCount: number;
-  likesCount?: number; // alias
   commentCount: number;
-  commentsCount?: number; // alias
   createdAt: Date;
+  isLiked?: boolean;
 }
 
 /**

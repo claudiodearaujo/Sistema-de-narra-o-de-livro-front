@@ -41,6 +41,10 @@ export class ProfileComponent implements OnInit, OnDestroy {
   posts = signal<UserPost[]>([]);
   books = signal<UserBook[]>([]);
   
+  // Error states
+  error = signal<string | null>(null);
+  notFound = signal(false);
+  
   loadingPosts = signal(false);
   loadingBooks = signal(false);
   loadingFollow = signal(false);
@@ -68,7 +72,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   
   xpProgress = computed(() => {
     const p = this.profile();
-    if (!p) return 0;
+    if (!p || !p.stats.level || !p.stats.xp) return 0;
     const xpForNextLevel = p.stats.level * 1000;
     return (p.stats.xp / xpForNextLevel) * 100;
   });
@@ -87,6 +91,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   loadProfile(username: string) {
     this.loading.set(true);
+    this.error.set(null);
+    this.notFound.set(false);
     this.postsPage.set(1);
     this.booksPage.set(1);
     
@@ -103,6 +109,15 @@ export class ProfileComponent implements OnInit, OnDestroy {
       error: (err) => {
         console.error('Failed to load profile:', err);
         this.loading.set(false);
+        
+        if (err.status === 404) {
+          this.notFound.set(true);
+          this.error.set('Usuário não encontrado');
+        } else if (err.status === 0) {
+          this.error.set('Erro de conexão. Verifique sua internet.');
+        } else {
+          this.error.set('Erro ao carregar perfil. Tente novamente.');
+        }
       }
     });
   }
@@ -201,7 +216,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
           isFollowing: response.following,
           stats: {
             ...p.stats,
-            followerCount: response.followerCount
+            followers: response.followerCount
           }
         });
         this.loadingFollow.set(false);

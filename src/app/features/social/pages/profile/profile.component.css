@@ -3,6 +3,35 @@
   margin: 0 auto;
 }
 
+/* Error State */
+.error-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  padding: 2rem;
+}
+
+.error-content {
+  text-align: center;
+}
+
+.error-icon {
+  font-size: 4rem;
+  color: var(--text-color-secondary);
+  margin-bottom: 1rem;
+}
+
+.error-content h2 {
+  margin: 0 0 0.5rem;
+  color: var(--text-color);
+}
+
+.error-content p {
+  margin: 0 0 1.5rem;
+  color: var(--text-color-secondary);
+}
+
 /* Banner */
 .profile-banner {
   height: 200px;

@@ -9,6 +9,27 @@
         <p-skeleton width="150px" height="1rem" class="mt-2"></p-skeleton>
       </div>
     </div>
+  } @else if (error(); as errorMessage) {
+    <!-- Error State -->
+    <div class="error-container">
+      <div class="error-content">
+        @if (notFound()) {
+          <i class="pi pi-user-minus error-icon"></i>
+          <h2>Usuário não encontrado</h2>
+          <p>O perfil que você está procurando não existe ou foi removido.</p>
+        } @else {
+          <i class="pi pi-exclamation-triangle error-icon"></i>
+          <h2>Ops! Algo deu errado</h2>
+          <p>{{ errorMessage }}</p>
+        }
+        <p-button 
+          label="Voltar" 
+          icon="pi pi-arrow-left" 
+          severity="secondary" 
+          routerLink="/social/feed">
+        </p-button>
+      </div>
+    </div>
   } @else if (profile(); as p) {
     <!-- Banner -->
     <div class="profile-banner">
@@ -80,37 +101,41 @@
       
       <div class="stats">
         <button class="stat-item" (click)="openFollowers()">
-          <strong>{{ formatNumber(p.stats.followerCount) }}</strong>
+          <strong>{{ formatNumber(p.stats.followers) }}</strong>
           <span>Seguidores</span>
         </button>
         <button class="stat-item" (click)="openFollowing()">
-          <strong>{{ formatNumber(p.stats.followingCount) }}</strong>
+          <strong>{{ formatNumber(p.stats.following) }}</strong>
           <span>Seguindo</span>
         </button>
         <span class="stat-item">
-          <strong>{{ p.stats.postCount }}</strong>
+          <strong>{{ p.stats.posts }}</strong>
           <span>Posts</span>
         </span>
         <span class="stat-item">
-          <strong>{{ p.stats.bookCount }}</strong>
+          <strong>{{ p.stats.books }}</strong>
           <span>Livros</span>
         </span>
       </div>
       
-      <!-- Gamification -->
-      <div class="gamification-section">
-        <div class="level-badge">
-          <span class="level-number">{{ p.stats.level }}</span>
-          <span class="level-label">Nível</span>
+      <!-- Gamification (Sprint 8) -->
+      @if (p.stats.level) {
+        <div class="gamification-section">
+          <div class="level-badge">
+            <span class="level-number">{{ p.stats.level }}</span>
+            <span class="level-label">Nível</span>
+          </div>
+          <div class="xp-bar">
+            <div class="xp-progress" [style.width.%]="xpProgress()"></div>
+          </div>
+          @if (p.stats.livraBalance !== undefined) {
+            <div class="livra-balance">
+              <i class="pi pi-wallet"></i>
+              <span>{{ formatNumber(p.stats.livraBalance!) }} LIVRA</span>
+            </div>
+          }
         </div>
-        <div class="xp-bar">
-          <div class="xp-progress" [style.width.%]="xpProgress()"></div>
-        </div>
-        <div class="livra-balance">
-          <i class="pi pi-wallet"></i>
-          <span>{{ formatNumber(p.stats.livraBalance) }} LIVRA</span>
-        </div>
-      </div>
+      }
     </div>
     
     <!-- Tabs -->
