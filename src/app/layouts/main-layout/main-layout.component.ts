@@ -74,22 +74,26 @@ export class MainLayoutComponent {
       {
         label: 'Rede Social',
         icon: 'pi pi-globe',
-        disabled: true, // Future module
         items: [
           {
             label: 'Feed',
             icon: 'pi pi-th-large',
-            disabled: true
+            command: () => this.router.navigate(['/social/feed'])
           },
           {
             label: 'Explorar',
             icon: 'pi pi-search',
-            disabled: true
+            command: () => this.router.navigate(['/social/explore'])
           },
           {
             label: 'Mensagens',
             icon: 'pi pi-envelope',
-            disabled: true
+            command: () => this.router.navigate(['/social/messages'])
+          },
+          {
+            label: 'Meu Perfil',
+            icon: 'pi pi-user',
+            command: () => this.router.navigate(['/social/profile'])
           }
         ]
       }

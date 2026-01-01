@@ -157,6 +157,6 @@ export class ChapterListComponent implements OnInit {
     }
 
     viewChapter(chapter: Chapter) {
-        this.router.navigate(['/chapters', chapter.id]);
+        this.router.navigate(['/writer/chapters', chapter.id]);
     }
 }

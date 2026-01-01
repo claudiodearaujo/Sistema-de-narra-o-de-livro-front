@@ -79,7 +79,7 @@ export class BookFormComponent implements OnInit {
                     detail: 'Falha ao carregar livro'
                 });
                 this.loading = false;
-                this.router.navigate(['/books']);
+                this.router.navigate(['/writer/books']);
             }
         });
     }
@@ -105,7 +105,7 @@ export class BookFormComponent implements OnInit {
                     detail: `Livro ${this.isEditMode ? 'atualizado' : 'criado'} com sucesso`
                 });
                 setTimeout(() => {
-                    this.router.navigate(['/books']);
+                    this.router.navigate(['/writer/books']);
                 }, 1000);
             },
             error: (error) => {
@@ -121,7 +121,7 @@ export class BookFormComponent implements OnInit {
     }
 
     cancel() {
-        this.router.navigate(['/books']);
+        this.router.navigate(['/writer/books']);
     }
 
     private markFormGroupTouched(formGroup: FormGroup) {

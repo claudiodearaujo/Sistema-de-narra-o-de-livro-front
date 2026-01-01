@@ -110,22 +110,22 @@ export class DashboardComponent implements OnInit {
     }
 
     navigateToBooks() {
-        this.router.navigate(['/books']);
+        this.router.navigate(['/writer/books']);
     }
 
     navigateToNewBook() {
-        this.router.navigate(['/books/new']);
+        this.router.navigate(['/writer/books/new']);
     }
 
     navigateToCharacters() {
-        this.router.navigate(['/characters']);
+        this.router.navigate(['/writer/characters']);
     }
 
     navigateToVoices() {
-        this.router.navigate(['/voices']);
+        this.router.navigate(['/writer/voices']);
     }
 
     navigateToBook(bookId: string) {
-        this.router.navigate(['/books', bookId]);
+        this.router.navigate(['/writer/books', bookId]);
     }
 }

@@ -70,7 +70,7 @@ export class BookDetailComponent implements OnInit {
                     detail: 'Falha ao carregar livro'
                 });
                 this.loading = false;
-                this.router.navigate(['/books']);
+                this.router.navigate(['/writer/books']);
             }
         });
     }
@@ -90,12 +90,12 @@ export class BookDetailComponent implements OnInit {
 
     editBook() {
         if (this.bookId) {
-            this.router.navigate(['/books', this.bookId, 'edit']);
+            this.router.navigate(['/writer/books', this.bookId, 'edit']);
         }
     }
 
     backToList() {
-        this.router.navigate(['/books']);
+        this.router.navigate(['/writer/books']);
     }
 
     onTabChange(value: string | number | undefined) {

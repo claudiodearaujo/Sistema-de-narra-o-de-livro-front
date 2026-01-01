@@ -96,11 +96,11 @@ export class BookListComponent implements OnInit {
     }
 
     viewBook(id: string) {
-        this.router.navigate(['/books', id]);
+        this.router.navigate(['/writer/books', id]);
     }
 
     editBook(id: string) {
-        this.router.navigate(['/books', id, 'edit']);
+        this.router.navigate(['/writer/books', id, 'edit']);
     }
 
     deleteBook(id: string) {
@@ -132,6 +132,6 @@ export class BookListComponent implements OnInit {
     }
 
     createBook() {
-        this.router.navigate(['/books/new']);
+        this.router.navigate(['/writer/books/new']);
     }
 }
