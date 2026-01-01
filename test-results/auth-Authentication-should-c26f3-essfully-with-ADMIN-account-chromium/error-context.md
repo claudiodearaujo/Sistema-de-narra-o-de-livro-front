@@ -6,17 +6,17 @@
     - heading "Bem-vindo de volta!" [level=1] [ref=e8]
     - paragraph [ref=e9]: Entre na sua conta para continuar
   - alert [ref=e11]:
-    - generic [ref=e13]: Credenciais inválidas
+    - generic [ref=e13]: Erro de conexão
   - generic [ref=e14]:
     - generic [ref=e15]:
       - generic [ref=e16]: E-mail
       - textbox "E-mail" [ref=e17]:
         - /placeholder: seu@email.com
-        - text: usuario@livria.com.br
+        - text: sophia@livria.com.br
     - generic [ref=e18]:
       - generic [ref=e19]: Senha
       - generic [ref=e20]:
-        - textbox "Sua senha" [ref=e21]: User@2024!
+        - textbox "Sua senha" [ref=e21]: Livria@2024!
         - img [ref=e22]
     - generic [ref=e24]:
       - checkbox "Lembrar-me" [ref=e26] [cursor=pointer]

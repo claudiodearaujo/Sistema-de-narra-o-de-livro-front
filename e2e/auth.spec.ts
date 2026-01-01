@@ -75,43 +75,51 @@ test.describe('Authentication', () => {
   test('should login successfully with USER account', async ({ page }) => {
     await page.goto('/auth/login');
     
+    // Wait for form to be ready
+    await page.locator('#email').waitFor({ state: 'visible' });
+    
     // Fill with valid credentials
     await page.locator('#email').fill(TEST_USERS.USER.email);
-    await page.locator('#password input, input[type="password"]').first().fill(TEST_USERS.USER.password);
-    await page.locator('button[type="submit"]').click();
+    await page.locator('input[type="password"], p-password input').first().fill(TEST_USERS.USER.password);
+    
+    // Wait for button to be enabled then click
+    await page.locator('button[type="submit"]:not([disabled])').click();
     
     // Should redirect to writer area, dashboard, social or feed
-    await expect(page).toHaveURL(/writer|dashboard|social|feed/, { timeout: 15000 });
+    await expect(page).toHaveURL(/writer|dashboard|social|feed/, { timeout: 30000 });
   });
 
   test('should login successfully with WRITER account', async ({ page }) => {
     await page.goto('/auth/login');
     
+    await page.locator('#email').waitFor({ state: 'visible' });
     await page.locator('#email').fill(TEST_USERS.WRITER.email);
-    await page.locator('#password input, input[type="password"]').first().fill(TEST_USERS.WRITER.password);
-    await page.locator('button[type="submit"]').click();
+    await page.locator('input[type="password"], p-password input').first().fill(TEST_USERS.WRITER.password);
+    await page.locator('button[type="submit"]:not([disabled])').click();
     
-    await expect(page).toHaveURL(/writer|dashboard|social|feed/, { timeout: 15000 });
+    await expect(page).toHaveURL(/writer|dashboard|social|feed/, { timeout: 30000 });
   });
 
   test('should login successfully with PRO account', async ({ page }) => {
     await page.goto('/auth/login');
     
+    await page.locator('#email').waitFor({ state: 'visible' });
     await page.locator('#email').fill(TEST_USERS.PRO.email);
-    await page.locator('#password input, input[type="password"]').first().fill(TEST_USERS.PRO.password);
-    await page.locator('button[type="submit"]').click();
+    await page.locator('input[type="password"], p-password input').first().fill(TEST_USERS.PRO.password);
+    await page.locator('button[type="submit"]:not([disabled])').click();
     
-    await expect(page).toHaveURL(/writer|dashboard|social|feed/, { timeout: 15000 });
+    await expect(page).toHaveURL(/writer|dashboard|social|feed/, { timeout: 30000 });
   });
 
   test('should login successfully with ADMIN account', async ({ page }) => {
     await page.goto('/auth/login');
     
+    await page.locator('#email').waitFor({ state: 'visible' });
     await page.locator('#email').fill(TEST_USERS.ADMIN.email);
-    await page.locator('#password input, input[type="password"]').first().fill(TEST_USERS.ADMIN.password);
-    await page.locator('button[type="submit"]').click();
+    await page.locator('input[type="password"], p-password input').first().fill(TEST_USERS.ADMIN.password);
+    await page.locator('button[type="submit"]:not([disabled])').click();
     
-    await expect(page).toHaveURL(/writer|dashboard|social|feed/, { timeout: 15000 });
+    await expect(page).toHaveURL(/writer|dashboard|social|feed/, { timeout: 30000 });
   });
 
   test('should redirect unauthenticated user to login', async ({ page }) => {

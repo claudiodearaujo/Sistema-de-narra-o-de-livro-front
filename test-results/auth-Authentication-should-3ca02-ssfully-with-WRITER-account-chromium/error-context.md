@@ -12,11 +12,11 @@
       - generic [ref=e16]: E-mail
       - textbox "E-mail" [ref=e17]:
         - /placeholder: seu@email.com
-        - text: usuario@livria.com.br
+        - text: escritor@livria.com.br
     - generic [ref=e18]:
       - generic [ref=e19]: Senha
       - generic [ref=e20]:
-        - textbox "Sua senha" [ref=e21]: User@2024!
+        - textbox "Sua senha" [ref=e21]: Writer@2024!
         - img [ref=e22]
     - generic [ref=e24]:
       - checkbox "Lembrar-me" [ref=e26] [cursor=pointer]
