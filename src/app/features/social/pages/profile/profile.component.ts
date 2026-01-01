@@ -86,8 +86,57 @@ export class ProfileComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.route.params.pipe(takeUntil(this.destroy$)).subscribe(params => {
       const username = params['username'];
-      this.loadProfile(username);
+      if (username) {
+        this.loadProfile(username);
+      } else {
+        // Load current user's profile when no username provided
+        this.loadOwnProfile();
+      }
     });
+  }
+
+  loadOwnProfile() {
+    this.loading.set(true);
+    this.error.set(null);
+    this.notFound.set(false);
+    
+    const currentUser = this.authService.currentUser();
+    if (!currentUser) {
+      this.loading.set(false);
+      this.error.set('Você precisa estar logado para ver seu perfil.');
+      return;
+    }
+    
+    // If user has username, use it to load profile
+    if (currentUser.username) {
+      this.loadProfile(currentUser.username);
+    } else {
+      // Fallback: load by ID via profile service
+      this.profileService.getMyProfile().pipe(takeUntil(this.destroy$)).subscribe({
+        next: (profile) => {
+          this.profile.set(profile);
+          this.loading.set(false);
+          
+          // Load posts for the profile
+          if (profile.username) {
+            this.profileService.getUserPosts(profile.username, 1, 10).pipe(takeUntil(this.destroy$)).subscribe({
+              next: (posts) => {
+                this.posts.set(posts.posts);
+                this.hasMorePosts.set(posts.pagination.hasMore);
+              }
+            });
+          }
+          
+          // Load achievements
+          this.loadAchievements(profile.id);
+        },
+        error: (err) => {
+          console.error('Failed to load own profile:', err);
+          this.loading.set(false);
+          this.error.set('Erro ao carregar seu perfil. Tente novamente.');
+        }
+      });
+    }
   }
 
   ngOnDestroy() {

@@ -8,6 +8,7 @@ import { SkeletonModule } from 'primeng/skeleton';
 import { InputTextModule } from 'primeng/inputtext';
 import { BadgeModule } from 'primeng/badge';
 import { MessageModule } from 'primeng/message';
+import { DialogModule } from 'primeng/dialog';
 import { MessageService, Conversation } from '../../../../core/services/message.service';
 import { WebSocketService } from '../../../../core/services/websocket.service';
 import { Subject, takeUntil } from 'rxjs';
@@ -24,7 +25,8 @@ import { Subject, takeUntil } from 'rxjs';
     SkeletonModule,
     InputTextModule,
     BadgeModule,
-    MessageModule
+    MessageModule,
+    DialogModule
   ],
   templateUrl: './messages.component.html',
   styleUrl: './messages.component.css'
@@ -40,6 +42,10 @@ export class MessagesComponent implements OnInit, OnDestroy {
   page = signal(1);
   hasMore = signal(false);
   loadingMore = signal(false);
+  showNewMessageDialog = signal(false);
+  searchUserQuery = signal('');
+  searchingUsers = signal(false);
+  foundUsers = signal<Array<{id: string; name: string; username: string | null; avatar: string | null}>>([]);
 
   // Use service signals directly
   readonly conversations = this.messageService.conversations;
@@ -147,5 +153,30 @@ export class MessagesComponent implements OnInit, OnDestroy {
 
   retry() {
     this.loadConversations();
+  }
+
+  openNewMessageDialog() {
+    this.showNewMessageDialog.set(true);
+    this.searchUserQuery.set('');
+    this.foundUsers.set([]);
+  }
+
+  closeNewMessageDialog() {
+    this.showNewMessageDialog.set(false);
+    this.searchUserQuery.set('');
+    this.foundUsers.set([]);
+  }
+
+  // Note: This is a placeholder - would need a user search service
+  searchUsers(query: string) {
+    if (!query || query.length < 2) {
+      this.foundUsers.set([]);
+      return;
+    }
+    this.searchingUsers.set(true);
+    // Placeholder - in real implementation, call a search API
+    setTimeout(() => {
+      this.searchingUsers.set(false);
+    }, 500);
   }
 }

@@ -4,7 +4,7 @@
     @if (totalUnread() > 0) {
       <p-badge [value]="totalUnread().toString()" severity="danger"></p-badge>
     }
-    <p-button icon="pi pi-pencil" [rounded]="true" [text]="true" severity="secondary" class="new-message-btn"></p-button>
+    <p-button icon="pi pi-pencil" [rounded]="true" [text]="true" severity="secondary" class="new-message-btn" (onClick)="openNewMessageDialog()"></p-button>
   </div>
   
   <!-- Error State -->
@@ -88,7 +88,7 @@
               <i class="pi pi-comments empty-icon"></i>
               <h3>Nenhuma mensagem</h3>
               <p>Comece uma conversa com alguém!</p>
-              <p-button label="Nova Mensagem" icon="pi pi-plus" class="mt-3"></p-button>
+              <p-button label="Nova Mensagem" icon="pi pi-plus" class="mt-3" (onClick)="openNewMessageDialog()"></p-button>
             }
           </div>
         }
@@ -108,3 +108,64 @@
     }
   }
 </div>
+
+<!-- New Message Dialog -->
+<p-dialog 
+  header="Nova Mensagem" 
+  [(visible)]="showNewMessageDialog" 
+  [modal]="true" 
+  [style]="{width: '400px'}"
+  [draggable]="false"
+  [resizable]="false">
+  <div class="new-message-form">
+    <div class="search-user-box">
+      <span class="p-input-icon-left w-full">
+        <i class="pi pi-search"></i>
+        <input 
+          type="text" 
+          pInputText 
+          [(ngModel)]="searchUserQuery"
+          placeholder="Buscar usuário..." 
+          class="w-full"
+          (input)="searchUsers(searchUserQuery())">
+      </span>
+    </div>
+    
+    @if (searchingUsers()) {
+      <div class="searching-indicator">
+        <i class="pi pi-spin pi-spinner"></i>
+        <span>Buscando...</span>
+      </div>
+    }
+    
+    @if (foundUsers().length > 0) {
+      <div class="users-list">
+        @for (user of foundUsers(); track user.id) {
+          <a [routerLink]="['/social/conversation', user.id]" class="user-item" (click)="closeNewMessageDialog()">
+            <p-avatar 
+              [image]="user.avatar || undefined"
+              [label]="user.avatar ? undefined : user.name.charAt(0)"
+              size="normal"
+              shape="circle">
+            </p-avatar>
+            <div class="user-info">
+              <span class="user-name">{{ user.name }}</span>
+              @if (user.username) {
+                <span class="user-username">&#64;{{ user.username }}</span>
+              }
+            </div>
+          </a>
+        }
+      </div>
+    } @else if (searchUserQuery().length >= 2 && !searchingUsers()) {
+      <div class="no-users-found">
+        <i class="pi pi-user-minus"></i>
+        <p>Nenhum usuário encontrado</p>
+      </div>
+    } @else {
+      <div class="search-hint">
+        <p>Digite pelo menos 2 caracteres para buscar</p>
+      </div>
+    }
+  </div>
+</p-dialog>
