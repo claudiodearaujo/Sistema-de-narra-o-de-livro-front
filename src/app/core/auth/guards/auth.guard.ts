@@ -13,10 +13,19 @@ export const authGuard: CanActivateFn = (
   const authService = inject(AuthService);
   const router = inject(Router);
 
-  if (authService.hasToken() && !authService.isTokenExpired()) {
+  const hasToken = authService.hasToken();
+  const isExpired = authService.isTokenExpired();
+  
+  console.log('[AuthGuard] Checking auth for:', state.url);
+  console.log('[AuthGuard] Has token:', hasToken);
+  console.log('[AuthGuard] Is expired:', isExpired);
+
+  if (hasToken && !isExpired) {
+    console.log('[AuthGuard] Access granted');
     return true;
   }
 
+  console.log('[AuthGuard] Access denied, redirecting to login');
   // Store the attempted URL for redirecting after login
   const returnUrl = state.url;
   

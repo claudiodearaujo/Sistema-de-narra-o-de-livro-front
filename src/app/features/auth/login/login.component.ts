@@ -72,13 +72,18 @@ export class LoginComponent {
         console.log('[LoginComponent] Is authenticated:', this.authService.isAuthenticated());
         console.log('[LoginComponent] Navigating to:', this.returnUrl);
         
-        // Use setTimeout to ensure Angular's change detection has completed
-        setTimeout(() => {
-          this.router.navigateByUrl(this.returnUrl).then(
-            (success) => console.log('[LoginComponent] Navigation success:', success),
-            (error) => console.error('[LoginComponent] Navigation error:', error)
-          );
-        }, 100);
+        // Force navigation after authentication
+        this.router.navigate([this.returnUrl], { replaceUrl: true }).then(
+          (success) => {
+            console.log('[LoginComponent] Navigation success:', success);
+            if (!success) {
+              // Fallback: try window.location
+              console.log('[LoginComponent] Navigation failed, trying fallback...');
+              window.location.href = this.returnUrl;
+            }
+          },
+          (error) => console.error('[LoginComponent] Navigation error:', error)
+        );
       },
       error: (error) => {
         console.error('[LoginComponent] Login error:', error);
