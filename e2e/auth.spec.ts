@@ -3,7 +3,20 @@ import { test, expect } from '@playwright/test';
 /**
  * Authentication E2E Tests
  * Tests login, register, and protected routes
+ * 
+ * Test Users:
+ * - USER: usuario@livria.com.br / User@2024!
+ * - WRITER: escritor@livria.com.br / Writer@2024!
+ * - PRO: pro@livria.com.br / Pro@2024!
+ * - ADMIN: sophia@livria.com.br / Livria@2024!
  */
+
+const TEST_USERS = {
+  USER: { email: 'usuario@livria.com.br', password: 'User@2024!' },
+  WRITER: { email: 'escritor@livria.com.br', password: 'Writer@2024!' },
+  PRO: { email: 'pro@livria.com.br', password: 'Pro@2024!' },
+  ADMIN: { email: 'sophia@livria.com.br', password: 'Livria@2024!' }
+};
 
 test.describe('Authentication', () => {
   
@@ -20,41 +33,85 @@ test.describe('Authentication', () => {
     await page.goto('/auth/login');
     
     // Check page title and form elements
-    await expect(page.locator('h1, h2').first()).toContainText(/login|entrar/i);
-    await expect(page.locator('input[type="email"], input[name="email"]')).toBeVisible();
-    await expect(page.locator('input[type="password"]')).toBeVisible();
+    await expect(page.locator('h1')).toContainText(/bem-vindo/i);
+    await expect(page.locator('#email')).toBeVisible();
+    await expect(page.locator('#password')).toBeVisible();
     await expect(page.locator('button[type="submit"]')).toBeVisible();
   });
 
   test('should display register page', async ({ page }) => {
-    await page.goto('/auth/register');
+    await page.goto('/auth/signup');
     
     // Check registration form elements
-    await expect(page.locator('input[name="name"], input[placeholder*="nome" i]')).toBeVisible();
-    await expect(page.locator('input[type="email"], input[name="email"]')).toBeVisible();
-    await expect(page.locator('input[type="password"]').first()).toBeVisible();
+    await expect(page.locator('input[formcontrolname="name"], #name')).toBeVisible();
+    await expect(page.locator('input[formcontrolname="email"], #email')).toBeVisible();
+    await expect(page.locator('#password')).toBeVisible();
   });
 
   test('should show validation errors on empty login', async ({ page }) => {
     await page.goto('/auth/login');
     
-    // Click submit without filling form
-    await page.locator('button[type="submit"]').click();
+    // Focus and blur fields to trigger validation
+    await page.locator('#email').click();
+    await page.locator('#password').click();
+    await page.locator('#email').click();
     
     // Should show validation messages
-    await expect(page.locator('text=/obrigatório|required|inválido/i')).toBeVisible();
+    await expect(page.locator('text=/obrigatório/i').first()).toBeVisible();
   });
 
   test('should show error on invalid credentials', async ({ page }) => {
     await page.goto('/auth/login');
     
     // Fill with invalid credentials
-    await page.locator('input[type="email"], input[name="email"]').fill('invalid@test.com');
-    await page.locator('input[type="password"]').fill('wrongpassword123');
+    await page.locator('#email').fill('invalid@test.com');
+    await page.locator('#password input, input[type="password"]').first().fill('wrongpassword123');
     await page.locator('button[type="submit"]').click();
     
     // Should show error message
-    await expect(page.locator('text=/erro|inválido|incorreto|não encontrado/i')).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('p-message[severity="error"], .p-message-error, text=/erro|inválido|incorreto/i').first()).toBeVisible({ timeout: 10000 });
+  });
+
+  test('should login successfully with USER account', async ({ page }) => {
+    await page.goto('/auth/login');
+    
+    // Fill with valid credentials
+    await page.locator('#email').fill(TEST_USERS.USER.email);
+    await page.locator('#password input, input[type="password"]').first().fill(TEST_USERS.USER.password);
+    await page.locator('button[type="submit"]').click();
+    
+    // Should redirect to dashboard or feed
+    await expect(page).toHaveURL(/dashboard|social|feed/, { timeout: 15000 });
+  });
+
+  test('should login successfully with WRITER account', async ({ page }) => {
+    await page.goto('/auth/login');
+    
+    await page.locator('#email').fill(TEST_USERS.WRITER.email);
+    await page.locator('#password input, input[type="password"]').first().fill(TEST_USERS.WRITER.password);
+    await page.locator('button[type="submit"]').click();
+    
+    await expect(page).toHaveURL(/dashboard|social|feed/, { timeout: 15000 });
+  });
+
+  test('should login successfully with PRO account', async ({ page }) => {
+    await page.goto('/auth/login');
+    
+    await page.locator('#email').fill(TEST_USERS.PRO.email);
+    await page.locator('#password input, input[type="password"]').first().fill(TEST_USERS.PRO.password);
+    await page.locator('button[type="submit"]').click();
+    
+    await expect(page).toHaveURL(/dashboard|social|feed/, { timeout: 15000 });
+  });
+
+  test('should login successfully with ADMIN account', async ({ page }) => {
+    await page.goto('/auth/login');
+    
+    await page.locator('#email').fill(TEST_USERS.ADMIN.email);
+    await page.locator('#password input, input[type="password"]').first().fill(TEST_USERS.ADMIN.password);
+    await page.locator('button[type="submit"]').click();
+    
+    await expect(page).toHaveURL(/dashboard|social|feed/, { timeout: 15000 });
   });
 
   test('should redirect unauthenticated user to login', async ({ page }) => {
@@ -69,18 +126,18 @@ test.describe('Authentication', () => {
     await page.goto('/auth/login');
     
     // Find and click register link
-    const registerLink = page.locator('a[href*="register"], a:has-text("cadastr"), a:has-text("criar conta")').first();
+    const registerLink = page.locator('a[href*="signup"], a:has-text("cadastr")').first();
     await expect(registerLink).toBeVisible();
     await registerLink.click();
     
-    await expect(page).toHaveURL(/register/);
+    await expect(page).toHaveURL(/signup/);
   });
 
   test('should have link to login from register page', async ({ page }) => {
-    await page.goto('/auth/register');
+    await page.goto('/auth/signup');
     
     // Find and click login link
-    const loginLink = page.locator('a[href*="login"], a:has-text("entrar"), a:has-text("já tenho")').first();
+    const loginLink = page.locator('a[href*="login"], a:has-text("entrar"), a:has-text("já")').first();
     await expect(loginLink).toBeVisible();
     await loginLink.click();
     

@@ -3,13 +3,27 @@ import { test, expect, Page } from '@playwright/test';
 /**
  * Gamification E2E Tests
  * Tests Livras, Achievements, and Subscription features
+ * 
+ * Test Users:
+ * - USER: usuario@livria.com.br / User@2024!
+ * - WRITER: escritor@livria.com.br / Writer@2024!
+ * - PRO: pro@livria.com.br / Pro@2024!
+ * - ADMIN: sophia@livria.com.br / Livria@2024!
  */
 
+const TEST_USERS = {
+  USER: { email: 'usuario@livria.com.br', password: 'User@2024!' },
+  WRITER: { email: 'escritor@livria.com.br', password: 'Writer@2024!' },
+  PRO: { email: 'pro@livria.com.br', password: 'Pro@2024!' },
+  ADMIN: { email: 'sophia@livria.com.br', password: 'Livria@2024!' }
+};
+
 // Helper to login before tests
-async function loginAsTestUser(page: Page) {
+async function loginAsTestUser(page: Page, userType: keyof typeof TEST_USERS = 'USER') {
   await page.goto('/auth/login');
-  await page.locator('input[type="email"], input[name="email"]').fill(process.env.TEST_USER_EMAIL || 'test@livria.com');
-  await page.locator('input[type="password"]').fill(process.env.TEST_USER_PASSWORD || 'Test@123');
+  const user = TEST_USERS[userType];
+  await page.locator('#email').fill(user.email);
+  await page.locator('#password input, input[type="password"]').first().fill(user.password);
   await page.locator('button[type="submit"]').click();
   await page.waitForURL(/social|dashboard/, { timeout: 15000 });
 }
