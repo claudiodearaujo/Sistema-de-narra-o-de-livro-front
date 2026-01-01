@@ -20,7 +20,7 @@ import { GroupCreateModalComponent } from './group-create-modal.component';
         </div>
         <button 
           (click)="showCreateModal.set(true)"
-          class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-medium transition-colors flex items-center gap-2">
+          class="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg font-medium transition-colors flex items-center gap-2">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
           </svg>
@@ -33,14 +33,14 @@ import { GroupCreateModalComponent } from './group-create-modal.component';
         <button 
           (click)="activeTab.set('discover')"
           [class]="activeTab() === 'discover' 
-            ? 'flex-1 py-2 px-4 bg-white dark:bg-gray-700 text-purple-600 dark:text-purple-400 font-medium rounded-md shadow-sm' 
+            ? 'flex-1 py-2 px-4 bg-white dark:bg-gray-700 text-primary-600 dark:text-primary-400 font-medium rounded-md shadow-sm' 
             : 'flex-1 py-2 px-4 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'">
           Descobrir
         </button>
         <button 
           (click)="activeTab.set('my'); loadMyGroups()"
           [class]="activeTab() === 'my' 
-            ? 'flex-1 py-2 px-4 bg-white dark:bg-gray-700 text-purple-600 dark:text-purple-400 font-medium rounded-md shadow-sm' 
+            ? 'flex-1 py-2 px-4 bg-white dark:bg-gray-700 text-primary-600 dark:text-primary-400 font-medium rounded-md shadow-sm' 
             : 'flex-1 py-2 px-4 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'">
           Meus Grupos
         </button>
@@ -58,7 +58,7 @@ import { GroupCreateModalComponent } from './group-create-modal.component';
               [(ngModel)]="searchQuery"
               (input)="onSearchChange()"
               placeholder="Buscar grupos..."
-              class="w-full pl-10 pr-4 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent" />
+              class="w-full pl-10 pr-4 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent" />
           </div>
         </div>
       }
@@ -92,7 +92,7 @@ import { GroupCreateModalComponent } from './group-create-modal.component';
                   @if (group.coverUrl) {
                     <img [src]="group.coverUrl" [alt]="group.name" class="w-16 h-16 rounded-lg object-cover" />
                   } @else {
-                    <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
+                    <div class="w-16 h-16 bg-gradient-to-br from-primary-500 to-primary-700 rounded-lg flex items-center justify-center">
                       <span class="text-2xl font-bold text-white">{{ group.name.charAt(0).toUpperCase() }}</span>
                     </div>
                   }
@@ -102,7 +102,7 @@ import { GroupCreateModalComponent } from './group-create-modal.component';
                 <div class="flex-1 min-w-0">
                   <div class="flex items-start justify-between gap-4">
                     <div>
-                      <a [routerLink]="['/social/groups', group.id]" class="font-semibold text-lg text-gray-900 dark:text-white hover:text-purple-600 dark:hover:text-purple-400">
+                      <a [routerLink]="['/social/groups', group.id]" class="font-semibold text-lg text-gray-900 dark:text-white hover:text-primary-600 dark:hover:text-primary-400">
                         {{ group.name }}
                       </a>
                       @if (group.description) {
@@ -112,14 +112,14 @@ import { GroupCreateModalComponent } from './group-create-modal.component';
                     
                     <!-- Join/Leave Button -->
                     @if (group.isMember) {
-                      <span class="shrink-0 px-3 py-1 bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 text-sm rounded-full">
+                      <span class="shrink-0 px-3 py-1 bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 text-sm rounded-full">
                         {{ getRoleDisplay(group.memberRole) }}
                       </span>
                     } @else {
                       <button 
                         (click)="joinGroup(group)"
                         [disabled]="joiningGroup() === group.id"
-                        class="shrink-0 px-4 py-2 bg-purple-600 hover:bg-purple-700 disabled:bg-purple-400 text-white text-sm rounded-lg transition-colors">
+                        class="shrink-0 px-4 py-2 bg-primary-600 hover:bg-primary-700 disabled:bg-primary-400 text-white text-sm rounded-lg transition-colors">
                         @if (joiningGroup() === group.id) {
                           <span class="flex items-center gap-2">
                             <svg class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
@@ -168,7 +168,7 @@ import { GroupCreateModalComponent } from './group-create-modal.component';
             <button 
               (click)="loadMore()"
               [disabled]="loadingMore()"
-              class="px-6 py-2 text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-900/20 rounded-lg transition-colors">
+              class="px-6 py-2 text-primary-600 dark:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-900/20 rounded-lg transition-colors">
               @if (loadingMore()) {
                 Carregando...
               } @else {
@@ -196,7 +196,7 @@ import { GroupCreateModalComponent } from './group-create-modal.component';
           @if (activeTab() === 'my') {
             <button 
               (click)="activeTab.set('discover')"
-              class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors">
+              class="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors">
               Descobrir Grupos
             </button>
           }

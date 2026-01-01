@@ -35,7 +35,7 @@ import { PostCardComponent } from '../../../../shared/components/post-card/post-
       <!-- Header -->
       <header class="mb-6">
         <div class="flex items-center gap-3 mb-2">
-          <i class="pi pi-chart-line text-3xl text-orange-500"></i>
+          <i class="pi pi-chart-line text-3xl text-accent-500"></i>
           <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Em Alta 🔥</h1>
         </div>
         <p class="text-gray-600 dark:text-gray-400">
@@ -44,17 +44,17 @@ import { PostCardComponent } from '../../../../shared/components/post-card/post-
       </header>
 
       <!-- Stats Bar -->
-      <div class="bg-gradient-to-r from-orange-50 to-red-50 dark:from-orange-900/20 dark:to-red-900/20 rounded-lg p-4 mb-6 flex items-center justify-around">
+      <div class="bg-gradient-to-r from-accent-50 to-accent-100 dark:from-accent-900/20 dark:to-accent-900/40 rounded-lg p-4 mb-6 flex items-center justify-around">
         <div class="text-center">
-          <div class="text-2xl font-bold text-orange-600 dark:text-orange-400">{{ totalPosts() }}</div>
+          <div class="text-2xl font-bold text-accent-600 dark:text-accent-400">{{ totalPosts() }}</div>
           <div class="text-sm text-gray-600 dark:text-gray-400">Posts em alta</div>
         </div>
         <div class="text-center">
-          <div class="text-2xl font-bold text-red-600 dark:text-red-400">{{ totalLikes() }}</div>
+          <div class="text-2xl font-bold text-accent-700 dark:text-accent-500">{{ totalLikes() }}</div>
           <div class="text-sm text-gray-600 dark:text-gray-400">Curtidas totais</div>
         </div>
         <div class="text-center">
-          <div class="text-2xl font-bold text-purple-600 dark:text-purple-400">{{ totalComments() }}</div>
+          <div class="text-2xl font-bold text-primary-600 dark:text-primary-400">{{ totalComments() }}</div>
           <div class="text-sm text-gray-600 dark:text-gray-400">Comentários</div>
         </div>
       </div>
@@ -95,7 +95,7 @@ import { PostCardComponent } from '../../../../shared/components/post-card/post-
               />
 
               <!-- Engagement Score Badge -->
-              <div class="absolute -right-2 top-4 bg-purple-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow">
+              <div class="absolute -right-2 top-4 bg-primary-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow">
                 ⚡ {{ post.engagementScore }}
               </div>
             </div>

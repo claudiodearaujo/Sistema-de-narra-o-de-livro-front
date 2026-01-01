@@ -27,7 +27,7 @@ import { Campaign, CampaignProgress, CampaignBook } from '../../../../core/model
         <!-- Back Link -->
         <a 
           [routerLink]="['/social/groups', campaign()!.groupId]"
-          class="inline-flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-purple-600 dark:hover:text-purple-400 mb-4">
+          class="inline-flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 mb-4">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
           </svg>
@@ -71,7 +71,7 @@ import { Campaign, CampaignProgress, CampaignBook } from '../../../../core/model
                   </span>
                 }
                 @if (campaign()!.livraReward > 0) {
-                  <span class="flex items-center gap-1 text-purple-600 dark:text-purple-400 font-medium">
+                  <span class="flex items-center gap-1 text-primary-600 dark:text-primary-400 font-medium">
                     <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                       <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                     </svg>
@@ -87,7 +87,7 @@ import { Campaign, CampaignProgress, CampaignBook } from '../../../../core/model
                 <button 
                   (click)="joinCampaign()"
                   [disabled]="actionLoading()"
-                  class="shrink-0 px-6 py-3 bg-purple-600 hover:bg-purple-700 disabled:bg-purple-400 text-white rounded-xl font-medium transition-colors">
+                  class="shrink-0 px-6 py-3 bg-primary-600 hover:bg-primary-700 disabled:bg-primary-400 text-white rounded-xl font-medium transition-colors">
                   @if (actionLoading()) {
                     Entrando...
                   } @else {
@@ -110,13 +110,13 @@ import { Campaign, CampaignProgress, CampaignBook } from '../../../../core/model
                   <span class="text-gray-600 dark:text-gray-400">
                     {{ myProgress()!.booksRead }} de {{ campaign()!.books.length }} livros
                   </span>
-                  <span class="font-medium text-purple-600 dark:text-purple-400">
+                  <span class="font-medium text-primary-600 dark:text-primary-400">
                     {{ getProgressPercent() }}%
                   </span>
                 </div>
                 <div class="h-3 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
                   <div 
-                    class="h-full bg-gradient-to-r from-purple-500 to-pink-500 rounded-full transition-all duration-500"
+                    class="h-full bg-gradient-to-r from-primary-500 to-primary-700 rounded-full transition-all duration-500"
                     [style.width.%]="getProgressPercent()">
                   </div>
                 </div>
@@ -146,7 +146,7 @@ import { Campaign, CampaignProgress, CampaignBook } from '../../../../core/model
                     <img [src]="campaignBook.book.coverUrl" [alt]="campaignBook.book.title" 
                       class="w-16 h-24 rounded-lg object-cover shrink-0" />
                   } @else {
-                    <div class="w-16 h-24 rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center shrink-0">
+                    <div class="w-16 h-24 rounded-lg bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center shrink-0">
                       <span class="text-white text-xl font-bold">{{ campaignBook.book.title.charAt(0) }}</span>
                     </div>
                   }
@@ -168,7 +168,7 @@ import { Campaign, CampaignProgress, CampaignBook } from '../../../../core/model
                         <button 
                           (click)="completeBook(campaignBook)"
                           [disabled]="completingBook() === campaignBook.bookId"
-                          class="mt-3 px-3 py-1 text-sm bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 hover:bg-purple-200 dark:hover:bg-purple-900/50 rounded-lg transition-colors">
+                          class="mt-3 px-3 py-1 text-sm bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 hover:bg-primary-200 dark:hover:bg-primary-900/50 rounded-lg transition-colors">
                           @if (completingBook() === campaignBook.bookId) {
                             Marcando...
                           } @else {
@@ -201,7 +201,7 @@ import { Campaign, CampaignProgress, CampaignBook } from '../../../../core/model
           } @else if (leaderboard().length > 0) {
             <div class="space-y-3">
               @for (entry of leaderboard(); track entry.id; let i = $index) {
-                <div class="flex items-center gap-3 p-3 rounded-lg" [class]="i < 3 ? 'bg-purple-50 dark:bg-purple-900/20' : ''">
+                <div class="flex items-center gap-3 p-3 rounded-lg" [class]="i < 3 ? 'bg-primary-50 dark:bg-primary-900/20' : ''">
                   <!-- Position -->
                   <div class="w-8 h-8 flex items-center justify-center shrink-0">
                     @if (i === 0) {
@@ -219,7 +219,7 @@ import { Campaign, CampaignProgress, CampaignBook } from '../../../../core/model
                   @if (entry.user.avatar) {
                     <img [src]="entry.user.avatar" [alt]="entry.user.name" class="w-10 h-10 rounded-full object-cover" />
                   } @else {
-                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center">
                       <span class="text-white font-bold">{{ entry.user.name.charAt(0).toUpperCase() }}</span>
                     </div>
                   }
@@ -254,7 +254,7 @@ import { Campaign, CampaignProgress, CampaignBook } from '../../../../core/model
         <div class="text-center py-12">
           <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Campanha não encontrada</h2>
           <p class="text-gray-600 dark:text-gray-400 mb-4">A campanha que você procura não existe ou foi removida.</p>
-          <a routerLink="/social/groups" class="text-purple-600 dark:text-purple-400 hover:underline">
+          <a routerLink="/social/groups" class="text-primary-600 dark:text-primary-400 hover:underline">
             Voltar para grupos
           </a>
         </div>

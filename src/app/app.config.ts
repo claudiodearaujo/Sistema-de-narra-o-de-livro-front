@@ -5,7 +5,7 @@ import { provideRouter, withComponentInputBinding, withInMemoryScrolling, withVi
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { providePrimeNG } from 'primeng/config';
-import Aura from '@primeuix/themes/aura';
+import LivriaPreset from '../livria-theme.preset';
 import { routes } from './app.routes';
 import { authInterceptor } from './core/auth/interceptors/auth.interceptor';
 
@@ -27,13 +27,12 @@ export const appConfig: ApplicationConfig = {
     providePrimeNG({
       ripple: true,
       theme: {
-        preset: Aura,
-        
+        preset: LivriaPreset,
         options: {
-        darkModeSelector: false,
+          darkModeSelector: '.dark',
           cssLayer: {
-             name: 'primeng',
-            order: "base,components,primeng"
+            name: 'primeng',
+            order: 'base, primeng, components'
           }
         }
       }

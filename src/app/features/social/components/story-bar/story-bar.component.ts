@@ -74,23 +74,26 @@ import { StoryService, UserStories } from '../../../../core';
     </div>
   `,
   styles: [`
+    /* LIVRIA Story Bar — Design Tokens Applied */
     .story-bar {
       display: flex;
-      gap: 16px;
-      padding: 16px;
+      gap: var(--space-4);
+      padding: var(--space-4);
       overflow-x: auto;
       background: var(--surface-card);
-      border-radius: 12px;
-      margin-bottom: 16px;
+      border-radius: var(--radius-xl);
+      margin-bottom: var(--space-4);
       scrollbar-width: thin;
+      border: var(--border-width) solid var(--surface-border);
+      box-shadow: var(--shadow-sm);
 
       &::-webkit-scrollbar {
         height: 4px;
       }
 
       &::-webkit-scrollbar-thumb {
-        background: var(--surface-300);
-        border-radius: 4px;
+        background: var(--color-neutral-300);
+        border-radius: var(--radius-full);
       }
     }
 
@@ -98,10 +101,10 @@ import { StoryService, UserStories } from '../../../../core';
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 8px;
+      gap: var(--space-2);
       cursor: pointer;
       min-width: 70px;
-      transition: transform 0.2s;
+      transition: transform var(--duration-fast) var(--ease-standard);
 
       &:hover {
         transform: scale(1.05);
@@ -110,23 +113,29 @@ import { StoryService, UserStories } from '../../../../core';
       &.create-story .story-avatar.create {
         width: 64px;
         height: 64px;
-        border-radius: 50%;
-        background: var(--primary-color);
+        border-radius: var(--radius-full);
+        background: var(--color-primary-500);
         display: flex;
         align-items: center;
         justify-content: center;
-        color: white;
-        font-size: 24px;
+        color: var(--color-primary-on);
+        font-size: var(--text-2xl);
+        transition: background var(--duration-fast) var(--ease-standard);
+      }
+
+      &.create-story:hover .story-avatar.create {
+        background: var(--color-primary-600);
       }
     }
 
+    /* Stories com borda verde LIVRIA em vez do gradiente Instagram */
     .story-avatar-wrapper {
       padding: 3px;
-      border-radius: 50%;
-      background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+      border-radius: var(--radius-full);
+      background: linear-gradient(135deg, var(--color-primary-400), var(--color-primary-600));
 
       &.viewed {
-        background: var(--surface-300);
+        background: var(--color-neutral-300);
       }
 
       :host ::ng-deep .p-avatar {
@@ -135,19 +144,25 @@ import { StoryService, UserStories } from '../../../../core';
     }
 
     .story-name {
-      font-size: 12px;
-      color: var(--text-color);
+      font-size: var(--text-xs);
+      color: var(--text-primary);
       max-width: 70px;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
       text-align: center;
+      font-weight: var(--font-weight-medium);
     }
 
     .empty-stories {
       display: flex;
       align-items: center;
       justify-content: center;
+      min-width: 200px;
+      padding: var(--space-4);
+      color: var(--text-muted);
+    }
+  `],
       min-width: 200px;
       padding: 16px;
     }

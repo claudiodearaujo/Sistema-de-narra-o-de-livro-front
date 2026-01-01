@@ -269,7 +269,7 @@ import { StoryService, UserStories, Story } from '../../../../core';
         text-align: center;
 
         .quote-icon {
-          color: var(--primary-color);
+          color: var(--color-primary-400);
           font-size: 48px;
           margin-bottom: 20px;
         }
@@ -285,7 +285,7 @@ import { StoryService, UserStories, Story } from '../../../../core';
     }
 
     .story-footer {
-      padding: 16px;
+      padding: var(--space-4);
       position: absolute;
       bottom: 0;
       left: 0;
@@ -295,9 +295,9 @@ import { StoryService, UserStories, Story } from '../../../../core';
       .view-count {
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: var(--space-2);
         color: white;
-        font-size: 14px;
+        font-size: var(--text-sm);
         cursor: pointer;
 
         &:hover {

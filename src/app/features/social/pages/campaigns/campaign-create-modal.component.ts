@@ -52,7 +52,7 @@ interface BookOption {
               required
               maxlength="100"
               placeholder="Ex: Maratona de Fantasia 2025"
-              class="w-full px-4 py-3 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent" />
+              class="w-full px-4 py-3 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent" />
           </div>
 
           <!-- Description -->
@@ -66,7 +66,7 @@ interface BookOption {
               rows="2"
               maxlength="500"
               placeholder="Descreva o objetivo da campanha..."
-              class="w-full px-4 py-3 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none">
+              class="w-full px-4 py-3 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-none">
             </textarea>
           </div>
 
@@ -80,7 +80,7 @@ interface BookOption {
                 type="date"
                 [(ngModel)]="startDate"
                 name="startDate"
-                class="w-full px-4 py-3 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent" />
+                class="w-full px-4 py-3 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent" />
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
@@ -90,7 +90,7 @@ interface BookOption {
                 type="date"
                 [(ngModel)]="endDate"
                 name="endDate"
-                class="w-full px-4 py-3 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent" />
+                class="w-full px-4 py-3 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent" />
             </div>
           </div>
 
@@ -106,7 +106,7 @@ interface BookOption {
                 name="livraReward"
                 min="0"
                 max="1000"
-                class="w-full px-4 py-3 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent" />
+                class="w-full px-4 py-3 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent" />
               <span class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 text-sm">Livras</span>
             </div>
             <p class="text-xs text-gray-500 mt-1">Livras que os membros ganham ao completar a campanha</p>
@@ -126,13 +126,13 @@ interface BookOption {
                 name="bookSearch"
                 (input)="searchBooks()"
                 placeholder="Buscar livros..."
-                class="w-full px-4 py-2 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent" />
+                class="w-full px-4 py-2 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent" />
             </div>
 
             <!-- Selected books -->
             @if (selectedBooks().length > 0) {
-              <div class="mb-3 p-3 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
-                <p class="text-sm font-medium text-purple-700 dark:text-purple-400 mb-2">
+              <div class="mb-3 p-3 bg-primary-50 dark:bg-primary-900/20 rounded-lg">
+                <p class="text-sm font-medium text-primary-700 dark:text-primary-400 mb-2">
                   {{ selectedBooks().length }} livro(s) selecionado(s)
                 </p>
                 <div class="flex flex-wrap gap-2">
@@ -161,16 +161,16 @@ interface BookOption {
                 @for (book of availableBooks(); track book.id) {
                   <label 
                     class="flex items-center gap-3 p-2 rounded-lg cursor-pointer transition-colors"
-                    [class]="book.selected ? 'bg-purple-50 dark:bg-purple-900/20' : 'hover:bg-gray-50 dark:hover:bg-gray-700/50'">
+                    [class]="book.selected ? 'bg-primary-50 dark:bg-primary-900/20' : 'hover:bg-gray-50 dark:hover:bg-gray-700/50'">
                     <input 
                       type="checkbox"
                       [checked]="book.selected"
                       (change)="toggleBook(book)"
-                      class="rounded border-gray-300 text-purple-600 focus:ring-purple-500" />
+                      class="rounded border-gray-300 text-primary-600 focus:ring-primary-500" />
                     @if (book.coverUrl) {
                       <img [src]="book.coverUrl" class="w-8 h-12 rounded object-cover" />
                     } @else {
-                      <div class="w-8 h-12 rounded bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+                      <div class="w-8 h-12 rounded bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center">
                         <span class="text-white text-xs font-bold">{{ book.title.charAt(0) }}</span>
                       </div>
                     }
@@ -206,7 +206,7 @@ interface BookOption {
             <button 
               type="submit"
               [disabled]="loading() || !name.trim() || selectedBooks().length === 0"
-              class="flex-1 px-4 py-3 bg-purple-600 hover:bg-purple-700 disabled:bg-purple-400 text-white rounded-lg font-medium transition-colors">
+              class="flex-1 px-4 py-3 bg-primary-600 hover:bg-primary-700 disabled:bg-primary-400 text-white rounded-lg font-medium transition-colors">
               @if (loading()) {
                 <span class="flex items-center justify-center gap-2">
                   <svg class="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">

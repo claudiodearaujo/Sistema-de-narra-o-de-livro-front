@@ -44,7 +44,7 @@ import { Group, GroupPrivacy } from '../../../../core/models/group.model';
               required
               maxlength="100"
               placeholder="Ex: Clube do Livro de Fantasia"
-              class="w-full px-4 py-3 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent" />
+              class="w-full px-4 py-3 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent" />
           </div>
 
           <!-- Description -->
@@ -58,7 +58,7 @@ import { Group, GroupPrivacy } from '../../../../core/models/group.model';
               rows="3"
               maxlength="500"
               placeholder="Descreva o propósito do seu grupo..."
-              class="w-full px-4 py-3 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none">
+              class="w-full px-4 py-3 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-none">
             </textarea>
             <p class="text-xs text-gray-500 mt-1">{{ description.length }}/500 caracteres</p>
           </div>
@@ -73,7 +73,7 @@ import { Group, GroupPrivacy } from '../../../../core/models/group.model';
               [(ngModel)]="coverUrl"
               name="coverUrl"
               placeholder="https://exemplo.com/imagem.jpg"
-              class="w-full px-4 py-3 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent" />
+              class="w-full px-4 py-3 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent" />
           </div>
 
           <!-- Privacy -->
@@ -86,7 +86,7 @@ import { Group, GroupPrivacy } from '../../../../core/models/group.model';
                 <label 
                   class="flex items-start gap-3 p-3 rounded-lg border cursor-pointer transition-colors"
                   [class]="privacy === option.value 
-                    ? 'border-purple-500 bg-purple-50 dark:bg-purple-900/20' 
+                    ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20' 
                     : 'border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50'">
                   <input 
                     type="radio"
@@ -121,7 +121,7 @@ import { Group, GroupPrivacy } from '../../../../core/models/group.model';
             <button 
               type="submit"
               [disabled]="loading() || !name.trim()"
-              class="flex-1 px-4 py-3 bg-purple-600 hover:bg-purple-700 disabled:bg-purple-400 text-white rounded-lg font-medium transition-colors">
+              class="flex-1 px-4 py-3 bg-primary-600 hover:bg-primary-700 disabled:bg-primary-400 text-white rounded-lg font-medium transition-colors">
               @if (loading()) {
                 <span class="flex items-center justify-center gap-2">
                   <svg class="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
