@@ -26,34 +26,34 @@ import { PostBook, PostChapter } from '../../../core/models/post.model';
     DividerModule
   ],
   template: `
-    <div class="chapter-preview-card bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-xl overflow-hidden border border-amber-200 dark:border-amber-700">
+    <div class="chapter-preview-card bg-linear-to-br from-secondary-50 to-secondary-100 dark:from-secondary-900/20 dark:to-secondary-800/20 rounded-xl overflow-hidden border border-secondary-200 dark:border-secondary-700">
       <!-- Header -->
-      <div class="bg-amber-100 dark:bg-amber-800/50 px-4 py-2 flex items-center justify-between">
+      <div class="bg-secondary-100 dark:bg-secondary-800/50 px-4 py-2 flex items-center justify-between">
         <div class="flex items-center gap-2">
-          <i class="pi pi-book text-amber-600 dark:text-amber-400"></i>
-          <span class="text-sm font-medium text-amber-800 dark:text-amber-200">
+          <i class="pi pi-book text-primary-600 dark:text-primary-400"></i>
+          <span class="text-sm font-medium text-primary-800 dark:text-primary-200 font-heading">
             {{ book?.title || 'Livro' }}
           </span>
         </div>
-        <p-tag value="Novo Capítulo 📖" severity="warn" />
+        <p-tag value="Novo Capítulo 📖" severity="success" />
       </div>
 
       <!-- Content -->
       <div class="p-4">
-        <h3 class="font-bold text-lg text-gray-900 dark:text-white mb-2">
+        <h3 class="font-bold text-lg text-primary-800 dark:text-primary-200 mb-2 font-heading">
           {{ chapter?.title || 'Capítulo' }}
         </h3>
 
         @if (excerpt) {
-          <div class="bg-white/60 dark:bg-gray-800/60 rounded-lg p-3 mb-4">
-            <p class="text-gray-700 dark:text-gray-300 italic text-sm leading-relaxed line-clamp-4">
+          <div class="bg-white/60 dark:bg-secondary-800/60 rounded-lg p-3 mb-4">
+            <p class="text-primary-700 dark:text-primary-300 italic text-sm leading-relaxed line-clamp-4 font-body">
               "{{ excerpt }}"
             </p>
           </div>
         }
 
         <div class="flex items-center justify-between">
-          <div class="text-sm text-gray-500 dark:text-gray-400">
+          <div class="text-sm text-secondary">
             <span>Capítulo {{ chapter?.orderIndex || 1 }}</span>
             @if (book?.author) {
               <span> • {{ book!.author }}</span>
@@ -67,7 +67,7 @@ import { PostBook, PostChapter } from '../../../core/models/post.model';
             label="Ler capítulo"
             icon="pi pi-arrow-right"
             iconPos="right"
-            class="p-button-sm p-button-warning"
+            class="p-button-sm"
           ></a>
         </div>
       </div>

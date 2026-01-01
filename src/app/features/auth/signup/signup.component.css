@@ -3,12 +3,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--color-primary-600) 0%, var(--color-primary-800) 100%);
   padding: 1rem;
 }
 
 .signup-card {
-  background: white;
+  background: var(--surface-card);
   border-radius: 1rem;
   padding: 2.5rem;
   width: 100%;
@@ -26,12 +26,13 @@
 .signup-header h1 {
   font-size: 1.75rem;
   font-weight: 700;
-  color: #1a1a2e;
+  color: var(--color-primary-700);
+  font-family: var(--font-heading);
   margin: 0 0 0.5rem 0;
 }
 
 .signup-header p {
-  color: #6b7280;
+  color: var(--text-secondary);
   margin: 0;
 }
 
@@ -43,12 +44,12 @@
   display: block;
   font-weight: 500;
   margin-bottom: 0.5rem;
-  color: #374151;
+  color: var(--text-primary);
 }
 
 .signup-form .optional {
   font-weight: 400;
-  color: #9ca3af;
+  color: var(--text-muted);
   font-size: 0.875rem;
 }
 
@@ -61,13 +62,13 @@
 
 .field-checkbox label {
   cursor: pointer;
-  color: #4b5563;
+  color: var(--text-secondary);
   font-size: 0.875rem;
   line-height: 1.5;
 }
 
 .field-checkbox a {
-  color: #667eea;
+  color: var(--color-primary-600);
   text-decoration: none;
 }
 
@@ -79,23 +80,23 @@
   text-align: center;
   margin-top: 1.5rem;
   padding-top: 1.5rem;
-  border-top: 1px solid #e5e7eb;
+  border-top: 1px solid var(--surface-border);
 }
 
 .signup-footer p {
-  color: #6b7280;
+  color: var(--text-secondary);
   margin: 0;
 }
 
 .signup-footer a {
-  color: #667eea;
+  color: var(--color-primary-600);
   font-weight: 600;
   text-decoration: none;
   transition: color 0.2s;
 }
 
 .signup-footer a:hover {
-  color: #5a67d8;
+  color: var(--color-primary-700);
   text-decoration: underline;
 }
 

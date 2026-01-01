@@ -1,7 +1,7 @@
 <div class="container mx-auto p-6">
     <div class="mb-6">
-        <h1 class="text-3xl font-bold mb-2" style="color: var(--color-agua);">Livros</h1>
-        <p class="text-gray-600">Gerencie seus livros para narração</p>
+        <h1 class="text-3xl font-bold mb-2 font-heading text-primary-700 dark:text-primary-300">Livros</h1>
+        <p class="text-secondary">Gerencie seus livros para narração</p>
     </div>
 
     <!-- Filters -->
@@ -18,8 +18,7 @@
                     class="w-full" (keyup.enter)="applyFilters()" />
             </div>
             <div class="flex items-end gap-2">
-                <button pButton label="Filtrar" icon="pi pi-search" (click)="applyFilters()" class="flex-1"
-                    [style.background-color]="'var(--color-agua)'"></button>
+                <button pButton label="Filtrar" icon="pi pi-search" (click)="applyFilters()" class="flex-1"></button>
                 <button pButton label="Limpar" icon="pi pi-times" (click)="clearFilters()" class="flex-1"
                     severity="secondary"></button>
             </div>
@@ -27,11 +26,10 @@
     </div>
 
     <!-- Table -->
-    <div class="bg-white rounded-lg shadow-md">
-        <div class="p-4 border-b flex justify-between items-center">
-            <h2 class="text-xl font-semibold">Lista de Livros</h2>
-            <button pButton label="Novo Livro" icon="pi pi-plus" (click)="createBook()"
-                [style.background-color]="'var(--color-fogo)'"></button>
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md">
+        <div class="p-4 border-b border-surface-border flex justify-between items-center">
+            <h2 class="text-xl font-semibold font-heading text-primary-700 dark:text-primary-300">Lista de Livros</h2>
+            <button pButton label="Novo Livro" icon="pi pi-plus" (click)="createBook()" severity="success"></button>
         </div>
 
         <p-table [value]="books" [paginator]="true" [rows]="limit" [totalRecords]="totalRecords" [loading]="loading"

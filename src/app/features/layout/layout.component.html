@@ -1,12 +1,12 @@
-<div class="layout-wrapper min-h-screen bg-gray-50/70 dark:bg-gray-900/70">
+<div class="layout-wrapper min-h-screen bg-secondary-50/70 dark:bg-gray-900/70">
     <!-- Top Menu -->
-    <div class="layout-topbar bg-white/70 dark:bg-gray-800/70 shadow-md">
+    <div class="layout-topbar bg-surface-card/90 dark:bg-gray-800/90 backdrop-blur-sm shadow-sm">
         <p-menubar [model]="menuItems" styleClass="border-none">
             <ng-template pTemplate="start">
                 <div class="flex items-center gap-3 px-3">
-                    <i class="pi pi-microphone text-2xl text-\[var(--color-fogo)]"></i>
-                    <span class="text-xl font-bold text-\[var(--color-metal)] dark:text-gray-100">
-                        Narração de Livros
+                    <i class="pi pi-book text-2xl text-primary-500"></i>
+                    <span class="text-xl font-heading font-bold text-primary-700 dark:text-primary-300">
+                        LIVRIA
                     </span>
                 </div>
             </ng-template>
@@ -14,7 +14,7 @@
                 <div class="flex items-center gap-3 px-3">
                     <p-button icon="pi pi-bell" [text]="true" [rounded]="true" severity="secondary">
                     </p-button>
-                    <p-avatar label="U" styleClass="bg-[var(--color-agua)] text-white" shape="circle">
+                    <p-avatar label="U" styleClass="bg-primary-500 text-white" shape="circle">
                     </p-avatar>
                 </div>
             </ng-template>
@@ -28,9 +28,9 @@
 
     <!-- Footer -->
     <div
-        class="layout-footer bg-white/70 dark:bg-gray-800/70 border-t border-gray-200 dark:border-gray-700 py-4 px-6 text-center">
-        <p class="text-sm text-gray-600 dark:text-gray-400">
-            Sistema de Narração de Livros © 2024 | Powered by Gemini TTS
+        class="layout-footer bg-surface-card/90 dark:bg-gray-800/90 border-t border-surface-border py-4 px-6 text-center">
+        <p class="text-sm text-secondary">
+            LIVRIA © 2025 | Sua biblioteca literária social
         </p>
     </div>
 </div>

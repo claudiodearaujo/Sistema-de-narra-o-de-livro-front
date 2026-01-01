@@ -28,8 +28,8 @@ import { LivraPackage } from '../../../../core/models/subscription.model';
     <p-toast />
     
     <div class="mb-6">
-      <h2 class="text-xl font-bold mb-2">Comprar Livras</h2>
-      <p class="text-gray-600 dark:text-gray-400">
+      <h2 class="text-xl font-bold font-heading text-primary-700 dark:text-primary-300 mb-2">Comprar Livras</h2>
+      <p class="text-secondary">
         Precisa de mais Livras? Compre pacotes para desbloquear recursos premium.
       </p>
     </div>
@@ -46,12 +46,12 @@ import { LivraPackage } from '../../../../core/models/subscription.model';
               <div class="text-4xl font-bold text-primary-500 mb-2">
                 {{ pkg.amount }}
               </div>
-              <div class="text-sm text-gray-500 mb-4">Livras</div>
+              <div class="text-sm text-secondary mb-4">Livras</div>
 
               <div class="text-2xl font-semibold mb-1">
                 R$ {{ pkg.displayPrice }}
               </div>
-              <div class="text-xs text-gray-400 mb-4">
+              <div class="text-xs text-secondary mb-4">
                 R$ {{ pkg.pricePerLivra }} / Livra
               </div>
 
@@ -74,7 +74,7 @@ import { LivraPackage } from '../../../../core/models/subscription.model';
     }
 
     .best-value-card {
-      border: 2px solid var(--green-500);
+      border: 2px solid var(--color-primary-500);
     }
   `],
 })

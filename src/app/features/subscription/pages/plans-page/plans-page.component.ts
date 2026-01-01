@@ -43,10 +43,10 @@ import {
     <div class="container mx-auto px-4 py-8 max-w-6xl">
       <!-- Header -->
       <div class="text-center mb-8">
-        <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+        <h1 class="text-3xl font-bold font-heading text-primary-700 dark:text-primary-300 mb-2">
           Escolha seu Plano
         </h1>
-        <p class="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+        <p class="text-secondary max-w-2xl mx-auto">
           Desbloqueie todo o potencial do Livria com nossos planos premium. 
           Mais livros, mais vozes, mais possibilidades.
         </p>
@@ -83,8 +83,8 @@ import {
                     <p-tag value="Mais Popular" severity="info" />
                   </div>
                 }
-                <h2 class="text-2xl font-bold text-center mb-1">{{ plan.name }}</h2>
-                <p class="text-gray-500 text-center text-sm">{{ plan.description }}</p>
+                <h2 class="text-2xl font-heading font-bold text-center mb-1">{{ plan.name }}</h2>
+                <p class="text-secondary text-center text-sm">{{ plan.description }}</p>
               </div>
             </ng-template>
 
@@ -96,13 +96,13 @@ import {
                     {{ formatPrice(getPrice(plan)) }}
                   </span>
                   @if (plan.price.monthly > 0) {
-                    <span class="text-gray-500 ml-1">
+                    <span class="text-secondary ml-1">
                       /{{ billingPeriod() === 'monthly' ? 'mês' : 'ano' }}
                     </span>
                   }
                 </div>
                 @if (billingPeriod() === 'yearly' && plan.price.monthly > 0) {
-                  <div class="text-sm text-gray-500 mt-1">
+                  <div class="text-sm text-secondary mt-1">
                     {{ formatPrice(plan.price.yearly / 12) }}/mês
                     <span class="text-green-600 ml-1">
                       ({{ calculateSavings(plan) }}% off)
@@ -128,7 +128,7 @@ import {
                 @for (feature of plan.features; track feature) {
                   <li class="flex items-start">
                     <i class="pi pi-check text-green-500 mr-2 mt-1"></i>
-                    <span class="text-gray-700 dark:text-gray-300">{{ feature }}</span>
+                    <span class="text-primary-700 dark:text-primary-300">{{ feature }}</span>
                   </li>
                 }
               </ul>
@@ -176,7 +176,7 @@ import {
           <p-card>
             <ng-template pTemplate="content">
               <h3 class="font-semibold mb-2">Posso cancelar a qualquer momento?</h3>
-              <p class="text-gray-600 dark:text-gray-400">
+              <p class="text-secondary">
                 Sim! Você pode cancelar sua assinatura a qualquer momento. 
                 O acesso continua até o final do período pago.
               </p>
@@ -186,7 +186,7 @@ import {
           <p-card>
             <ng-template pTemplate="content">
               <h3 class="font-semibold mb-2">O que são Livras?</h3>
-              <p class="text-gray-600 dark:text-gray-400">
+              <p class="text-secondary">
                 Livras é nossa moeda virtual. Você ganha ao interagir na comunidade e 
                 pode usar para desbloquear recursos premium como geração de áudio TTS.
               </p>
@@ -196,7 +196,7 @@ import {
           <p-card>
             <ng-template pTemplate="content">
               <h3 class="font-semibold mb-2">Posso mudar de plano depois?</h3>
-              <p class="text-gray-600 dark:text-gray-400">
+              <p class="text-secondary">
                 Sim! Você pode fazer upgrade ou downgrade a qualquer momento. 
                 O valor será calculado proporcionalmente.
               </p>

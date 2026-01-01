@@ -38,22 +38,23 @@ import { PwaService } from '../../../core/services/pwa.service';
     .install-prompt {
       position: fixed;
       bottom: 80px;
-      left: 16px;
-      right: 16px;
+      left: var(--space-4);
+      right: var(--space-4);
       background: var(--surface-card);
-      border-radius: 12px;
-      padding: 16px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+      border-radius: var(--radius-lg);
+      padding: var(--space-4);
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--surface-border);
       z-index: 1000;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: var(--space-3);
       animation: slideUp 0.3s ease;
 
       @media (min-width: 768px) {
         left: auto;
-        right: 24px;
-        bottom: 24px;
+        right: var(--space-6);
+        bottom: var(--space-6);
         max-width: 360px;
       }
     }
@@ -72,7 +73,7 @@ import { PwaService } from '../../../core/services/pwa.service';
     .prompt-content {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: var(--space-3);
     }
 
     .prompt-icon {
@@ -82,21 +83,22 @@ import { PwaService } from '../../../core/services/pwa.service';
     .prompt-text {
       h4 {
         margin: 0;
-        font-size: 16px;
-        color: var(--text-color);
+        font-size: var(--text-lg);
+        font-family: var(--font-heading);
+        color: var(--color-primary-700);
       }
 
       p {
-        margin: 4px 0 0;
-        font-size: 13px;
-        color: var(--text-color-secondary);
+        margin: var(--space-1) 0 0;
+        font-size: var(--text-sm);
+        color: var(--text-secondary);
       }
     }
 
     .prompt-actions {
       display: flex;
       justify-content: flex-end;
-      gap: 8px;
+      gap: var(--space-2);
     }
   `],
 })

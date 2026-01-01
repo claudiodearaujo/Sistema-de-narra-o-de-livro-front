@@ -163,10 +163,6 @@ import { StoryService, UserStories } from '../../../../core';
       color: var(--text-muted);
     }
   `],
-      min-width: 200px;
-      padding: 16px;
-    }
-  `],
 })
 export class StoryBarComponent implements OnInit {
   private readonly storyService = inject(StoryService);

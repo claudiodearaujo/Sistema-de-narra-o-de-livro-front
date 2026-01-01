@@ -36,26 +36,26 @@ import { PostCardComponent } from '../../../../shared/components/post-card/post-
       <header class="mb-6">
         <div class="flex items-center gap-3 mb-2">
           <i class="pi pi-chart-line text-3xl text-accent-500"></i>
-          <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Em Alta 🔥</h1>
+          <h1 class="text-2xl font-heading font-bold text-primary-700 dark:text-primary-300">Em Alta 🔥</h1>
         </div>
-        <p class="text-gray-600 dark:text-gray-400">
+        <p class="text-secondary">
           Posts mais populares das últimas 24 horas
         </p>
       </header>
 
       <!-- Stats Bar -->
-      <div class="bg-gradient-to-r from-accent-50 to-accent-100 dark:from-accent-900/20 dark:to-accent-900/40 rounded-lg p-4 mb-6 flex items-center justify-around">
+      <div class="bg-linear-to-r from-accent-50 to-accent-100 dark:from-accent-900/20 dark:to-accent-900/40 rounded-lg p-4 mb-6 flex items-center justify-around">
         <div class="text-center">
           <div class="text-2xl font-bold text-accent-600 dark:text-accent-400">{{ totalPosts() }}</div>
-          <div class="text-sm text-gray-600 dark:text-gray-400">Posts em alta</div>
+          <div class="text-sm text-secondary">Posts em alta</div>
         </div>
         <div class="text-center">
           <div class="text-2xl font-bold text-accent-700 dark:text-accent-500">{{ totalLikes() }}</div>
-          <div class="text-sm text-gray-600 dark:text-gray-400">Curtidas totais</div>
+          <div class="text-sm text-secondary">Curtidas totais</div>
         </div>
         <div class="text-center">
           <div class="text-2xl font-bold text-primary-600 dark:text-primary-400">{{ totalComments() }}</div>
-          <div class="text-sm text-gray-600 dark:text-gray-400">Comentários</div>
+          <div class="text-sm text-secondary">Comentários</div>
         </div>
       </div>
 
@@ -63,7 +63,7 @@ import { PostCardComponent } from '../../../../shared/components/post-card/post-
       @if (loading()) {
         <div class="space-y-4">
           @for (i of [1, 2, 3, 4, 5]; track i) {
-            <div class="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-200 dark:border-gray-700">
+            <div class="bg-surface-card rounded-xl p-4 border border-surface-border">
               <div class="flex items-center gap-3 mb-4">
                 <p-skeleton shape="circle" size="3rem" />
                 <div class="flex-1">
@@ -120,12 +120,12 @@ import { PostCardComponent } from '../../../../shared/components/post-card/post-
 
       <!-- Empty State -->
       @if (!loading() && posts().length === 0) {
-        <div class="text-center py-16 bg-white dark:bg-gray-800 rounded-xl">
-          <i class="pi pi-chart-line text-6xl text-gray-300 mb-4"></i>
-          <h2 class="text-xl font-semibold text-gray-700 dark:text-gray-300 mb-2">
+        <div class="text-center py-16 bg-secondary-50 dark:bg-secondary-900/20 rounded-xl">
+          <i class="pi pi-chart-line text-6xl text-secondary-300 mb-4"></i>
+          <h2 class="text-xl font-heading font-semibold text-primary-700 dark:text-primary-300 mb-2">
             Nenhum post em alta
           </h2>
-          <p class="text-gray-500 dark:text-gray-400">
+          <p class="text-secondary">
             Os posts mais populares das últimas 24 horas aparecerão aqui
           </p>
         </div>
@@ -208,13 +208,13 @@ export class TrendingPageComponent implements OnInit {
   getRankClass(index: number): string {
     switch (index) {
       case 0:
-        return 'bg-gradient-to-br from-yellow-400 to-yellow-600 text-white';
+        return 'bg-linear-to-br from-livra-500 to-livra-600 text-white';
       case 1:
-        return 'bg-gradient-to-br from-gray-300 to-gray-500 text-white';
+        return 'bg-linear-to-br from-secondary-300 to-secondary-500 text-white';
       case 2:
-        return 'bg-gradient-to-br from-amber-500 to-amber-700 text-white';
+        return 'bg-linear-to-br from-livra-400 to-livra-500 text-white';
       default:
-        return 'bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-300';
+        return 'bg-secondary-100 text-primary-700 dark:bg-secondary-800 dark:text-secondary-200';
     }
   }
 }

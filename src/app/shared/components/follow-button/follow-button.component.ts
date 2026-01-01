@@ -44,8 +44,8 @@ import { AuthService } from '../../../core/auth/services/auth.service';
     }
 
     :host ::ng-deep .p-button.unfollow-hover {
-      background-color: var(--red-500) !important;
-      border-color: var(--red-500) !important;
+      background-color: var(--color-accent-500) !important;
+      border-color: var(--color-accent-500) !important;
     }
   `]
 })

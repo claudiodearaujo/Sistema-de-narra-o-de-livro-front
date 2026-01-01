@@ -15,8 +15,8 @@ import { GroupCreateModalComponent } from './group-create-modal.component';
       <!-- Header -->
       <div class="flex items-center justify-between mb-6">
         <div>
-          <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Grupos Literários</h1>
-          <p class="text-gray-600 dark:text-gray-400 mt-1">Descubra comunidades de leitores e escritores</p>
+          <h1 class="text-2xl font-bold text-primary-700 dark:text-primary-300 font-heading">Grupos Literários</h1>
+          <p class="text-secondary mt-1">Descubra comunidades de leitores e escritores</p>
         </div>
         <button 
           (click)="showCreateModal.set(true)"
@@ -29,19 +29,19 @@ import { GroupCreateModalComponent } from './group-create-modal.component';
       </div>
 
       <!-- Tabs -->
-      <div class="flex gap-1 mb-6 bg-gray-100 dark:bg-gray-800 p-1 rounded-lg">
+      <div class="flex gap-1 mb-6 bg-secondary-100 dark:bg-secondary-800 p-1 rounded-lg">
         <button 
           (click)="activeTab.set('discover')"
           [class]="activeTab() === 'discover' 
-            ? 'flex-1 py-2 px-4 bg-white dark:bg-gray-700 text-primary-600 dark:text-primary-400 font-medium rounded-md shadow-sm' 
-            : 'flex-1 py-2 px-4 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'">
+            ? 'flex-1 py-2 px-4 bg-surface-card text-primary-600 dark:text-primary-400 font-medium rounded-md shadow-sm' 
+            : 'flex-1 py-2 px-4 text-secondary hover:text-primary-600 dark:hover:text-primary-400'">
           Descobrir
         </button>
         <button 
           (click)="activeTab.set('my'); loadMyGroups()"
           [class]="activeTab() === 'my' 
-            ? 'flex-1 py-2 px-4 bg-white dark:bg-gray-700 text-primary-600 dark:text-primary-400 font-medium rounded-md shadow-sm' 
-            : 'flex-1 py-2 px-4 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'">
+            ? 'flex-1 py-2 px-4 bg-surface-card text-primary-600 dark:text-primary-400 font-medium rounded-md shadow-sm' 
+            : 'flex-1 py-2 px-4 text-secondary hover:text-primary-600 dark:hover:text-primary-400'">
           Meus Grupos
         </button>
       </div>
@@ -50,7 +50,7 @@ import { GroupCreateModalComponent } from './group-create-modal.component';
       @if (activeTab() === 'discover') {
         <div class="mb-6">
           <div class="relative">
-            <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
             <input 
@@ -58,7 +58,7 @@ import { GroupCreateModalComponent } from './group-create-modal.component';
               [(ngModel)]="searchQuery"
               (input)="onSearchChange()"
               placeholder="Buscar grupos..."
-              class="w-full pl-10 pr-4 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent" />
+              class="w-full pl-10 pr-4 py-3 bg-surface-card border border-surface-border rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent" />
           </div>
         </div>
       }
@@ -67,13 +67,13 @@ import { GroupCreateModalComponent } from './group-create-modal.component';
       @if (loading()) {
         <div class="space-y-4">
           @for (i of [1, 2, 3]; track i) {
-            <div class="bg-white dark:bg-gray-800 rounded-xl p-6 animate-pulse">
+            <div class="bg-surface-card rounded-xl p-6 animate-pulse">
               <div class="flex gap-4">
-                <div class="w-16 h-16 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
+                <div class="w-16 h-16 bg-secondary-200 dark:bg-secondary-700 rounded-lg"></div>
                 <div class="flex-1 space-y-2">
-                  <div class="h-5 bg-gray-200 dark:bg-gray-700 rounded w-1/3"></div>
-                  <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-2/3"></div>
-                  <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/4"></div>
+                  <div class="h-5 bg-secondary-200 dark:bg-secondary-700 rounded w-1/3"></div>
+                  <div class="h-4 bg-secondary-200 dark:bg-secondary-700 rounded w-2/3"></div>
+                  <div class="h-4 bg-secondary-200 dark:bg-secondary-700 rounded w-1/4"></div>
                 </div>
               </div>
             </div>
@@ -85,14 +85,14 @@ import { GroupCreateModalComponent } from './group-create-modal.component';
       @if (!loading() && groups().length > 0) {
         <div class="space-y-4">
           @for (group of groups(); track group.id) {
-            <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
+            <div class="bg-surface-card rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
               <div class="flex gap-4">
                 <!-- Cover Image -->
                 <div class="shrink-0">
                   @if (group.coverUrl) {
                     <img [src]="group.coverUrl" [alt]="group.name" class="w-16 h-16 rounded-lg object-cover" />
                   } @else {
-                    <div class="w-16 h-16 bg-gradient-to-br from-primary-500 to-primary-700 rounded-lg flex items-center justify-center">
+                    <div class="w-16 h-16 bg-linear-to-br from-primary-500 to-primary-700 rounded-lg flex items-center justify-center">
                       <span class="text-2xl font-bold text-white">{{ group.name.charAt(0).toUpperCase() }}</span>
                     </div>
                   }
@@ -102,11 +102,11 @@ import { GroupCreateModalComponent } from './group-create-modal.component';
                 <div class="flex-1 min-w-0">
                   <div class="flex items-start justify-between gap-4">
                     <div>
-                      <a [routerLink]="['/social/groups', group.id]" class="font-semibold text-lg text-gray-900 dark:text-white hover:text-primary-600 dark:hover:text-primary-400">
+                      <a [routerLink]="['/social/groups', group.id]" class="font-semibold text-lg text-primary-700 dark:text-primary-300 hover:text-primary-600 dark:hover:text-primary-400">
                         {{ group.name }}
                       </a>
                       @if (group.description) {
-                        <p class="text-gray-600 dark:text-gray-400 text-sm mt-1 line-clamp-2">{{ group.description }}</p>
+                        <p class="text-secondary text-sm mt-1 line-clamp-2">{{ group.description }}</p>
                       }
                     </div>
                     
@@ -136,7 +136,7 @@ import { GroupCreateModalComponent } from './group-create-modal.component';
                   </div>
                   
                   <!-- Stats -->
-                  <div class="flex items-center gap-4 mt-3 text-sm text-gray-500 dark:text-gray-400">
+                  <div class="flex items-center gap-4 mt-3 text-sm text-secondary">
                     <span class="flex items-center gap-1">
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
@@ -182,15 +182,15 @@ import { GroupCreateModalComponent } from './group-create-modal.component';
       <!-- Empty State -->
       @if (!loading() && groups().length === 0) {
         <div class="text-center py-12">
-          <div class="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4">
-            <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div class="w-16 h-16 bg-secondary-100 dark:bg-secondary-800 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-8 h-8 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
             </svg>
           </div>
-          <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">
+          <h3 class="text-lg font-medium text-primary-700 dark:text-primary-300 mb-2">
             {{ activeTab() === 'my' ? 'Você ainda não participa de nenhum grupo' : 'Nenhum grupo encontrado' }}
           </h3>
-          <p class="text-gray-600 dark:text-gray-400 mb-4">
+          <p class="text-secondary mb-4">
             {{ activeTab() === 'my' ? 'Descubra grupos para participar!' : 'Tente buscar por outro termo' }}
           </p>
           @if (activeTab() === 'my') {

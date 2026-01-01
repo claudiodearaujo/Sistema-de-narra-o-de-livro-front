@@ -59,7 +59,7 @@ import { TimeAgoPipe } from '../../pipes/time-ago.pipe';
           ></textarea>
           <div class="flex items-center justify-between mt-2">
             @if (replyingTo()) {
-              <span class="text-sm text-gray-500">
+              <span class="text-sm text-secondary">
                 Respondendo a <strong>{{ replyingTo()?.user?.name }}</strong>
                 <button 
                   pButton 
@@ -101,7 +101,7 @@ import { TimeAgoPipe } from '../../pipes/time-ago.pipe';
 
       <!-- Empty State -->
       @if (!loading() && comments().length === 0) {
-        <div class="text-center py-8 text-gray-500">
+        <div class="text-center py-8 text-secondary">
           <i class="pi pi-comments text-4xl mb-2"></i>
           <p>Nenhum comentário ainda.</p>
           <p class="text-sm">Seja o primeiro a comentar!</p>
@@ -121,7 +121,7 @@ import { TimeAgoPipe } from '../../pipes/time-ago.pipe';
               />
             </a>
             <div class="flex-1">
-              <div class="bg-gray-100 dark:bg-gray-700 rounded-xl px-4 py-2">
+              <div class="bg-secondary-100 dark:bg-secondary-800 rounded-xl px-4 py-2">
                 <div class="flex items-center gap-2">
                   <a 
                     [routerLink]="['/social/profile', comment.user.username || comment.user.id]"
@@ -129,7 +129,7 @@ import { TimeAgoPipe } from '../../pipes/time-ago.pipe';
                   >
                     {{ comment.user.name }}
                   </a>
-                  <span class="text-xs text-gray-500">{{ comment.createdAt | timeAgo }}</span>
+                  <span class="text-xs text-secondary">{{ comment.createdAt | timeAgo }}</span>
                 </div>
                 
                 @if (editingComment()?.id === comment.id) {
@@ -165,26 +165,26 @@ import { TimeAgoPipe } from '../../pipes/time-ago.pipe';
               @if (!editingComment() || editingComment()?.id !== comment.id) {
                 <div class="flex items-center gap-3 mt-1 ml-2 text-xs">
                   <button 
-                    class="text-gray-500 hover:text-primary-600 font-medium"
+                    class="text-secondary hover:text-primary-600 font-medium"
                     (click)="onLikeComment(comment)"
                   >
                     {{ comment.likeCount > 0 ? comment.likeCount + ' ' : '' }}Curtir
                   </button>
                   <button 
-                    class="text-gray-500 hover:text-primary-600 font-medium"
+                    class="text-secondary hover:text-primary-600 font-medium"
                     (click)="startReply(comment)"
                   >
                     Responder
                   </button>
                   @if (isOwner(comment)) {
                     <button 
-                      class="text-gray-500 hover:text-primary-600 font-medium"
+                      class="text-secondary hover:text-primary-600 font-medium"
                       (click)="startEdit(comment)"
                     >
                       Editar
                     </button>
                     <button 
-                      class="text-gray-500 hover:text-red-600 font-medium"
+                      class="text-secondary hover:text-accent-600 font-medium"
                       (click)="deleteComment(comment)"
                     >
                       Excluir
@@ -217,7 +217,7 @@ import { TimeAgoPipe } from '../../pipes/time-ago.pipe';
                         />
                       </a>
                       <div class="flex-1">
-                        <div class="bg-gray-100 dark:bg-gray-700 rounded-xl px-4 py-2">
+                        <div class="bg-secondary-100 dark:bg-secondary-800 rounded-xl px-4 py-2">
                           <div class="flex items-center gap-2">
                             <a 
                               [routerLink]="['/social/profile', reply.user.username || reply.user.id]"
@@ -225,20 +225,20 @@ import { TimeAgoPipe } from '../../pipes/time-ago.pipe';
                             >
                               {{ reply.user.name }}
                             </a>
-                            <span class="text-xs text-gray-500">{{ reply.createdAt | timeAgo }}</span>
+                            <span class="text-xs text-secondary">{{ reply.createdAt | timeAgo }}</span>
                           </div>
                           <p class="text-sm mt-1">{{ reply.content }}</p>
                         </div>
                         <div class="flex items-center gap-3 mt-1 ml-2 text-xs">
                           <button 
-                            class="text-gray-500 hover:text-primary-600 font-medium"
+                            class="text-secondary hover:text-primary-600 font-medium"
                             (click)="onLikeComment(reply)"
                           >
                             {{ reply.likeCount > 0 ? reply.likeCount + ' ' : '' }}Curtir
                           </button>
                           @if (isOwner(reply)) {
                             <button 
-                              class="text-gray-500 hover:text-red-600 font-medium"
+                              class="text-secondary hover:text-accent-600 font-medium"
                               (click)="deleteComment(reply)"
                             >
                               Excluir

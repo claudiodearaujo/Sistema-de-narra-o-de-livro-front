@@ -130,17 +130,17 @@ export class NotificationsComponent implements OnInit, OnDestroy {
 
   getNotificationColor(type: string): string {
     const colors: Record<string, string> = {
-      LIKE: '#e74c3c',
-      COMMENT: '#3498db',
-      FOLLOW: '#9b59b6',
-      MENTION: '#e67e22',
-      MESSAGE: '#6366f1',
-      ACHIEVEMENT: '#f1c40f',
-      LIVRA_EARNED: '#f97316',
-      SYSTEM: '#1abc9c',
-      BOOK_UPDATE: '#f59e0b'
+      LIKE: 'var(--color-accent-500)',
+      COMMENT: 'var(--color-primary-500)',
+      FOLLOW: 'var(--color-primary-600)',
+      MENTION: 'var(--color-accent-600)',
+      MESSAGE: 'var(--color-primary-400)',
+      ACHIEVEMENT: 'var(--color-livra)',
+      LIVRA_EARNED: 'var(--color-livra)',
+      SYSTEM: 'var(--color-primary-500)',
+      BOOK_UPDATE: 'var(--color-primary-400)'
     };
-    return colors[type.toUpperCase()] || 'var(--text-color-secondary)';
+    return colors[type.toUpperCase()] || 'var(--text-secondary)';
   }
 
   formatTimeAgo(date: Date | string): string {

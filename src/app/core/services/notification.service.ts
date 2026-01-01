@@ -265,17 +265,17 @@ export class NotificationService implements OnDestroy {
    */
   getNotificationColor(type: NotificationType): string {
     const colors: Record<NotificationType, string> = {
-      LIKE: 'text-red-500',
-      COMMENT: 'text-blue-500',
-      FOLLOW: 'text-green-500',
-      MENTION: 'text-purple-500',
-      MESSAGE: 'text-indigo-500',
-      BOOK_UPDATE: 'text-amber-500',
-      ACHIEVEMENT: 'text-yellow-500',
-      LIVRA_EARNED: 'text-orange-500',
-      SYSTEM: 'text-gray-500'
+      LIKE: 'text-accent-500',
+      COMMENT: 'text-primary-500',
+      FOLLOW: 'text-primary-600',
+      MENTION: 'text-accent-600',
+      MESSAGE: 'text-primary-700',
+      BOOK_UPDATE: 'text-livra-500',
+      ACHIEVEMENT: 'text-livra-400',
+      LIVRA_EARNED: 'text-livra-500',
+      SYSTEM: 'text-secondary'
     };
-    return colors[type] || 'text-gray-500';
+    return colors[type] || 'text-secondary';
   }
 
   /**

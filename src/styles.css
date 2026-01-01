@@ -3,7 +3,7 @@
    ========================================================================== */
 
 /* Design Tokens */
-@import "design-tokens.css";
+@import "./design-tokens.css";
 
 /* PrimeNG Icons */
 @import "primeicons/primeicons.css";

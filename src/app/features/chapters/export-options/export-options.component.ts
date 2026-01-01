@@ -9,11 +9,11 @@ import { MessageService } from 'primeng/api';
     standalone: true,
     imports: [CommonModule, ButtonModule],
     template: `
-        <div class="export-options p-4 border rounded-lg bg-white dark:bg-gray-800 shadow-sm mt-4">
-            <h3 class="text-lg font-semibold mb-3 text-[var(--color-metal)] dark:text-gray-200">Processamento de Áudio</h3>
+        <div class="export-options p-4 border border-surface-border rounded-lg bg-white dark:bg-secondary-800 shadow-sm mt-4">
+            <h3 class="text-lg font-semibold mb-3 text-primary-700 dark:text-primary-300 font-heading">Processamento de Áudio</h3>
             
             <div class="flex flex-col gap-3">
-                <p class="text-sm text-gray-600 dark:text-gray-400">
+                <p class="text-sm text-secondary">
                     Gera o arquivo final unindo todas as falas, normalizando o volume e exportando para MP3.
                 </p>
                 

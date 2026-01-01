@@ -17,7 +17,7 @@ import { RouterOutlet } from '@angular/router';
   styles: [`
     .auth-layout {
       min-height: 100vh;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, var(--color-primary-600) 0%, var(--color-accent-600) 100%);
     }
   `]
 })

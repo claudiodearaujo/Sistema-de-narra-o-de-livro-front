@@ -15,8 +15,7 @@
             <button pButton type="button" label="Cancelar" icon="pi pi-times" (click)="cancel()" severity="secondary"
                 [disabled]="submitting"></button>
             <button pButton type="submit" [label]="isEditMode ? 'Salvar' : 'Criar'" icon="pi pi-check"
-                [loading]="submitting" [disabled]="chapterForm.invalid || submitting"
-                [style.background-color]="'var(--color-madeira)'"></button>
+                [loading]="submitting" [disabled]="chapterForm.invalid || submitting"></button>
         </div>
     </form>
 </div>

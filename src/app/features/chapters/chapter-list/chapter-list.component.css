@@ -4,7 +4,7 @@
 }
 
 :host ::ng-deep .p-orderlist-item {
-    border-bottom: 1px solid #e5e7eb;
+    border-bottom: 1px solid var(--surface-border);
 }
 
 :host ::ng-deep .p-orderlist-item:last-child {

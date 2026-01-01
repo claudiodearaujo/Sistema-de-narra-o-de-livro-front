@@ -30,12 +30,12 @@ import { ButtonModule } from 'primeng/button';
       display: flex;
       align-items: center;
       justify-content: center;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, var(--color-primary-600) 0%, var(--color-primary-800) 100%);
       padding: 1rem;
     }
 
     .unauthorized-card {
-      background: white;
+      background: var(--surface-card);
       border-radius: 1rem;
       padding: 3rem;
       text-align: center;
@@ -47,7 +47,7 @@ import { ButtonModule } from 'primeng/button';
       width: 80px;
       height: 80px;
       border-radius: 50%;
-      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+      background: linear-gradient(135deg, var(--color-accent-500) 0%, var(--color-accent-600) 100%);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -62,12 +62,13 @@ import { ButtonModule } from 'primeng/button';
     h1 {
       font-size: 1.5rem;
       font-weight: 700;
-      color: #1a1a2e;
+      color: var(--color-primary-700);
+      font-family: var(--font-heading);
       margin: 0 0 0.75rem;
     }
 
     p {
-      color: #6b7280;
+      color: var(--text-secondary);
       margin: 0 0 2rem;
     }
 

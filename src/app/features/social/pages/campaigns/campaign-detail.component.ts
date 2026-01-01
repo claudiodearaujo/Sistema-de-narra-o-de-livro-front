@@ -13,11 +13,11 @@ import { Campaign, CampaignProgress, CampaignBook } from '../../../../core/model
       <!-- Loading -->
       @if (loading()) {
         <div class="animate-pulse space-y-4">
-          <div class="h-8 bg-gray-200 dark:bg-gray-700 rounded w-1/3"></div>
-          <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-2/3"></div>
+          <div class="h-8 bg-secondary-200 dark:bg-secondary-700 rounded w-1/3"></div>
+          <div class="h-4 bg-secondary-200 dark:bg-secondary-700 rounded w-2/3"></div>
           <div class="grid grid-cols-3 gap-4 mt-6">
             @for (i of [1, 2, 3]; track i) {
-              <div class="h-48 bg-gray-200 dark:bg-gray-700 rounded-xl"></div>
+              <div class="h-48 bg-secondary-200 dark:bg-secondary-700 rounded-xl"></div>
             }
           </div>
         </div>
@@ -27,7 +27,7 @@ import { Campaign, CampaignProgress, CampaignBook } from '../../../../core/model
         <!-- Back Link -->
         <a 
           [routerLink]="['/social/groups', campaign()!.groupId]"
-          class="inline-flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 mb-4">
+          class="inline-flex items-center gap-2 text-secondary hover:text-primary-600 dark:hover:text-primary-400 mb-4">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
           </svg>
@@ -35,21 +35,21 @@ import { Campaign, CampaignProgress, CampaignBook } from '../../../../core/model
         </a>
 
         <!-- Header Card -->
-        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm mb-6">
+        <div class="bg-surface-card rounded-xl p-6 shadow-sm mb-6 border border-surface-border">
           <div class="flex items-start justify-between gap-4">
             <div>
               <div class="flex items-center gap-3 mb-2">
-                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ campaign()!.name }}</h1>
+                <h1 class="text-2xl font-heading font-bold text-primary-800 dark:text-primary-200">{{ campaign()!.name }}</h1>
                 <span [class]="'px-3 py-1 text-sm rounded-full ' + getStatusClass(campaign()!.status)">
                   {{ getStatusLabel(campaign()!.status) }}
                 </span>
               </div>
               @if (campaign()!.description) {
-                <p class="text-gray-600 dark:text-gray-400 mb-4">{{ campaign()!.description }}</p>
+                <p class="text-secondary mb-4">{{ campaign()!.description }}</p>
               }
               
               <!-- Stats -->
-              <div class="flex flex-wrap items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
+              <div class="flex flex-wrap items-center gap-4 text-sm text-secondary">
                 <span class="flex items-center gap-1">
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
@@ -101,22 +101,22 @@ import { Campaign, CampaignProgress, CampaignBook } from '../../../../core/model
 
         <!-- My Progress -->
         @if (myProgress()) {
-          <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm mb-6">
-            <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Meu Progresso</h2>
+          <div class="bg-surface-card rounded-xl p-6 shadow-sm mb-6 border border-surface-border">
+            <h2 class="text-lg font-heading font-semibold text-primary-800 dark:text-primary-200 mb-4">Meu Progresso</h2>
             
             <div class="flex items-center gap-4 mb-4">
               <div class="flex-1">
                 <div class="flex justify-between text-sm mb-1">
-                  <span class="text-gray-600 dark:text-gray-400">
+                  <span class="text-secondary">
                     {{ myProgress()!.booksRead }} de {{ campaign()!.books.length }} livros
                   </span>
                   <span class="font-medium text-primary-600 dark:text-primary-400">
                     {{ getProgressPercent() }}%
                   </span>
                 </div>
-                <div class="h-3 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                <div class="h-3 bg-secondary-200 dark:bg-secondary-700 rounded-full overflow-hidden">
                   <div 
-                    class="h-full bg-gradient-to-r from-primary-500 to-primary-700 rounded-full transition-all duration-500"
+                    class="h-full bg-linear-to-r from-primary-500 to-primary-700 rounded-full transition-all duration-500"
                     [style.width.%]="getProgressPercent()">
                   </div>
                 </div>
@@ -136,24 +136,24 @@ import { Campaign, CampaignProgress, CampaignBook } from '../../../../core/model
 
         <!-- Books Grid -->
         <div class="mb-6">
-          <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Livros da Campanha</h2>
+          <h2 class="text-lg font-heading font-semibold text-primary-800 dark:text-primary-200 mb-4">Livros da Campanha</h2>
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             @for (campaignBook of campaign()!.books; track campaignBook.id; let i = $index) {
-              <div class="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm">
+              <div class="bg-surface-card rounded-xl p-4 shadow-sm border border-surface-border">
                 <div class="flex gap-4">
                   <!-- Book Cover -->
                   @if (campaignBook.book.coverUrl) {
                     <img [src]="campaignBook.book.coverUrl" [alt]="campaignBook.book.title" 
                       class="w-16 h-24 rounded-lg object-cover shrink-0" />
                   } @else {
-                    <div class="w-16 h-24 rounded-lg bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center shrink-0">
+                    <div class="w-16 h-24 rounded-lg bg-linear-to-br from-primary-500 to-primary-700 flex items-center justify-center shrink-0">
                       <span class="text-white text-xl font-bold">{{ campaignBook.book.title.charAt(0) }}</span>
                     </div>
                   }
                   
                   <div class="flex-1 min-w-0">
-                    <p class="font-medium text-gray-900 dark:text-white truncate">{{ campaignBook.book.title }}</p>
-                    <p class="text-sm text-gray-500 dark:text-gray-400">{{ campaignBook.book.author }}</p>
+                    <p class="font-medium text-primary-800 dark:text-primary-200 truncate">{{ campaignBook.book.title }}</p>
+                    <p class="text-sm text-secondary">{{ campaignBook.book.author }}</p>
                     
                     <!-- Complete button -->
                     @if (myProgress() && !myProgress()!.isCompleted && campaign()!.status === 'ACTIVE') {
@@ -185,16 +185,16 @@ import { Campaign, CampaignProgress, CampaignBook } from '../../../../core/model
         </div>
 
         <!-- Leaderboard -->
-        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
-          <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Ranking</h2>
+        <div class="bg-surface-card rounded-xl p-6 shadow-sm border border-surface-border">
+          <h2 class="text-lg font-heading font-semibold text-primary-800 dark:text-white mb-4">Ranking</h2>
           
           @if (leaderboardLoading()) {
             <div class="space-y-3">
               @for (i of [1, 2, 3]; track i) {
                 <div class="flex items-center gap-3 animate-pulse">
-                  <div class="w-8 h-8 bg-gray-200 dark:bg-gray-700 rounded-full"></div>
-                  <div class="w-10 h-10 bg-gray-200 dark:bg-gray-700 rounded-full"></div>
-                  <div class="flex-1 h-4 bg-gray-200 dark:bg-gray-700 rounded"></div>
+                  <div class="w-8 h-8 bg-secondary-200 dark:bg-secondary-700 rounded-full"></div>
+                  <div class="w-10 h-10 bg-secondary-200 dark:bg-secondary-700 rounded-full"></div>
+                  <div class="flex-1 h-4 bg-secondary-200 dark:bg-secondary-700 rounded"></div>
                 </div>
               }
             </div>
@@ -211,7 +211,7 @@ import { Campaign, CampaignProgress, CampaignBook } from '../../../../core/model
                     } @else if (i === 2) {
                       <span class="text-2xl">🥉</span>
                     } @else {
-                      <span class="text-gray-500 font-medium">{{ i + 1 }}</span>
+                      <span class="text-secondary font-medium">{{ i + 1 }}</span>
                     }
                   </div>
                   
@@ -219,15 +219,15 @@ import { Campaign, CampaignProgress, CampaignBook } from '../../../../core/model
                   @if (entry.user.avatar) {
                     <img [src]="entry.user.avatar" [alt]="entry.user.name" class="w-10 h-10 rounded-full object-cover" />
                   } @else {
-                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center">
+                    <div class="w-10 h-10 rounded-full bg-linear-to-br from-primary-500 to-primary-700 flex items-center justify-center">
                       <span class="text-white font-bold">{{ entry.user.name.charAt(0).toUpperCase() }}</span>
                     </div>
                   }
                   
                   <!-- Name -->
                   <div class="flex-1 min-w-0">
-                    <p class="font-medium text-gray-900 dark:text-white truncate">{{ entry.user.name }}</p>
-                    <p class="text-sm text-gray-500 dark:text-gray-400">
+                    <p class="font-medium text-primary-900 dark:text-white truncate">{{ entry.user.name }}</p>
+                    <p class="text-sm text-secondary">
                       {{ entry.booksRead }} de {{ campaign()!.books.length }} livros
                     </p>
                   </div>
@@ -242,7 +242,7 @@ import { Campaign, CampaignProgress, CampaignBook } from '../../../../core/model
               }
             </div>
           } @else {
-            <p class="text-center text-gray-500 dark:text-gray-400 py-4">
+            <p class="text-center text-secondary py-4">
               Nenhum participante ainda. Seja o primeiro!
             </p>
           }
@@ -252,8 +252,8 @@ import { Campaign, CampaignProgress, CampaignBook } from '../../../../core/model
       <!-- Not Found -->
       @if (!loading() && !campaign()) {
         <div class="text-center py-12">
-          <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Campanha não encontrada</h2>
-          <p class="text-gray-600 dark:text-gray-400 mb-4">A campanha que você procura não existe ou foi removida.</p>
+          <h2 class="text-xl font-heading font-bold text-primary-900 dark:text-white mb-2">Campanha não encontrada</h2>
+          <p class="text-secondary mb-4">A campanha que você procura não existe ou foi removida.</p>
           <a routerLink="/social/groups" class="text-primary-600 dark:text-primary-400 hover:underline">
             Voltar para grupos
           </a>
@@ -399,12 +399,12 @@ export class CampaignDetailComponent implements OnInit {
 
   getStatusClass(status: string): string {
     const classes: Record<string, string> = {
-      DRAFT: 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300',
-      ACTIVE: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
-      COMPLETED: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
-      CANCELLED: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
+      DRAFT: 'bg-secondary-100 text-secondary-700 dark:bg-secondary-700 dark:text-secondary-300',
+      ACTIVE: 'bg-primary-100 text-primary-700 dark:bg-primary-900/30 dark:text-primary-400',
+      COMPLETED: 'bg-primary-50 text-primary-600 dark:bg-primary-900/20 dark:text-primary-300',
+      CANCELLED: 'bg-accent-100 text-accent-700 dark:bg-accent-900/30 dark:text-accent-400'
     };
-    return classes[status] || 'bg-gray-100 text-gray-700';
+    return classes[status] || 'bg-secondary-100 text-secondary-700';
   }
 
   formatDate(dateString?: string): string {

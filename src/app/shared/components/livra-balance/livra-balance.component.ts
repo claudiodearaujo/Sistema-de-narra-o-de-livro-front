@@ -43,19 +43,20 @@ import { LivraBalance, LivraUpdateEvent } from '../../../core/models/livra.model
     .livra-balance-container {
       display: flex;
       align-items: center;
-      gap: 0.5rem;
-      padding: 0.5rem 1rem;
-      background: linear-gradient(135deg, var(--primary-100) 0%, var(--primary-50) 100%);
-      border-radius: 2rem;
+      gap: var(--space-2);
+      padding: var(--space-2) var(--space-4);
+      background: linear-gradient(135deg, var(--color-livra-light) 0%, var(--color-secondary-100) 100%);
+      border-radius: var(--radius-full);
       cursor: pointer;
       transition: all 0.3s ease;
       text-decoration: none;
       position: relative;
       overflow: visible;
+      border: var(--border-width) solid var(--color-livra);
     }
 
     .livra-balance-container:hover {
-      background: linear-gradient(135deg, var(--primary-200) 0%, var(--primary-100) 100%);
+      background: linear-gradient(135deg, var(--color-livra) 0%, var(--color-livra-light) 100%);
       transform: scale(1.05);
     }
 
@@ -65,8 +66,8 @@ import { LivraBalance, LivraUpdateEvent } from '../../../core/models/livra.model
       display: flex;
       align-items: center;
       justify-content: center;
-      background: var(--primary-500);
-      border-radius: 50%;
+      background: var(--color-livra);
+      border-radius: var(--radius-full);
       color: white;
       font-size: 0.75rem;
     }
@@ -83,17 +84,17 @@ import { LivraBalance, LivraUpdateEvent } from '../../../core/models/livra.model
 
     .balance-amount {
       font-weight: 600;
-      color: var(--primary-700);
-      font-size: 0.95rem;
+      color: var(--color-livra-dark);
+      font-size: var(--text-sm);
       transition: all 0.3s ease;
     }
 
     .balance-amount.increase {
-      color: var(--green-600);
+      color: var(--color-success);
     }
 
     .balance-amount.decrease {
-      color: var(--red-600);
+      color: var(--color-error);
     }
 
     .amount-change {
@@ -101,17 +102,17 @@ import { LivraBalance, LivraUpdateEvent } from '../../../core/models/livra.model
       top: -1.5rem;
       right: 0;
       font-weight: bold;
-      font-size: 0.875rem;
+      font-size: var(--text-sm);
       animation: float-up 2s ease-out forwards;
       pointer-events: none;
     }
 
     .amount-change.positive {
-      color: var(--green-500);
+      color: var(--color-success);
     }
 
     .amount-change.negative {
-      color: var(--red-500);
+      color: var(--color-error);
     }
 
     @keyframes float-up {

@@ -24,7 +24,7 @@ import { Post, PostBook } from '../../../core/models/post.model';
     TagModule
   ],
   template: `
-    <div class="book-update-card bg-gradient-to-r from-primary-50 to-primary-100 dark:from-primary-900/30 dark:to-primary-800/30 rounded-xl p-4 border border-primary-200 dark:border-primary-700">
+    <div class="book-update-card bg-linear-to-r from-primary-50 to-primary-100 dark:from-primary-900/30 dark:to-primary-800/30 rounded-xl p-4 border border-primary-200 dark:border-primary-700">
       <div class="flex items-start gap-4">
         <!-- Book Cover -->
         @if (book?.coverUrl) {
@@ -36,8 +36,8 @@ import { Post, PostBook } from '../../../core/models/post.model';
             />
           </div>
         } @else {
-          <div class="w-20 h-28 bg-gray-200 dark:bg-gray-700 rounded-lg flex items-center justify-center shrink-0">
-            <i class="pi pi-book text-2xl text-gray-400"></i>
+          <div class="w-20 h-28 bg-secondary-200 dark:bg-secondary-700 rounded-lg flex items-center justify-center shrink-0">
+            <i class="pi pi-book text-2xl text-secondary-400"></i>
           </div>
         }
 
@@ -49,16 +49,16 @@ import { Post, PostBook } from '../../../core/models/post.model';
             styleClass="mb-2"
           />
           
-          <h3 class="font-bold text-lg text-gray-900 dark:text-white truncate mb-1">
+          <h3 class="font-bold text-lg text-primary-800 dark:text-primary-200 truncate mb-1 font-heading">
             {{ book?.title || 'Livro' }}
           </h3>
           
-          <p class="text-sm text-gray-600 dark:text-gray-300 mb-2">
+          <p class="text-sm text-primary-700 dark:text-primary-300 mb-2">
             por {{ book?.author || 'Autor desconhecido' }}
           </p>
 
           @if (description) {
-            <p class="text-sm text-gray-500 dark:text-gray-400 line-clamp-2 mb-3">
+            <p class="text-sm text-secondary line-clamp-2 mb-3">
               {{ description }}
             </p>
           }

@@ -1,8 +1,7 @@
 <div class="card">
     <div class="flex justify-between items-center mb-4">
-        <h3 class="text-xl font-semibold text-gray-700">Capítulos</h3>
-        <button pButton label="Novo Capítulo" icon="pi pi-plus" (click)="createChapter()"
-            [style.background-color]="'var(--color-madeira)'"></button>
+        <h3 class="text-xl font-semibold text-primary-700 dark:text-primary-300 font-heading">Capítulos</h3>
+        <button pButton label="Novo Capítulo" icon="pi pi-plus" (click)="createChapter()"></button>
     </div>
 
     <p-orderList [value]="chapters" [listStyle]="{'height':'auto'}" header="Lista de Capítulos" filterBy="title"

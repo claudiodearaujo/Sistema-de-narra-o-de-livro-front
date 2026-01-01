@@ -64,14 +64,14 @@ import { AuthService } from '../../../core/auth/services/auth.service';
                 class="w-full"
                 [maxlength]="280"
               ></textarea>
-              <div class="text-right text-sm text-gray-500 mt-1">
+              <div class="text-right text-sm text-secondary mt-1">
                 {{ quoteText.length }}/280
               </div>
             </div>
           </div>
 
           <!-- Original Post Preview -->
-          <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
+          <div class="bg-secondary-50 dark:bg-secondary-800 rounded-lg p-4 border border-surface-border">
             <div class="flex items-center gap-2 mb-2">
               <p-avatar 
                 [image]="post.user.avatar || undefined"
@@ -82,11 +82,11 @@ import { AuthService } from '../../../core/auth/services/auth.service';
               <div>
                 <span class="font-medium text-sm">{{ post.user.name }}</span>
                 @if (post.user.username) {
-                  <span class="text-gray-500 text-sm ml-1">&#64;{{ post.user.username }}</span>
+                  <span class="text-secondary text-sm ml-1">&#64;{{ post.user.username }}</span>
                 }
               </div>
             </div>
-            <p class="text-sm text-gray-600 dark:text-gray-300 line-clamp-3">{{ post.content }}</p>
+            <p class="text-sm text-secondary line-clamp-3">{{ post.content }}</p>
             
             @if (post.mediaUrl) {
               <img 
@@ -97,13 +97,13 @@ import { AuthService } from '../../../core/auth/services/auth.service';
             }
 
             @if (post.book) {
-              <div class="mt-2 flex items-center gap-2 p-2 bg-white dark:bg-gray-600 rounded">
+              <div class="mt-2 flex items-center gap-2 p-2 bg-surface-card rounded">
                 @if (post.book.coverUrl) {
                   <img [src]="post.book.coverUrl" [alt]="post.book.title" class="w-8 h-10 object-cover rounded" />
                 }
                 <div>
                   <p class="text-xs font-medium">{{ post.book.title }}</p>
-                  <p class="text-xs text-gray-500">{{ post.book.author }}</p>
+                  <p class="text-xs text-secondary">{{ post.book.author }}</p>
                 </div>
               </div>
             }

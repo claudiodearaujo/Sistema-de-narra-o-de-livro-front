@@ -1,9 +1,9 @@
 <div class="container mx-auto p-6 max-w-4xl">
     <div class="mb-6">
-        <h1 class="text-3xl font-bold mb-2" style="color: var(--color-agua);">
+        <h1 class="text-3xl font-bold mb-2 font-heading text-primary-700 dark:text-primary-300">
             {{ isEditMode ? 'Editar Livro' : 'Novo Livro' }}
         </h1>
-        <p class="text-gray-600">
+        <p class="text-secondary">
             {{ isEditMode ? 'Atualize as informações do livro' : 'Cadastre um novo livro para narração' }}
         </p>
     </div>
@@ -63,8 +63,7 @@
                 <button pButton type="button" label="Cancelar" icon="pi pi-times" (click)="cancel()"
                     severity="secondary" [disabled]="submitting"></button>
                 <button pButton type="submit" [label]="isEditMode ? 'Atualizar' : 'Criar'" icon="pi pi-check"
-                    [loading]="submitting" [disabled]="bookForm.invalid || submitting"
-                    [style.background-color]="'var(--color-madeira)'"></button>
+                    [loading]="submitting" [disabled]="bookForm.invalid || submitting"></button>
             </div>
         </form>
     </div>

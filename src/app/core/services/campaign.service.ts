@@ -208,12 +208,12 @@ export class CampaignService {
    */
   getStatusBadgeClass(status: CampaignStatus): string {
     const statusClasses: Record<CampaignStatus, string> = {
-      DRAFT: 'bg-gray-100 text-gray-700',
-      ACTIVE: 'bg-green-100 text-green-700',
-      COMPLETED: 'bg-blue-100 text-blue-700',
-      CANCELLED: 'bg-red-100 text-red-700'
+      DRAFT: 'bg-secondary-100 text-secondary-700',
+      ACTIVE: 'bg-primary-100 text-primary-700',
+      COMPLETED: 'bg-primary-50 text-primary-600',
+      CANCELLED: 'bg-accent-100 text-accent-700'
     };
-    return statusClasses[status] || 'bg-gray-100 text-gray-700';
+    return statusClasses[status] || 'bg-secondary-100 text-secondary-700';
   }
 
   /**

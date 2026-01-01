@@ -29,7 +29,7 @@ import { LivraService } from '../../../../core/services/livra.service';
               styleClass="w-16 h-16"
               strokeWidth="4"
             />
-            <p class="mt-4 text-gray-600">Processando sua compra...</p>
+            <p class="mt-4 text-secondary">Processando sua compra...</p>
           </ng-template>
         } @else {
           <ng-template pTemplate="header">
@@ -41,22 +41,22 @@ import { LivraService } from '../../../../core/services/livra.service';
           </ng-template>
 
           <ng-template pTemplate="content">
-            <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+            <h1 class="text-2xl font-heading font-bold text-primary-900 dark:text-white mb-2">
               Compra Realizada!
             </h1>
-            <p class="text-gray-600 dark:text-gray-400 mb-6">
+            <p class="text-secondary mb-6">
               Suas Livras foram adicionadas à sua conta.
               Use-as para desbloquear recursos premium!
             </p>
 
             <div class="bg-primary-50 dark:bg-primary-900 rounded-lg p-6 mb-6">
-              <div class="text-sm text-gray-500 mb-1">Seu novo saldo</div>
+              <div class="text-sm text-secondary mb-1">Seu novo saldo</div>
               <div class="text-4xl font-bold text-primary-500">
                 {{ balance() }} Livras
               </div>
             </div>
 
-            <div class="text-sm text-gray-500">
+            <div class="text-sm text-secondary">
               <h4 class="font-semibold mb-2">O que você pode fazer com Livras:</h4>
               <ul class="text-left space-y-1">
                 <li class="flex items-center">

@@ -9,7 +9,7 @@
                 <ng-template pTemplate="selectedItem" let-selectedOption>
                     <div class="flex align-items-center gap-2" *ngIf="selectedOption">
                         <div
-                            class="w-6 h-6 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center text-indigo-600 dark:text-indigo-300 font-bold text-xs">
+                            class="w-6 h-6 rounded-full bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center text-primary-600 dark:text-primary-300 font-bold text-xs">
                             {{ selectedOption.name.charAt(0).toUpperCase() }}
                         </div>
                         <div>{{ selectedOption.name }}</div>
@@ -18,7 +18,7 @@
                 <ng-template pTemplate="item" let-character>
                     <div class="flex align-items-center gap-2">
                         <div
-                            class="w-6 h-6 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center text-indigo-600 dark:text-indigo-300 font-bold text-xs">
+                            class="w-6 h-6 rounded-full bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center text-primary-600 dark:text-primary-300 font-bold text-xs">
                             {{ character.name.charAt(0).toUpperCase() }}
                         </div>
                         <div>{{ character.name }}</div>

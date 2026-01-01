@@ -6,12 +6,12 @@ import { CommonModule } from '@angular/common';
     standalone: true,
     imports: [CommonModule],
     template: `
-        <div class="audio-player p-4 border rounded-lg bg-gray-50 dark:bg-gray-800" *ngIf="audioUrl">
+        <div class="audio-player p-4 border border-surface-border rounded-lg bg-secondary-50/50 dark:bg-secondary-800" *ngIf="audioUrl">
             <div class="flex flex-col gap-2">
-                <h4 class="font-semibold text-sm text-gray-600 dark:text-gray-300">Áudio Final</h4>
+                <h4 class="font-semibold text-sm text-primary-700 dark:text-primary-300 font-heading">Áudio Final</h4>
                 <audio controls class="w-full" [src]="audioUrl"></audio>
                 <div class="flex justify-end mt-2">
-                    <a [href]="audioUrl" target="_blank" class="text-sm text-blue-600 hover:underline">Download / Abrir</a>
+                    <a [href]="audioUrl" target="_blank" class="text-sm text-primary-600 hover:underline">Download / Abrir</a>
                 </div>
             </div>
         </div>

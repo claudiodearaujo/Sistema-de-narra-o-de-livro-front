@@ -30,12 +30,12 @@ import { PostBook, PostChapter } from '../../../core/models/post.model';
     FormsModule
   ],
   template: `
-    <div class="audio-preview-card bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20 rounded-xl overflow-hidden border border-purple-200 dark:border-purple-700">
+    <div class="audio-preview-card bg-linear-to-br from-primary-50 to-primary-100 dark:from-primary-900/20 dark:to-primary-800/20 rounded-xl overflow-hidden border border-primary-200 dark:border-primary-700">
       <!-- Header -->
-      <div class="bg-purple-100 dark:bg-purple-800/50 px-4 py-2 flex items-center justify-between">
+      <div class="bg-primary-100 dark:bg-primary-800/50 px-4 py-2 flex items-center justify-between">
         <div class="flex items-center gap-2">
-          <i class="pi pi-volume-up text-purple-600 dark:text-purple-400"></i>
-          <span class="text-sm font-medium text-purple-800 dark:text-purple-200">
+          <i class="pi pi-volume-up text-primary-600 dark:text-primary-400"></i>
+          <span class="text-sm font-medium text-primary-800 dark:text-primary-200">
             Narração disponível
           </span>
         </div>
@@ -54,24 +54,24 @@ import { PostBook, PostChapter } from '../../../core/models/post.model';
             />
           }
           <div class="flex-1 min-w-0">
-            <h3 class="font-semibold text-gray-900 dark:text-white truncate">
+            <h3 class="font-semibold text-primary-800 dark:text-primary-200 truncate">
               {{ chapter?.title || 'Narração' }}
             </h3>
-            <p class="text-sm text-gray-500 dark:text-gray-400 truncate">
+            <p class="text-sm text-secondary truncate">
               {{ book?.title }} • {{ book?.author }}
             </p>
           </div>
         </div>
 
         <!-- Audio Player -->
-        <div class="bg-white/60 dark:bg-gray-800/60 rounded-lg p-4">
+        <div class="bg-white/60 dark:bg-secondary-800/60 rounded-lg p-4">
           <!-- Waveform Visualization (Static) -->
           <div class="flex items-center gap-1 h-12 mb-3">
             @for (bar of waveformBars; track $index) {
               <div 
                 class="flex-1 rounded-full transition-all duration-300"
                 [style.height.%]="bar"
-                [class]="isPlaying() && $index <= currentBarIndex() ? 'bg-purple-500' : 'bg-gray-300 dark:bg-gray-600'"
+                [class]="isPlaying() && $index <= currentBarIndex() ? 'bg-primary-500' : 'bg-secondary-300 dark:bg-secondary-600'"
               ></div>
             }
           </div>
@@ -99,7 +99,7 @@ import { PostBook, PostChapter } from '../../../core/models/post.model';
             </div>
 
             <!-- Time -->
-            <div class="text-sm text-gray-500 dark:text-gray-400 min-w-[80px] text-right">
+            <div class="text-sm text-secondary min-w-20 text-right">
               {{ formatTime(currentTime()) }} / {{ formatTime(duration()) }}
             </div>
           </div>
@@ -162,7 +162,7 @@ import { PostBook, PostChapter } from '../../../core/models/post.model';
     }
 
     :host ::ng-deep .p-slider .p-slider-range {
-      background: var(--purple-500);
+      background: var(--color-primary-500);
     }
   `]
 })

@@ -1,8 +1,8 @@
 <div class="dashboard-container p-6">
     <!-- Header -->
     <div class="mb-6">
-        <h1 class="text-3xl font-bold text-\[var(--color-metal)] dark:text-gray-100">Dashboard</h1>
-        <p class="text-gray-600 dark:text-gray-400 mt-2">Bem-vindo ao Sistema de Narração de Livros</p>
+        <h1 class="text-3xl font-heading font-bold text-primary-700 dark:text-primary-300">Dashboard</h1>
+        <p class="text-secondary mt-2">Bem-vindo ao LIVRIA - Sua biblioteca literária social</p>
     </div>
 
     <!-- Stats Cards -->
@@ -10,44 +10,44 @@
         <p-card class="stat-card">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-sm text-gray-600 dark:text-gray-400">Total de Livros</p>
-                    <h3 class="text-3xl font-bold text-\[var(--color-metal)] dark:text-gray-100">{{ stats.totalBooks }}
+                    <p class="text-sm text-secondary">Total de Livros</p>
+                    <h3 class="text-3xl font-bold text-primary-700 dark:text-primary-300">{{ stats.totalBooks }}
                     </h3>
                 </div>
-                <i class="pi pi-book text-4xl text-\[var(--color-madeira)]"></i>
+                <i class="pi pi-book text-4xl text-primary-500"></i>
             </div>
         </p-card>
 
         <p-card class="stat-card">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-sm text-gray-600 dark:text-gray-400">Capítulos</p>
-                    <h3 class="text-3xl font-bold text-\[var(--color-metal)] dark:text-gray-100">{{ stats.totalChapters
+                    <p class="text-sm text-secondary">Capítulos</p>
+                    <h3 class="text-3xl font-bold text-primary-700 dark:text-primary-300">{{ stats.totalChapters
                         }}</h3>
                 </div>
-                <i class="pi pi-list text-4xl text-\[var(--color-agua)]"></i>
+                <i class="pi pi-list text-4xl text-primary-400"></i>
             </div>
         </p-card>
 
         <p-card class="stat-card">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-sm text-gray-600 dark:text-gray-400">Concluídos</p>
-                    <h3 class="text-3xl font-bold text-\[var(--color-metal)] dark:text-gray-100">{{
+                    <p class="text-sm text-secondary">Concluídos</p>
+                    <h3 class="text-3xl font-bold text-primary-700 dark:text-primary-300">{{
                         stats.completedNarrations }}</h3>
                 </div>
-                <i class="pi pi-check-circle text-4xl text-\[var(--color-madeira)]"></i>
+                <i class="pi pi-check-circle text-4xl text-green-500"></i>
             </div>
         </p-card>
 
         <p-card class="stat-card">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-sm text-gray-600 dark:text-gray-400">Em Progresso</p>
-                    <h3 class="text-3xl font-bold text-\[var(--color-metal)] dark:text-gray-100">{{
+                    <p class="text-sm text-secondary">Em Progresso</p>
+                    <h3 class="text-3xl font-bold text-primary-700 dark:text-primary-300">{{
                         stats.inProgressNarrations }}</h3>
                 </div>
-                <i class="pi pi-spinner text-4xl text-\[var(--color-fogo)]"></i>
+                <i class="pi pi-spinner text-4xl text-accent-500"></i>
             </div>
         </p-card>
     </div>
@@ -57,8 +57,8 @@
         <!-- Chart -->
         <p-card>
             <ng-template pTemplate="header">
-                <div class="p-4 border-b">
-                    <h3 class="text-lg font-semibold text-[var(--color-metal)] dark:text-gray-100">Status das Narrações
+                <div class="p-4 border-b border-surface-border">
+                    <h3 class="text-lg font-semibold text-primary-700 dark:text-primary-300">Status das Narrações
                     </h3>
                 </div>
             </ng-template>
@@ -71,26 +71,26 @@
         <!-- Recent Books -->
         <p-card>
             <ng-template pTemplate="header">
-                <div class="p-4 border-b flex justify-between items-center">
-                    <h3 class="text-lg font-semibold text-[var(--color-metal)] dark:text-gray-100">Livros Recentes</h3>
+                <div class="p-4 border-b border-surface-border flex justify-between items-center">
+                    <h3 class="text-lg font-semibold text-primary-700 dark:text-primary-300">Livros Recentes</h3>
                     <p-button label="Ver Todos" icon="pi pi-arrow-right" [text]="true"
                         (onClick)="navigateToBooks()"></p-button>
                 </div>
             </ng-template>
             <div class="space-y-3">
                 <div *ngFor="let book of recentBooks"
-                    class="p-3 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer transition-colors"
+                    class="p-3 border border-surface-border rounded-lg hover:bg-secondary-50 dark:hover:bg-gray-800 cursor-pointer transition-colors"
                     (click)="navigateToBook(book.id)">
-                    <h4 class="font-semibold text-[var(--color-metal)] dark:text-gray-100">{{ book.title }}</h4>
-                    <p class="text-sm text-gray-600 dark:text-gray-400">{{ book.author }}</p>
+                    <h4 class="font-semibold text-primary-700 dark:text-primary-300">{{ book.title }}</h4>
+                    <p class="text-sm text-secondary">{{ book.author }}</p>
                     <div class="flex items-center gap-2 mt-2">
                         <span
-                            class="text-xs bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 px-2 py-1 rounded">
+                            class="text-xs bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 px-2 py-1 rounded-md">
                             {{ book.chapters?.length || 0 }} capítulos
                         </span>
                     </div>
                 </div>
-                <div *ngIf="recentBooks.length === 0" class="text-center py-8 text-gray-500 dark:text-gray-400">
+                <div *ngIf="recentBooks.length === 0" class="text-center py-8 text-secondary">
                     <i class="pi pi-inbox text-4xl mb-2"></i>
                     <p>Nenhum livro encontrado</p>
                     <p-button label="Criar Primeiro Livro" icon="pi pi-plus" class="mt-3"
@@ -104,12 +104,12 @@
     <div class="mt-6">
         <p-card>
             <ng-template pTemplate="header">
-                <div class="p-4 border-b">
-                    <h3 class="text-lg font-semibold text-[var(--color-metal)] dark:text-gray-100">Ações Rápidas</h3>
+                <div class="p-4 border-b border-surface-border">
+                    <h3 class="text-lg font-semibold text-primary-700 dark:text-primary-300">Ações Rápidas</h3>
                 </div>
             </ng-template>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <p-button label="Novo Livro" icon="pi pi-plus" severity="help" [outlined]="true"
+                <p-button label="Novo Livro" icon="pi pi-plus" severity="success" [outlined]="true"
                     (onClick)="navigateToNewBook()" styleClass="w-full">
                 </p-button>
                 <p-button label="Ver Personagens" icon="pi pi-users" severity="info" [outlined]="true"

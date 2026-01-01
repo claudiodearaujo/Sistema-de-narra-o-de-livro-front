@@ -33,8 +33,8 @@ import { PostService } from '../../../core/services/post.service';
       <!-- Header -->
       <div class="flex items-center justify-between mb-4">
         <div class="flex items-center gap-2">
-          <i class="pi pi-chart-line text-xl text-orange-500"></i>
-          <h2 class="text-lg font-bold text-gray-900 dark:text-white">Em Alta 🔥</h2>
+          <i class="pi pi-chart-line text-xl text-accent-500"></i>
+          <h2 class="text-lg font-bold text-primary-700 dark:text-primary-300 font-heading">Em Alta 🔥</h2>
         </div>
         <a 
           routerLink="/social/trending"
@@ -48,7 +48,7 @@ import { PostService } from '../../../core/services/post.service';
       @if (loading()) {
         <div class="space-y-3">
           @for (i of [1, 2, 3]; track i) {
-            <div class="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg">
+            <div class="flex items-center gap-3 p-3 bg-surface-card rounded-lg">
               <p-skeleton shape="circle" size="2.5rem" />
               <div class="flex-1">
                 <p-skeleton width="60%" height="1rem" styleClass="mb-2" />
@@ -65,7 +65,7 @@ import { PostService } from '../../../core/services/post.service';
           @for (post of posts(); track post.id; let i = $index) {
             <a 
               [routerLink]="['/social/post', post.id]"
-              class="flex items-start gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg border border-gray-100 dark:border-gray-700 hover:shadow-md hover:border-primary-200 dark:hover:border-primary-700 transition-all cursor-pointer"
+              class="flex items-start gap-3 p-3 bg-surface-card rounded-lg border border-surface-border hover:shadow-md hover:border-primary-200 dark:hover:border-primary-700 transition-all cursor-pointer"
             >
               <!-- Rank Number -->
               <div class="shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold"
@@ -84,7 +84,7 @@ import { PostService } from '../../../core/services/post.service';
               <!-- Content -->
               <div class="flex-1 min-w-0">
                 <div class="flex items-center gap-2 mb-1">
-                  <span class="font-medium text-sm text-gray-900 dark:text-white truncate">
+                  <span class="font-medium text-sm text-primary-800 dark:text-primary-200 truncate">
                     {{ post.user.name }}
                   </span>
                   @if (i < 3) {
@@ -95,12 +95,12 @@ import { PostService } from '../../../core/services/post.service';
                     />
                   }
                 </div>
-                <p class="text-sm text-gray-600 dark:text-gray-400 line-clamp-2">
+                <p class="text-sm text-secondary line-clamp-2">
                   {{ post.content }}
                 </p>
-                <div class="flex items-center gap-3 mt-2 text-xs text-gray-500">
+                <div class="flex items-center gap-3 mt-2 text-xs text-secondary">
                   <span class="flex items-center gap-1">
-                    <i class="pi pi-heart-fill text-red-500"></i>
+                    <i class="pi pi-heart-fill text-accent-500"></i>
                     {{ post.likeCount }}
                   </span>
                   <span class="flex items-center gap-1">
@@ -120,9 +120,9 @@ import { PostService } from '../../../core/services/post.service';
 
       <!-- Empty State -->
       @if (!loading() && posts().length === 0) {
-        <div class="text-center py-8 bg-white dark:bg-gray-800 rounded-lg">
-          <i class="pi pi-chart-line text-4xl text-gray-300 mb-3"></i>
-          <p class="text-gray-500">Nenhum post em alta no momento</p>
+        <div class="text-center py-8 bg-surface-card rounded-lg">
+          <i class="pi pi-chart-line text-4xl text-secondary-300 mb-3"></i>
+          <p class="text-secondary">Nenhum post em alta no momento</p>
         </div>
       }
     </section>
@@ -170,13 +170,13 @@ export class TrendingSectionComponent implements OnInit {
   getRankClass(index: number): string {
     switch (index) {
       case 0:
-        return 'bg-yellow-500 text-white';
+        return 'bg-livra-500 text-white';
       case 1:
-        return 'bg-gray-400 text-white';
+        return 'bg-secondary-400 text-white';
       case 2:
-        return 'bg-amber-600 text-white';
+        return 'bg-livra-600 text-white';
       default:
-        return 'bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-300';
+        return 'bg-secondary-200 text-secondary-600 dark:bg-secondary-700 dark:text-secondary-300';
     }
   }
 

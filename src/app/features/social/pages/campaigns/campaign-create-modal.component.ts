@@ -25,13 +25,13 @@ interface BookOption {
       </div>
 
       <!-- Modal -->
-      <div class="relative bg-white dark:bg-gray-800 rounded-2xl shadow-xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
+      <div class="relative bg-surface-card rounded-2xl shadow-xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
         <!-- Header -->
-        <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
-          <h2 class="text-xl font-bold text-gray-900 dark:text-white">Nova Campanha de Leitura</h2>
+        <div class="flex items-center justify-between p-4 border-b border-surface-border">
+          <h2 class="text-xl font-heading font-bold text-primary-800 dark:text-primary-200">Nova Campanha de Leitura</h2>
           <button 
             (click)="close.emit()"
-            class="p-2 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
+            class="p-2 text-secondary hover:text-primary-700 dark:hover:text-primary-300 rounded-lg hover:bg-secondary-100 dark:hover:bg-secondary-800">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
             </svg>
@@ -42,7 +42,7 @@ interface BookOption {
         <form (ngSubmit)="onSubmit()" class="p-4 space-y-4">
           <!-- Name -->
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <label class="block text-sm font-medium text-primary-700 dark:text-primary-300 mb-1">
               Nome da campanha *
             </label>
             <input 
@@ -52,12 +52,12 @@ interface BookOption {
               required
               maxlength="100"
               placeholder="Ex: Maratona de Fantasia 2025"
-              class="w-full px-4 py-3 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent" />
+              class="w-full px-4 py-3 bg-surface-card border border-surface-border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent" />
           </div>
 
           <!-- Description -->
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <label class="block text-sm font-medium text-primary-700 dark:text-primary-300 mb-1">
               Descrição
             </label>
             <textarea 
@@ -66,37 +66,37 @@ interface BookOption {
               rows="2"
               maxlength="500"
               placeholder="Descreva o objetivo da campanha..."
-              class="w-full px-4 py-3 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-none">
+              class="w-full px-4 py-3 bg-surface-card border border-surface-border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-none">
             </textarea>
           </div>
 
           <!-- Dates -->
           <div class="grid grid-cols-2 gap-4">
             <div>
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label class="block text-sm font-medium text-primary-700 dark:text-primary-300 mb-1">
                 Data de início
               </label>
               <input 
                 type="date"
                 [(ngModel)]="startDate"
                 name="startDate"
-                class="w-full px-4 py-3 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent" />
+                class="w-full px-4 py-3 bg-surface-card border border-surface-border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent" />
             </div>
             <div>
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label class="block text-sm font-medium text-primary-700 dark:text-primary-300 mb-1">
                 Data de término
               </label>
               <input 
                 type="date"
                 [(ngModel)]="endDate"
                 name="endDate"
-                class="w-full px-4 py-3 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent" />
+                class="w-full px-4 py-3 bg-surface-card border border-surface-border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent" />
             </div>
           </div>
 
           <!-- Livra Reward -->
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <label class="block text-sm font-medium text-primary-700 dark:text-primary-300 mb-1">
               Recompensa em Livras
             </label>
             <div class="relative">
@@ -106,15 +106,15 @@ interface BookOption {
                 name="livraReward"
                 min="0"
                 max="1000"
-                class="w-full px-4 py-3 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent" />
-              <span class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 text-sm">Livras</span>
+                class="w-full px-4 py-3 bg-surface-card border border-surface-border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent" />
+              <span class="absolute right-4 top-1/2 -translate-y-1/2 text-secondary text-sm">Livras</span>
             </div>
-            <p class="text-xs text-gray-500 mt-1">Livras que os membros ganham ao completar a campanha</p>
+            <p class="text-xs text-secondary mt-1">Livras que os membros ganham ao completar a campanha</p>
           </div>
 
           <!-- Books Selection -->
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label class="block text-sm font-medium text-primary-700 dark:text-primary-300 mb-2">
               Livros da campanha *
             </label>
             
@@ -126,7 +126,7 @@ interface BookOption {
                 name="bookSearch"
                 (input)="searchBooks()"
                 placeholder="Buscar livros..."
-                class="w-full px-4 py-2 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent" />
+                class="w-full px-4 py-2 bg-surface-card border border-surface-border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent" />
             </div>
 
             <!-- Selected books -->
@@ -137,12 +137,12 @@ interface BookOption {
                 </p>
                 <div class="flex flex-wrap gap-2">
                   @for (book of selectedBooks(); track book.id) {
-                    <span class="flex items-center gap-1 px-2 py-1 bg-white dark:bg-gray-800 rounded-md text-sm">
+                    <span class="flex items-center gap-1 px-2 py-1 bg-white dark:bg-secondary-800 rounded-md text-sm">
                       {{ book.title }}
                       <button 
                         type="button"
                         (click)="toggleBook(book)"
-                        class="text-gray-500 hover:text-red-500">
+                        class="text-secondary hover:text-red-500">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                         </svg>
@@ -155,34 +155,34 @@ interface BookOption {
 
             <!-- Available books -->
             @if (booksLoading()) {
-              <div class="text-center py-4 text-gray-500">Carregando livros...</div>
+              <div class="text-center py-4 text-secondary">Carregando livros...</div>
             } @else if (availableBooks().length > 0) {
-              <div class="max-h-48 overflow-y-auto space-y-2 border border-gray-200 dark:border-gray-700 rounded-lg p-2">
+              <div class="max-h-48 overflow-y-auto space-y-2 border border-surface-border rounded-lg p-2">
                 @for (book of availableBooks(); track book.id) {
                   <label 
                     class="flex items-center gap-3 p-2 rounded-lg cursor-pointer transition-colors"
-                    [class]="book.selected ? 'bg-primary-50 dark:bg-primary-900/20' : 'hover:bg-gray-50 dark:hover:bg-gray-700/50'">
+                    [class]="book.selected ? 'bg-primary-50 dark:bg-primary-900/20' : 'hover:bg-secondary-50 dark:hover:bg-secondary-800/50'">
                     <input 
                       type="checkbox"
                       [checked]="book.selected"
                       (change)="toggleBook(book)"
-                      class="rounded border-gray-300 text-primary-600 focus:ring-primary-500" />
+                      class="rounded border-secondary-300 text-primary-600 focus:ring-primary-500" />
                     @if (book.coverUrl) {
                       <img [src]="book.coverUrl" class="w-8 h-12 rounded object-cover" />
                     } @else {
-                      <div class="w-8 h-12 rounded bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center">
+                      <div class="w-8 h-12 rounded bg-linear-to-br from-primary-500 to-primary-700 flex items-center justify-center">
                         <span class="text-white text-xs font-bold">{{ book.title.charAt(0) }}</span>
                       </div>
                     }
                     <div class="flex-1 min-w-0">
-                      <p class="font-medium text-gray-900 dark:text-white text-sm truncate">{{ book.title }}</p>
-                      <p class="text-xs text-gray-500 dark:text-gray-400">{{ book.author }}</p>
+                      <p class="font-medium text-primary-800 dark:text-primary-200 text-sm truncate">{{ book.title }}</p>
+                      <p class="text-xs text-secondary">{{ book.author }}</p>
                     </div>
                   </label>
                 }
               </div>
             } @else {
-              <div class="text-center py-4 text-gray-500 text-sm">
+              <div class="text-center py-4 text-secondary text-sm">
                 Nenhum livro encontrado. Crie livros primeiro.
               </div>
             }
@@ -200,7 +200,7 @@ interface BookOption {
             <button 
               type="button"
               (click)="close.emit()"
-              class="flex-1 px-4 py-3 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg font-medium transition-colors">
+              class="flex-1 px-4 py-3 text-primary-700 dark:text-primary-300 bg-secondary-100 dark:bg-secondary-800 hover:bg-secondary-200 dark:hover:bg-secondary-700 rounded-lg font-medium transition-colors">
               Cancelar
             </button>
             <button 

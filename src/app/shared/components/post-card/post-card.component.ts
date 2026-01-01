@@ -44,7 +44,7 @@ import { AudioPreviewPlayerComponent } from '../audio-preview-player/audio-previ
     AudioPreviewPlayerComponent
   ],
   template: `
-    <article class="post-card bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+    <article class="post-card bg-surface-card rounded-xl shadow-sm border border-surface-border overflow-hidden">
       <!-- Post Header -->
       <header class="flex items-center justify-between p-4 pb-2">
         <div class="flex items-center gap-3">
@@ -60,11 +60,11 @@ import { AudioPreviewPlayerComponent } from '../audio-preview-player/audio-previ
           <div class="flex flex-col">
             <a 
               [routerLink]="['/social/profile', post.user.username || post.user.id]"
-              class="font-semibold text-gray-900 dark:text-white hover:underline"
+              class="font-semibold text-primary-800 dark:text-primary-200 hover:underline"
             >
               {{ post.user.name || 'Usuário' }}
             </a>
-            <div class="flex items-center gap-2 text-sm text-gray-500">
+            <div class="flex items-center gap-2 text-sm text-secondary">
               @if (post.user.username) {
                 <span>&#64;{{ post.user.username }}</span>
                 <span>•</span>
@@ -90,7 +90,7 @@ import { AudioPreviewPlayerComponent } from '../audio-preview-player/audio-previ
 
       <!-- Post Content -->
       <div class="px-4 py-2">
-        <p class="text-gray-800 dark:text-gray-200 whitespace-pre-wrap break-word">{{ post.content }}</p>
+        <p class="text-primary-900 dark:text-primary-100 whitespace-pre-wrap break-word">{{ post.content }}</p>
       </div>
 
       <!-- Post Media -->
@@ -138,14 +138,14 @@ import { AudioPreviewPlayerComponent } from '../audio-preview-player/audio-previ
 
       <!-- Standard Book/Chapter Preview for other types -->
       @if (post.book && !['BOOK_UPDATE', 'CHAPTER_PREVIEW', 'AUDIO_PREVIEW'].includes(post.type)) {
-        <div class="mx-4 mt-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600">
+        <div class="mx-4 mt-3 p-3 bg-secondary-50 dark:bg-secondary-800 rounded-lg border border-surface-border">
           <div class="flex items-center gap-3">
             @if (post.book.coverUrl) {
               <img [src]="post.book.coverUrl" [alt]="post.book.title" class="w-12 h-16 object-cover rounded" />
             }
             <div>
-              <p class="font-medium text-gray-900 dark:text-white">{{ post.book.title }}</p>
-              <p class="text-sm text-gray-500">por {{ post.book.author }}</p>
+              <p class="font-medium text-primary-800 dark:text-primary-200">{{ post.book.title }}</p>
+              <p class="text-sm text-secondary">por {{ post.book.author }}</p>
               @if (post.chapter) {
                 <p class="text-sm text-primary-600">📖 {{ post.chapter.title }}</p>
               }
@@ -156,7 +156,7 @@ import { AudioPreviewPlayerComponent } from '../audio-preview-player/audio-previ
 
       <!-- Shared Post -->
       @if (post.sharedPost && post.type === 'SHARED') {
-        <div class="mx-4 mt-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600">
+        <div class="mx-4 mt-3 p-3 bg-secondary-50 dark:bg-secondary-800 rounded-lg border border-surface-border">
           <div class="flex items-center gap-2 mb-2">
             <p-avatar 
               [image]="post.sharedPost.user.avatar || undefined"
@@ -166,13 +166,13 @@ import { AudioPreviewPlayerComponent } from '../audio-preview-player/audio-previ
             />
             <span class="font-medium text-sm">{{ post.sharedPost.user.name }}</span>
           </div>
-          <p class="text-sm text-gray-600 dark:text-gray-300 line-clamp-3">{{ post.sharedPost.content }}</p>
+          <p class="text-sm text-primary-700 dark:text-primary-300 line-clamp-3">{{ post.sharedPost.content }}</p>
         </div>
       }
 
       <!-- Post Stats -->
       @if (post.likeCount > 0 || post.commentCount > 0 || post.shareCount > 0) {
-        <div class="px-4 py-2 flex items-center gap-4 text-sm text-gray-500 border-t border-gray-100 dark:border-gray-700 mt-2">
+        <div class="px-4 py-2 flex items-center gap-4 text-sm text-secondary border-t border-surface-border mt-2">
           @if (post.likeCount > 0) {
             <span class="flex items-center gap-1">
               <i class="pi pi-heart-fill text-red-500"></i>
@@ -190,7 +190,7 @@ import { AudioPreviewPlayerComponent } from '../audio-preview-player/audio-previ
 
       <!-- Action Buttons -->
       @if (showActions) {
-        <footer class="flex items-center justify-around py-2 px-4 border-t border-gray-100 dark:border-gray-700">
+        <footer class="flex items-center justify-around py-2 px-4 border-t border-secondary-100 dark:border-secondary-700">
           <!-- Like Button -->
           <button 
             pButton 

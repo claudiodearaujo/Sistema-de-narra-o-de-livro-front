@@ -30,7 +30,7 @@ import { getPlanDisplayName } from '../../../../core/models/subscription.model';
               styleClass="w-16 h-16"
               strokeWidth="4"
             />
-            <p class="mt-4 text-gray-600">Confirmando seu pagamento...</p>
+            <p class="mt-4 text-secondary">Confirmando seu pagamento...</p>
           </ng-template>
         } @else {
           <ng-template pTemplate="header">
@@ -42,15 +42,15 @@ import { getPlanDisplayName } from '../../../../core/models/subscription.model';
           </ng-template>
 
           <ng-template pTemplate="content">
-            <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+            <h1 class="text-2xl font-heading font-bold text-primary-800 dark:text-primary-200 mb-2">
               Assinatura Ativada!
             </h1>
-            <p class="text-gray-600 dark:text-gray-400 mb-6">
+            <p class="text-secondary mb-6">
               Parabéns! Você agora é um assinante {{ planName() }}.
               Aproveite todos os benefícios do seu novo plano!
             </p>
 
-            <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 mb-6">
+            <div class="bg-secondary-50 dark:bg-secondary-800 rounded-lg p-4 mb-6">
               <h3 class="font-semibold mb-2">O que você ganhou:</h3>
               <ul class="text-left text-sm space-y-2">
                 <li class="flex items-center">

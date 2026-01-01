@@ -9,7 +9,7 @@
                 <ng-template pTemplate="selectedItem" let-selectedOption>
                     <div class="flex align-items-center gap-2" *ngIf="selectedOption">
                         <div
-                            class="w-6 h-6 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center text-indigo-600 dark:text-indigo-300 font-bold text-xs">
+                            class="w-6 h-6 rounded-full bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center text-primary-600 dark:text-primary-300 font-bold text-xs">
                             {{ selectedOption.name.charAt(0).toUpperCase() }}
                         </div>
                         <div>{{ selectedOption.name }}</div>
@@ -18,7 +18,7 @@
                 <ng-template pTemplate="item" let-character>
                     <div class="flex align-items-center gap-2">
                         <div
-                            class="w-6 h-6 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center text-indigo-600 dark:text-indigo-300 font-bold text-xs">
+                            class="w-6 h-6 rounded-full bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center text-primary-600 dark:text-primary-300 font-bold text-xs">
                             {{ character.name.charAt(0).toUpperCase() }}
                         </div>
                         <div>{{ character.name }}</div>
@@ -101,7 +101,7 @@
                     </div>
                 </div>
                 <pre>{{ spellCheckResult.correctedText }}</pre>
-                <ul *ngIf="spellCheckResult.notes?.length" class="result-list">
+                <ul *ngIf="spellCheckResult.notes.length" class="result-list">
                     <li *ngFor="let note of spellCheckResult.notes">{{ note }}</li>
                 </ul>
             </div>
@@ -120,7 +120,7 @@
                     </div>
                 </div>
                 <pre>{{ suggestionResult.improvedText }}</pre>
-                <ul *ngIf="suggestionResult.suggestions?.length" class="result-list">
+                <ul *ngIf="suggestionResult.suggestions.length" class="result-list">
                     <li *ngFor="let tip of suggestionResult.suggestions">{{ tip }}</li>
                 </ul>
             </div>
@@ -139,7 +139,7 @@
                     </div>
                 </div>
                 <pre>{{ characterEnrichmentResult.enrichedText }}</pre>
-                <ul *ngIf="characterEnrichmentResult.highlights?.length" class="result-list">
+                <ul *ngIf="characterEnrichmentResult.highlights.length" class="result-list">
                     <li *ngFor="let info of characterEnrichmentResult.highlights">{{ info }}</li>
                 </ul>
             </div>

@@ -87,11 +87,11 @@ export function getPlanDisplayName(plan: SubscriptionPlan): string {
 export function getPlanBadgeClass(plan: SubscriptionPlan): string {
   switch (plan) {
     case 'PRO':
-      return 'bg-purple-500 text-white';
+      return 'bg-primary-500 text-white';
     case 'PREMIUM':
       return 'bg-amber-500 text-white';
     default:
-      return 'bg-gray-500 text-white';
+      return 'bg-secondary-500 text-white';
   }
 }
 

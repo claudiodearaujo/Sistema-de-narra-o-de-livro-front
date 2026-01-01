@@ -93,7 +93,7 @@ import {
 
           @if (subscription()?.currentPeriodEnd) {
             <p-divider />
-            <div class="text-sm text-gray-600 dark:text-gray-400">
+            <div class="text-sm text-secondary">
               @if (subscription()?.cancelAtPeriodEnd) {
                 <p>
                   Sua assinatura será cancelada em 
@@ -129,38 +129,38 @@ import {
         <ng-template pTemplate="content">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             @if (features(); as f) {
-              <div class="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                <div class="text-sm text-gray-500">Livros</div>
+              <div class="p-3 bg-secondary-50 dark:bg-secondary-800 rounded-lg">
+                <div class="text-sm text-secondary">Livros</div>
                 <div class="text-lg font-semibold">
                   {{ f.maxBooks === -1 ? 'Ilimitado' : f.maxBooks }}
                 </div>
               </div>
-              <div class="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                <div class="text-sm text-gray-500">Personagens por Livro</div>
+              <div class="p-3 bg-secondary-50 dark:bg-secondary-800 rounded-lg">
+                <div class="text-sm text-secondary">Personagens por Livro</div>
                 <div class="text-lg font-semibold">
                   {{ f.maxCharactersPerBook === -1 ? 'Ilimitado' : f.maxCharactersPerBook }}
                 </div>
               </div>
-              <div class="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                <div class="text-sm text-gray-500">Falas por Capítulo</div>
+              <div class="p-3 bg-secondary-50 dark:bg-secondary-800 rounded-lg">
+                <div class="text-sm text-secondary">Falas por Capítulo</div>
                 <div class="text-lg font-semibold">
                   {{ f.maxSpeechesPerChapter === -1 ? 'Ilimitado' : f.maxSpeechesPerChapter }}
                 </div>
               </div>
-              <div class="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                <div class="text-sm text-gray-500">Áudio TTS / mês</div>
+              <div class="p-3 bg-secondary-50 dark:bg-secondary-800 rounded-lg">
+                <div class="text-sm text-secondary">Áudio TTS / mês</div>
                 <div class="text-lg font-semibold">
                   {{ f.ttsMinutesPerMonth }} minutos
                 </div>
               </div>
-              <div class="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                <div class="text-sm text-gray-500">Vozes Premium</div>
+              <div class="p-3 bg-secondary-50 dark:bg-secondary-800 rounded-lg">
+                <div class="text-sm text-secondary">Vozes Premium</div>
                 <div class="text-lg font-semibold">
                   {{ f.canUsePremiumVoices ? 'Sim' : 'Não' }}
                 </div>
               </div>
-              <div class="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                <div class="text-sm text-gray-500">Livras Mensais</div>
+              <div class="p-3 bg-secondary-50 dark:bg-secondary-800 rounded-lg">
+                <div class="text-sm text-secondary">Livras Mensais</div>
                 <div class="text-lg font-semibold">
                   {{ f.monthlyLivras }}
                 </div>
@@ -192,21 +192,21 @@ import {
                 <div class="text-3xl font-bold text-primary-500">
                   {{ balance.balance }}
                 </div>
-                <div class="text-sm text-gray-500">Disponível</div>
+                <div class="text-sm text-secondary">Disponível</div>
               </div>
               <p-divider layout="vertical" />
               <div class="text-center">
                 <div class="text-xl font-semibold text-green-500">
                   {{ balance.lifetime }}
                 </div>
-                <div class="text-sm text-gray-500">Total Ganho</div>
+                <div class="text-sm text-secondary">Total Ganho</div>
               </div>
               <p-divider layout="vertical" />
               <div class="text-center">
                 <div class="text-xl font-semibold text-orange-500">
                   {{ balance.spent }}
                 </div>
-                <div class="text-sm text-gray-500">Total Gasto</div>
+                <div class="text-sm text-secondary">Total Gasto</div>
               </div>
             </div>
           }

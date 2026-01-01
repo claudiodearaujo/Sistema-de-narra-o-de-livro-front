@@ -19,7 +19,7 @@
 	text-transform: uppercase;
 	letter-spacing: 0.08em;
 	margin: 0;
-	color: #6366f1;
+	color: var(--color-primary-600);
 }
 
 .assistant-header h3 {
@@ -30,7 +30,7 @@
 .assistant-helper {
 	margin: 0;
 	font-size: 0.9rem;
-	color: #6b7280;
+	color: var(--text-secondary);
 }
 
 .assistant-actions {
@@ -47,7 +47,7 @@
 	gap: 0.75rem;
 	padding: 0.85rem 1rem;
 	border-radius: 0.75rem;
-	background: rgba(99, 102, 241, 0.08);
+	background: var(--color-primary-50);
 	margin-bottom: 1rem;
 }
 

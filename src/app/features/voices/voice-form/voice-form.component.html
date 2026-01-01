@@ -2,10 +2,10 @@
     <p-card>
         <ng-template pTemplate="header">
             <div class="p-4">
-                <h2 class="text-2xl font-bold text-gray-800">
+                <h2 class="text-2xl font-bold font-heading text-primary-700 dark:text-primary-300">
                     {{ isEditMode ? 'Editar Voz' : 'Nova Voz Customizada' }}
                 </h2>
-                <p class="text-gray-600 mt-2">
+                <p class="text-secondary mt-2">
                     {{ isEditMode ? 'Atualize os dados da voz customizada' : 'Cadastre uma nova voz para usar na
                     narração de personagens' }}
                 </p>
@@ -16,8 +16,8 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- Nome -->
                 <div class="flex flex-col gap-2">
-                    <label for="name" class="font-semibold text-gray-700">
-                        Nome da Voz <span class="text-red-500">*</span>
+                    <label for="name" class="font-semibold text-primary-700 dark:text-primary-300">
+                        Nome da Voz <span class="text-accent-500">*</span>
                     </label>
                     <input pInputText id="name" formControlName="name" placeholder="Ex: Narrador Épico"
                         [class.ng-invalid]="isFieldInvalid('name')" [class.ng-dirty]="isFieldInvalid('name')" />
@@ -28,8 +28,8 @@
 
                 <!-- Voice ID -->
                 <div class="flex flex-col gap-2">
-                    <label for="voiceId" class="font-semibold text-gray-700">
-                        ID da Voz <span class="text-red-500">*</span>
+                    <label for="voiceId" class="font-semibold text-primary-700 dark:text-primary-300">
+                        ID da Voz <span class="text-accent-500">*</span>
                     </label>
                     <input pInputText id="voiceId" formControlName="voiceId" placeholder="Ex: narrator-epic-001"
                         [class.ng-invalid]="isFieldInvalid('voiceId')" [class.ng-dirty]="isFieldInvalid('voiceId')" />
@@ -43,8 +43,8 @@
 
                 <!-- Gênero -->
                 <div class="flex flex-col gap-2">
-                    <label for="gender" class="font-semibold text-gray-700">
-                        Gênero <span class="text-red-500">*</span>
+                    <label for="gender" class="font-semibold text-primary-700 dark:text-primary-300">
+                        Gênero <span class="text-accent-500">*</span>
                     </label>
                     <p-select id="gender" formControlName="gender" [options]="genderOptions"
                         placeholder="Selecione o gênero" optionLabel="label" optionValue="value"
@@ -57,8 +57,8 @@
 
                 <!-- Idioma -->
                 <div class="flex flex-col gap-2">
-                    <label for="languageCode" class="font-semibold text-gray-700">
-                        Idioma <span class="text-red-500">*</span>
+                    <label for="languageCode" class="font-semibold text-primary-700 dark:text-primary-300">
+                        Idioma <span class="text-accent-500">*</span>
                     </label>
                     <p-select id="languageCode" formControlName="languageCode" [options]="languageOptions"
                         placeholder="Selecione o idioma" optionLabel="label" optionValue="value"
@@ -71,7 +71,7 @@
 
                 <!-- Descrição -->
                 <div class="flex flex-col gap-2 md:col-span-2">
-                    <label for="description" class="font-semibold text-gray-700">
+                    <label for="description" class="font-semibold text-primary-700 dark:text-primary-300">
                         Descrição
                     </label>
                     <textarea pTextarea id="description" formControlName="description" rows="3"

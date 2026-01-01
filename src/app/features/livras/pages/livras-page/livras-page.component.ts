@@ -89,32 +89,32 @@ import { LivraPackagesComponent } from '../../../subscription/components/livra-p
       <p-card header="Como ganhar Livras" styleClass="how-to-card">
         <div class="how-to-grid">
           <div class="how-to-item">
-            <i class="pi pi-heart-fill text-pink-500"></i>
+            <i class="pi pi-heart-fill text-accent-500"></i>
             <span class="how-to-label">Receber curtidas</span>
             <span class="how-to-amount">+2 por curtida</span>
           </div>
           <div class="how-to-item">
-            <i class="pi pi-comment text-blue-500"></i>
+            <i class="pi pi-comment text-primary-500"></i>
             <span class="how-to-label">Receber comentários</span>
             <span class="how-to-amount">+3 por comentário</span>
           </div>
           <div class="how-to-item">
-            <i class="pi pi-user-plus text-green-500"></i>
+            <i class="pi pi-user-plus text-primary-600"></i>
             <span class="how-to-label">Ganhar seguidores</span>
             <span class="how-to-amount">+5 por seguidor</span>
           </div>
           <div class="how-to-item">
-            <i class="pi pi-pencil text-purple-500"></i>
+            <i class="pi pi-pencil text-primary-700"></i>
             <span class="how-to-label">Criar posts</span>
             <span class="how-to-amount">+1 por post</span>
           </div>
           <div class="how-to-item">
-            <i class="pi pi-trophy text-yellow-500"></i>
+            <i class="pi pi-trophy text-livra-500"></i>
             <span class="how-to-label">Completar campanhas</span>
             <span class="how-to-amount">+50 por campanha</span>
           </div>
           <div class="how-to-item">
-            <i class="pi pi-shield text-indigo-500"></i>
+            <i class="pi pi-shield text-primary-500"></i>
             <span class="how-to-label">Conquistar medalhas</span>
             <span class="how-to-amount">+10 ou mais</span>
           </div>

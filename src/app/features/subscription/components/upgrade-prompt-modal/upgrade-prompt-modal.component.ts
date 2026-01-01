@@ -47,22 +47,22 @@ export interface UpgradePromptData {
         </div>
 
         <!-- Message -->
-        <p class="text-gray-700 dark:text-gray-300 mb-4">
+        <p class="text-primary-700 dark:text-primary-300 mb-4">
           {{ data?.message }}
         </p>
 
         <!-- Current vs Upgrade -->
         @if (data?.currentLimit && data?.upgradeBenefit) {
-          <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 mb-4">
+          <div class="bg-secondary-50 dark:bg-secondary-800 rounded-lg p-4 mb-4">
             <div class="flex items-center justify-between text-sm">
               <div>
-                <div class="text-gray-500">Seu plano atual</div>
+                <div class="text-secondary">Seu plano atual</div>
                 <div class="font-semibold">{{ getPlanDisplayName(currentPlan()) }}</div>
-                <div class="text-gray-600">{{ data?.currentLimit }} {{ data?.feature }}</div>
+                <div class="text-secondary">{{ data?.currentLimit }} {{ data?.feature }}</div>
               </div>
-              <i class="pi pi-arrow-right text-gray-400"></i>
+              <i class="pi pi-arrow-right text-secondary"></i>
               <div>
-                <div class="text-gray-500">Com upgrade</div>
+                <div class="text-secondary">Com upgrade</div>
                 <div class="font-semibold text-primary-500">{{ data?.upgradeBenefit }}</div>
               </div>
             </div>
