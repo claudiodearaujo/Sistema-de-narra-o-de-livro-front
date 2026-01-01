@@ -1,22 +1,30 @@
 import { Injectable, signal, inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
 
 export interface BeforeInstallPromptEvent extends Event {
   prompt(): Promise<void>;
   userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>;
 }
 
+// VAPID public key - must match the one on backend
+// Generate keys with: npx web-push generate-vapid-keys
+const VAPID_PUBLIC_KEY = environment.vapidPublicKey || '';
+
 @Injectable({
   providedIn: 'root',
 })
 export class PwaService {
   private readonly platformId = inject(PLATFORM_ID);
+  private readonly http = inject(HttpClient);
   private deferredPrompt: BeforeInstallPromptEvent | null = null;
 
   // State
   isInstallable = signal(false);
   isInstalled = signal(false);
   isOnline = signal(true);
+  pushSubscription = signal<PushSubscription | null>(null);
 
   constructor() {
     if (isPlatformBrowser(this.platformId)) {
@@ -162,5 +170,147 @@ export class PwaService {
       badge: '/assets/icons/icon-72x72.png',
       ...options,
     });
+  }
+
+  /**
+   * Subscribe to push notifications
+   */
+  async subscribeToPush(): Promise<PushSubscription | null> {
+    if (!('PushManager' in window)) {
+      console.log('[PWA] Push notifications not supported');
+      return null;
+    }
+
+    if (!VAPID_PUBLIC_KEY) {
+      console.warn('[PWA] VAPID public key not configured');
+      return null;
+    }
+
+    try {
+      // Request notification permission first
+      const permission = await this.requestNotificationPermission();
+      if (permission !== 'granted') {
+        console.log('[PWA] Notification permission denied');
+        return null;
+      }
+
+      const registration = await navigator.serviceWorker.ready;
+      
+      // Check for existing subscription
+      let subscription = await registration.pushManager.getSubscription();
+      
+      if (!subscription) {
+        // Create new subscription
+        const applicationServerKey = this.urlBase64ToUint8Array(VAPID_PUBLIC_KEY);
+        subscription = await registration.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey,
+        });
+        console.log('[PWA] New push subscription created');
+      }
+
+      this.pushSubscription.set(subscription);
+
+      // Send subscription to backend
+      await this.sendSubscriptionToServer(subscription);
+
+      return subscription;
+    } catch (error) {
+      console.error('[PWA] Error subscribing to push:', error);
+      return null;
+    }
+  }
+
+  /**
+   * Unsubscribe from push notifications
+   */
+  async unsubscribeFromPush(): Promise<boolean> {
+    const subscription = this.pushSubscription();
+    if (!subscription) {
+      return true;
+    }
+
+    try {
+      await subscription.unsubscribe();
+      this.pushSubscription.set(null);
+
+      // Notify backend
+      await this.removeSubscriptionFromServer(subscription);
+
+      console.log('[PWA] Unsubscribed from push');
+      return true;
+    } catch (error) {
+      console.error('[PWA] Error unsubscribing:', error);
+      return false;
+    }
+  }
+
+  /**
+   * Send subscription to backend
+   */
+  private async sendSubscriptionToServer(subscription: PushSubscription): Promise<void> {
+    try {
+      await this.http.post(`${environment.apiUrl}/notifications/push/subscribe`, {
+        subscription: subscription.toJSON(),
+      }).toPromise();
+      console.log('[PWA] Subscription sent to server');
+    } catch (error) {
+      console.error('[PWA] Error sending subscription to server:', error);
+    }
+  }
+
+  /**
+   * Remove subscription from backend
+   */
+  private async removeSubscriptionFromServer(subscription: PushSubscription): Promise<void> {
+    try {
+      await this.http.post(`${environment.apiUrl}/notifications/push/unsubscribe`, {
+        endpoint: subscription.endpoint,
+      }).toPromise();
+      console.log('[PWA] Subscription removed from server');
+    } catch (error) {
+      console.error('[PWA] Error removing subscription from server:', error);
+    }
+  }
+
+  /**
+   * Convert base64 VAPID key to Uint8Array
+   */
+  private urlBase64ToUint8Array(base64String: string): Uint8Array {
+    const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
+    const base64 = (base64String + padding)
+      .replace(/-/g, '+')
+      .replace(/_/g, '/');
+
+    const rawData = window.atob(base64);
+    const outputArray = new Uint8Array(rawData.length);
+
+    for (let i = 0; i < rawData.length; ++i) {
+      outputArray[i] = rawData.charCodeAt(i);
+    }
+    return outputArray;
+  }
+
+  /**
+   * Check if push is supported and subscribed
+   */
+  get isPushSupported(): boolean {
+    return 'PushManager' in window && 'serviceWorker' in navigator;
+  }
+
+  /**
+   * Check current push subscription status
+   */
+  async checkPushSubscription(): Promise<boolean> {
+    if (!this.isPushSupported) return false;
+
+    try {
+      const registration = await navigator.serviceWorker.ready;
+      const subscription = await registration.pushManager.getSubscription();
+      this.pushSubscription.set(subscription);
+      return !!subscription;
+    } catch {
+      return false;
+    }
   }
 }

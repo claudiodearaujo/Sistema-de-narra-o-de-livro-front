@@ -3,6 +3,10 @@ export const environment = {
   apiUrl: 'http://localhost:3000/api',
   wsUrl: 'http://localhost:3000',
   
+  // Push Notifications VAPID Key
+  // Generate with: npx web-push generate-vapid-keys
+  vapidPublicKey: '',  // Set your VAPID public key here
+  
   // Auth configuration
   auth: {
     tokenExpirationMinutes: 60,
@@ -12,8 +16,9 @@ export const environment = {
   
   // Feature flags
   features: {
-    socialNetwork: false,  // Enable when social module is ready
+    socialNetwork: true,
     emailVerification: true,
-    twoFactorAuth: false
+    twoFactorAuth: false,
+    pushNotifications: true
   }
 };

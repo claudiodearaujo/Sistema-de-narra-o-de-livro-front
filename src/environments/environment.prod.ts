@@ -1,6 +1,10 @@
 export const environment = {
   production: true,
   apiUrl: 'https://api.yoursite.com/api',  // Update with production URL
+  wsUrl: 'https://api.yoursite.com',        // Update with production WS URL
+  
+  // Push Notifications VAPID Key (set via CI/CD or build process)
+  vapidPublicKey: '',  // Set your VAPID public key here
   
   // Auth configuration
   auth: {
@@ -11,8 +15,9 @@ export const environment = {
   
   // Feature flags
   features: {
-    socialNetwork: false,  // Enable when social module is ready
+    socialNetwork: true,
     emailVerification: true,
-    twoFactorAuth: false
+    twoFactorAuth: false,
+    pushNotifications: true
   }
 };
