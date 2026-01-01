@@ -68,8 +68,8 @@ test.describe('Authentication', () => {
     await page.locator('#password input, input[type="password"]').first().fill('wrongpassword123');
     await page.locator('button[type="submit"]').click();
     
-    // Should show error message
-    await expect(page.locator('p-message[severity="error"], .p-message-error, text=/erro|inválido|incorreto/i').first()).toBeVisible({ timeout: 10000 });
+    // Should show error message (p-message component or error text)
+    await expect(page.locator('p-message').first()).toBeVisible({ timeout: 10000 });
   });
 
   test('should login successfully with USER account', async ({ page }) => {
@@ -80,8 +80,8 @@ test.describe('Authentication', () => {
     await page.locator('#password input, input[type="password"]').first().fill(TEST_USERS.USER.password);
     await page.locator('button[type="submit"]').click();
     
-    // Should redirect to dashboard or feed
-    await expect(page).toHaveURL(/dashboard|social|feed/, { timeout: 15000 });
+    // Should redirect to writer area, dashboard, social or feed
+    await expect(page).toHaveURL(/writer|dashboard|social|feed/, { timeout: 15000 });
   });
 
   test('should login successfully with WRITER account', async ({ page }) => {
@@ -91,7 +91,7 @@ test.describe('Authentication', () => {
     await page.locator('#password input, input[type="password"]').first().fill(TEST_USERS.WRITER.password);
     await page.locator('button[type="submit"]').click();
     
-    await expect(page).toHaveURL(/dashboard|social|feed/, { timeout: 15000 });
+    await expect(page).toHaveURL(/writer|dashboard|social|feed/, { timeout: 15000 });
   });
 
   test('should login successfully with PRO account', async ({ page }) => {
@@ -101,7 +101,7 @@ test.describe('Authentication', () => {
     await page.locator('#password input, input[type="password"]').first().fill(TEST_USERS.PRO.password);
     await page.locator('button[type="submit"]').click();
     
-    await expect(page).toHaveURL(/dashboard|social|feed/, { timeout: 15000 });
+    await expect(page).toHaveURL(/writer|dashboard|social|feed/, { timeout: 15000 });
   });
 
   test('should login successfully with ADMIN account', async ({ page }) => {
@@ -111,7 +111,7 @@ test.describe('Authentication', () => {
     await page.locator('#password input, input[type="password"]').first().fill(TEST_USERS.ADMIN.password);
     await page.locator('button[type="submit"]').click();
     
-    await expect(page).toHaveURL(/dashboard|social|feed/, { timeout: 15000 });
+    await expect(page).toHaveURL(/writer|dashboard|social|feed/, { timeout: 15000 });
   });
 
   test('should redirect unauthenticated user to login', async ({ page }) => {

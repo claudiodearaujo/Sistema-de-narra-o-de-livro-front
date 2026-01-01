@@ -1,0 +1,79 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e5]:
+  - banner [ref=e6]:
+    - generic [ref=e7]:
+      - generic [ref=e8] [cursor=pointer]:
+        - generic [ref=e9]: 📚
+        - generic [ref=e10]: Livria
+      - generic [ref=e12] [cursor=pointer]:
+        - generic [ref=e13]: 
+        - generic [ref=e14]: Buscar escritores, livros, posts...
+      - generic [ref=e15]:
+        - button "" [ref=e16] [cursor=pointer]:
+          - generic [ref=e17]: 
+        - button "" [ref=e19] [cursor=pointer]:
+          - generic [ref=e20]: 
+        - generic [ref=e23] [cursor=pointer]: JL
+  - generic [ref=e24]:
+    - complementary [ref=e25]:
+      - navigation [ref=e26]:
+        - link " Feed" [ref=e27] [cursor=pointer]:
+          - /url: /social/feed
+          - generic [ref=e28]: 
+          - generic [ref=e29]: Feed
+        - link " Explorar" [ref=e30] [cursor=pointer]:
+          - /url: /social/explore
+          - generic [ref=e31]: 
+          - generic [ref=e32]: Explorar
+        - link " Grupos" [ref=e33] [cursor=pointer]:
+          - /url: /social/groups
+          - generic [ref=e34]: 
+          - generic [ref=e35]: Grupos
+        - link " Buscar" [ref=e36] [cursor=pointer]:
+          - /url: /social/search
+          - generic [ref=e37]: 
+          - generic [ref=e38]: Buscar
+        - link " Notificações" [ref=e39] [cursor=pointer]:
+          - /url: /social/notifications
+          - generic [ref=e40]: 
+          - generic [ref=e41]: Notificações
+        - link " Mensagens" [ref=e42] [cursor=pointer]:
+          - /url: /social/messages
+          - generic [ref=e43]: 
+          - generic [ref=e44]: Mensagens
+        - link " Perfil" [ref=e45] [cursor=pointer]:
+          - /url: /social/profile
+          - generic [ref=e46]: 
+          - generic [ref=e47]: Perfil
+      - button "Novo Post" [ref=e48] [cursor=pointer]:
+        - generic [ref=e49]: 
+        - generic [ref=e50]: Novo Post
+      - link " Área do Escritor" [ref=e52] [cursor=pointer]:
+        - /url: /writer
+        - generic [ref=e53]: 
+        - generic [ref=e54]: Área do Escritor
+    - main [ref=e55]:
+      - generic [ref=e57]:
+        - generic [ref=e59]:
+          - generic [ref=e60] [cursor=pointer]:
+            - generic [ref=e62]: 
+            - generic [ref=e63]: Criar
+          - generic [ref=e65]: Nenhum story disponível
+        - generic [ref=e66]:
+          - generic [ref=e68]: EU
+          - generic [ref=e69] [cursor=pointer]: No que você está pensando?
+          - button [ref=e70] [cursor=pointer]:
+            - generic [ref=e71]: 
+        - generic [ref=e72]:
+          - generic [ref=e73]: 
+          - heading "Seu feed está vazio" [level=3] [ref=e74]
+          - paragraph [ref=e75]: Siga escritores para ver seus posts aqui
+          - button "Explorar" [ref=e76] [cursor=pointer]:
+            - generic [ref=e77]: 
+            - generic [ref=e78]: Explorar
+    - complementary [ref=e80]:
+      - heading "🔥 Em Alta" [level=3] [ref=e82]
+      - heading "✨ Sugestões" [level=3] [ref=e84]
+```
