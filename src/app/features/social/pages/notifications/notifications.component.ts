@@ -62,7 +62,8 @@ export class NotificationsComponent implements OnInit, OnDestroy {
     { label: 'Curtidas', value: 'LIKE', icon: 'pi pi-heart' },
     { label: 'Comentários', value: 'COMMENT', icon: 'pi pi-comment' },
     { label: 'Seguidores', value: 'FOLLOW', icon: 'pi pi-user-plus' },
-    { label: 'Menções', value: 'MENTION', icon: 'pi pi-at' }
+    { label: 'Menções', value: 'MENTION', icon: 'pi pi-at' },
+    { label: 'Conquistas', value: 'ACHIEVEMENT', icon: 'pi pi-trophy' }
   ];
 
   // Computed values

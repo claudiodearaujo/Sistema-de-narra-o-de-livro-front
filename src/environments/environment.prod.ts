@@ -13,6 +13,11 @@ export const environment = {
     rememberMeDays: 30
   },
   
+  // Story configuration
+  story: {
+    durationMs: 5000  // Duration in milliseconds for each story (5 seconds)
+  },
+  
   // Feature flags
   features: {
     socialNetwork: true,

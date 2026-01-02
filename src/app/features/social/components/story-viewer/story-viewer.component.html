@@ -1,18 +1,17 @@
 <div class="story-viewer-overlay" (click)="onOverlayClick($event)">
-  <div class="story-viewer">
+  <div class="story-viewer" [style.--story-duration]="storyDurationCss">
     <!-- Progress bars -->
     <div class="progress-container">
       @for (story of currentUserStories()?.stories || []; track story.id; let i = $index) {
         <div class="progress-bar-wrapper">
-          <p-progressBar 
-            [value]="getProgressValue(i)" 
-            [showValue]="false"
-            styleClass="story-progress"
-          />
+          <div 
+            class="story-progress-bar"
+            [class.animating]="i === currentStoryIndex() && isPlaying()"
+            [class.completed]="i < currentStoryIndex()"
+          ></div>
         </div>
       }
     </div>
-
     <!-- Header -->
     <div class="story-header">
       <div class="user-info">

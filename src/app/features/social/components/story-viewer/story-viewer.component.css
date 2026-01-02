@@ -40,15 +40,34 @@
 
   .progress-bar-wrapper {
     flex: 1;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 2px;
+    overflow: hidden;
 
-    :host ::ng-deep .story-progress {
-      height: 3px;
-      background: rgba(255, 255, 255, 0.3);
-
-      .p-progressbar-value {
-        background: white;
-      }
+    .story-progress-bar {
+      height: 100%;
+      background: white;
+      width: 0%;
+      border-radius: 2px;
     }
+
+    .story-progress-bar.animating {
+      animation: progressFill var(--story-duration) linear forwards;
+    }
+
+    .story-progress-bar.completed {
+      width: 100%;
+    }
+  }
+}
+
+@keyframes progressFill {
+  from {
+    width: 0%;
+  }
+  to {
+    width: 100%;
   }
 }
 

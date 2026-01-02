@@ -2,8 +2,8 @@ import { Component, OnInit, OnDestroy, inject, signal, input, output, HostListen
 import { CommonModule } from '@angular/common';
 import { AvatarModule } from 'primeng/avatar';
 import { ButtonModule } from 'primeng/button';
-import { ProgressBarModule } from 'primeng/progressbar';
 import { StoryService, UserStories, Story } from '../../../../core';
+import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'app-story-viewer',
@@ -12,7 +12,6 @@ import { StoryService, UserStories, Story } from '../../../../core';
     CommonModule,
     AvatarModule,
     ButtonModule,
-    ProgressBarModule,
   ],
   templateUrl: './story-viewer.component.html',
   styleUrl: './story-viewer.component.css',
@@ -33,13 +32,17 @@ export class StoryViewerComponent implements OnInit, OnDestroy {
   // State
   currentUserIndex = signal(0);
   currentStoryIndex = signal(0);
-  progress = signal(0);
+  isPlaying = signal(false);
 
-  private progressInterval: any;
-  private readonly STORY_DURATION = 5000; // 5 seconds per story
+  private storyTimeout: any;
+  private readonly STORY_DURATION = environment.story.durationMs;
+  
+  // CSS custom property for animation duration
+  readonly storyDurationCss = `${this.STORY_DURATION}ms`;
 
   ngOnInit(): void {
     this.currentUserIndex.set(this.startIndex());
+    this.currentStoryIndex.set(0);
     this.startProgress();
     this.markCurrentAsViewed();
   }
@@ -77,13 +80,6 @@ export class StoryViewerComponent implements OnInit, OnDestroy {
     return this.currentUserStories()?.userId === this.currentUserId();
   }
 
-  getProgressValue(index: number): number {
-    const currentIdx = this.currentStoryIndex();
-    if (index < currentIdx) return 100;
-    if (index > currentIdx) return 0;
-    return this.progress();
-  }
-
   getInitials(name: string): string {
     return name
       .split(' ')
@@ -101,16 +97,20 @@ export class StoryViewerComponent implements OnInit, OnDestroy {
     const userStories = this.currentUserStories();
     if (!userStories) return;
 
+    this.stopProgress();
+
     if (this.currentStoryIndex() < userStories.stories.length - 1) {
       // Next story of same user
       this.currentStoryIndex.update((i) => i + 1);
       this.resetProgress();
+      this.startProgress();
       this.markCurrentAsViewed();
     } else if (this.currentUserIndex() < this.userStories().length - 1) {
       // Next user
       this.currentUserIndex.update((i) => i + 1);
       this.currentStoryIndex.set(0);
       this.resetProgress();
+      this.startProgress();
       this.markCurrentAsViewed();
     } else {
       // End of all stories
@@ -119,10 +119,13 @@ export class StoryViewerComponent implements OnInit, OnDestroy {
   }
 
   previousStory(): void {
+    this.stopProgress();
+    
     if (this.currentStoryIndex() > 0) {
       // Previous story of same user
       this.currentStoryIndex.update((i) => i - 1);
       this.resetProgress();
+      this.startProgress();
     } else if (this.currentUserIndex() > 0) {
       // Previous user (last story)
       this.currentUserIndex.update((i) => i - 1);
@@ -131,6 +134,11 @@ export class StoryViewerComponent implements OnInit, OnDestroy {
         this.currentStoryIndex.set(prevUserStories.stories.length - 1);
       }
       this.resetProgress();
+      this.startProgress();
+    } else {
+      // Already at first story, restart progress
+      this.resetProgress();
+      this.startProgress();
     }
   }
 
@@ -146,28 +154,36 @@ export class StoryViewerComponent implements OnInit, OnDestroy {
 
   private startProgress(): void {
     this.stopProgress();
-    const increment = 100 / (this.STORY_DURATION / 50);
     
-    this.progressInterval = setInterval(() => {
-      this.progress.update((p) => {
-        if (p >= 100) {
+    // Para reiniciar a animação CSS, precisamos remover e readicionar a classe
+    // Isso é feito definindo isPlaying para false e depois true no próximo frame
+    this.isPlaying.set(false);
+    
+    // Usar requestAnimationFrame para garantir que o navegador processe a mudança
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        this.isPlaying.set(true);
+        
+        // Define timeout para avançar para próximo story após STORY_DURATION
+        this.storyTimeout = setTimeout(() => {
           this.nextStory();
-          return 0;
-        }
-        return p + increment;
+        }, this.STORY_DURATION);
       });
-    }, 50);
+    });
   }
 
   private stopProgress(): void {
-    if (this.progressInterval) {
-      clearInterval(this.progressInterval);
-      this.progressInterval = null;
+    if (this.storyTimeout) {
+      clearTimeout(this.storyTimeout);
+      this.storyTimeout = null;
     }
+    this.isPlaying.set(false);
   }
 
   private resetProgress(): void {
-    this.progress.set(0);
+    // Reset é feito automaticamente ao mudar de story
+    // A animação CSS reinicia quando a classe é reaplicada
+    this.isPlaying.set(false);
   }
 
   private markCurrentAsViewed(): void {
