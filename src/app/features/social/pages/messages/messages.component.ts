@@ -11,7 +11,8 @@ import { MessageModule } from 'primeng/message';
 import { DialogModule } from 'primeng/dialog';
 import { MessageService, Conversation } from '../../../../core/services/message.service';
 import { WebSocketService } from '../../../../core/services/websocket.service';
-import { Subject, takeUntil } from 'rxjs';
+import { SearchService, UserSearchResult } from '../../../../core/services/search.service';
+import { Subject, takeUntil, debounceTime, distinctUntilChanged } from 'rxjs';
 
 @Component({
   selector: 'app-messages',
@@ -34,7 +35,9 @@ import { Subject, takeUntil } from 'rxjs';
 export class MessagesComponent implements OnInit, OnDestroy {
   private readonly messageService = inject(MessageService);
   private readonly wsService = inject(WebSocketService);
+  private readonly searchService = inject(SearchService);
   private readonly destroy$ = new Subject<void>();
+  private readonly searchSubject$ = new Subject<string>();
 
   loading = signal(true);
   error = signal<string | null>(null);
@@ -70,6 +73,15 @@ export class MessagesComponent implements OnInit, OnDestroy {
     if (!this.wsService.isConnected()) {
       this.wsService.connect();
     }
+    
+    // Set up debounced user search
+    this.searchSubject$.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      takeUntil(this.destroy$)
+    ).subscribe(query => {
+      this.performUserSearch(query);
+    });
     
     this.loadConversations();
   }
@@ -167,16 +179,43 @@ export class MessagesComponent implements OnInit, OnDestroy {
     this.foundUsers.set([]);
   }
 
-  // Note: This is a placeholder - would need a user search service
+  // Trigger debounced user search
   searchUsers(query: string) {
     if (!query || query.length < 2) {
       this.foundUsers.set([]);
+      this.searchingUsers.set(false);
       return;
     }
     this.searchingUsers.set(true);
-    // Placeholder - in real implementation, call a search API
-    setTimeout(() => {
+    this.searchSubject$.next(query);
+  }
+
+  // Perform the actual search
+  private performUserSearch(query: string) {
+    if (!query || query.length < 2) {
+      this.foundUsers.set([]);
       this.searchingUsers.set(false);
-    }, 500);
+      return;
+    }
+
+    this.searchService.searchUsers(query, 1, 10).pipe(
+      takeUntil(this.destroy$)
+    ).subscribe({
+      next: (response) => {
+        const users = response.results.users.map(u => ({
+          id: u.id,
+          name: u.name,
+          username: u.username,
+          avatar: u.avatar
+        }));
+        this.foundUsers.set(users);
+        this.searchingUsers.set(false);
+      },
+      error: (err) => {
+        console.error('Error searching users:', err);
+        this.foundUsers.set([]);
+        this.searchingUsers.set(false);
+      }
+    });
   }
 }

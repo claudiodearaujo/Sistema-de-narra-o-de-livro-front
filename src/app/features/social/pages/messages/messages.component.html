@@ -44,7 +44,7 @@
       <div class="conversations-list">
         @for (conversation of filteredConversations(); track conversation.id) {
           <a 
-            [routerLink]="['/social/conversation', conversation.participant.id]" 
+            [routerLink]="['/social/messages', conversation.participant.id]" 
             class="conversation-item"
             [class.unread]="conversation.unreadCount > 0">
             <div class="avatar-wrapper">
@@ -141,7 +141,7 @@
     @if (foundUsers().length > 0) {
       <div class="users-list">
         @for (user of foundUsers(); track user.id) {
-          <a [routerLink]="['/social/conversation', user.id]" class="user-item" (click)="closeNewMessageDialog()">
+          <a [routerLink]="['/social/messages', user.id]" class="user-item" (click)="closeNewMessageDialog()">
             <p-avatar 
               [image]="user.avatar || undefined"
               [label]="user.avatar ? undefined : user.name.charAt(0)"
