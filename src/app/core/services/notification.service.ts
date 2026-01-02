@@ -287,7 +287,8 @@ export class NotificationService implements OnDestroy {
 
     for (const notif of notifications) {
       // Create a grouping key based on type and target
-      const targetId = notif.data?.postId || notif.data?.bookId || notif.data?.chapterId || '';
+      // For achievements, use achievementId or the notification id itself to prevent grouping different achievements
+      const targetId = notif.data?.postId || notif.data?.bookId || notif.data?.chapterId || notif.data?.achievementId || notif.id;
       const key = `${notif.type}:${targetId}`;
 
       const existing = groups.get(key);

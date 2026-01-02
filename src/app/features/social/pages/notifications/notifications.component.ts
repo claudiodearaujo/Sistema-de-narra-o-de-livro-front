@@ -236,10 +236,10 @@ export class NotificationsComponent implements OnInit, OnDestroy {
   }
 
   getUnreadNotifications(): Notification[] {
-    return this.notifications().filter(n => !n.isRead);
+    return this.filteredNotifications().filter(n => !n.isRead);
   }
 
   getReadNotifications(): Notification[] {
-    return this.notifications().filter(n => n.isRead);
+    return this.filteredNotifications().filter(n => n.isRead);
   }
 }
