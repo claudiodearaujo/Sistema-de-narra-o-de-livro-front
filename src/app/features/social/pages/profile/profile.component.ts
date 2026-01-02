@@ -54,6 +54,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
   loadingPosts = signal(false);
   loadingBooks = signal(false);
   loadingFollow = signal(false);
+  loadingFollowers = signal(false);
+  loadingFollowing = signal(false);
   
   postsPage = signal(1);
   booksPage = signal(1);
@@ -62,6 +64,10 @@ export class ProfileComponent implements OnInit, OnDestroy {
   
   showFollowersDialog = signal(false);
   showFollowingDialog = signal(false);
+  
+  // Followers and Following data
+  followers = signal<{ id: string; name: string; username: string | null; avatar: string | null }[]>([]);
+  following = signal<{ id: string; name: string; username: string | null; avatar: string | null }[]>([]);
   
   currentTab = signal<'posts' | 'books'>('posts');
   
@@ -285,10 +291,46 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   openFollowers() {
     this.showFollowersDialog.set(true);
+    this.loadFollowers();
   }
 
   openFollowing() {
     this.showFollowingDialog.set(true);
+    this.loadFollowing();
+  }
+  
+  loadFollowers() {
+    const p = this.profile();
+    if (!p) return;
+    
+    this.loadingFollowers.set(true);
+    this.followService.getFollowers(p.id).pipe(takeUntil(this.destroy$)).subscribe({
+      next: (response) => {
+        this.followers.set(response.users);
+        this.loadingFollowers.set(false);
+      },
+      error: (err) => {
+        console.error('Failed to load followers:', err);
+        this.loadingFollowers.set(false);
+      }
+    });
+  }
+  
+  loadFollowing() {
+    const p = this.profile();
+    if (!p) return;
+    
+    this.loadingFollowing.set(true);
+    this.followService.getFollowing(p.id).pipe(takeUntil(this.destroy$)).subscribe({
+      next: (response) => {
+        this.following.set(response.users);
+        this.loadingFollowing.set(false);
+      },
+      error: (err) => {
+        console.error('Failed to load following:', err);
+        this.loadingFollowing.set(false);
+      }
+    });
   }
 
   loadAchievements(userId: string) {

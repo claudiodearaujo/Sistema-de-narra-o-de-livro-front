@@ -253,8 +253,44 @@
   [modal]="true"
   [closable]="true"
   (visibleChange)="showFollowersDialog.set($event)"
-  [style]="{width: '400px'}">
-  <p>Lista de seguidores...</p>
+  [style]="{width: '400px', maxHeight: '70vh'}">
+  @if (loadingFollowers()) {
+    <div class="flex flex-col gap-3">
+      @for (_ of [1,2,3]; track $index) {
+        <div class="flex items-center gap-3">
+          <p-skeleton shape="circle" size="40px"></p-skeleton>
+          <div class="flex flex-col gap-1 flex-1">
+            <p-skeleton width="120px" height="16px"></p-skeleton>
+            <p-skeleton width="80px" height="12px"></p-skeleton>
+          </div>
+        </div>
+      }
+    </div>
+  } @else if (followers().length === 0) {
+    <div class="text-center py-4 text-gray-500">
+      <i class="pi pi-users text-2xl mb-2"></i>
+      <p>Nenhum seguidor ainda</p>
+    </div>
+  } @else {
+    <div class="flex flex-col gap-3 max-h-96 overflow-y-auto">
+      @for (user of followers(); track user.id) {
+        <a [routerLink]="['/social/profile', user.username || user.id]" 
+           class="flex items-center gap-3 p-2 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors">
+          @if (user.avatar) {
+            <p-avatar [image]="user.avatar" shape="circle" size="normal"></p-avatar>
+          } @else {
+            <p-avatar [label]="user.name[0]" shape="circle" size="normal"></p-avatar>
+          }
+          <div class="flex flex-col">
+            <span class="font-medium">{{ user.name }}</span>
+            @if (user.username) {
+              <span class="text-sm text-gray-500">@{{ user.username }}</span>
+            }
+          </div>
+        </a>
+      }
+    </div>
+  }
 </p-dialog>
 
 <!-- Following Dialog -->
@@ -264,6 +300,42 @@
   [modal]="true"
   [closable]="true"
   (visibleChange)="showFollowingDialog.set($event)"
-  [style]="{width: '400px'}">
-  <p>Lista de pessoas que segue...</p>
+  [style]="{width: '400px', maxHeight: '70vh'}">
+  @if (loadingFollowing()) {
+    <div class="flex flex-col gap-3">
+      @for (_ of [1,2,3]; track $index) {
+        <div class="flex items-center gap-3">
+          <p-skeleton shape="circle" size="40px"></p-skeleton>
+          <div class="flex flex-col gap-1 flex-1">
+            <p-skeleton width="120px" height="16px"></p-skeleton>
+            <p-skeleton width="80px" height="12px"></p-skeleton>
+          </div>
+        </div>
+      }
+    </div>
+  } @else if (following().length === 0) {
+    <div class="text-center py-4 text-gray-500">
+      <i class="pi pi-users text-2xl mb-2"></i>
+      <p>Não segue ninguém ainda</p>
+    </div>
+  } @else {
+    <div class="flex flex-col gap-3 max-h-96 overflow-y-auto">
+      @for (user of following(); track user.id) {
+        <a [routerLink]="['/social/profile', user.username || user.id]" 
+           class="flex items-center gap-3 p-2 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors">
+          @if (user.avatar) {
+            <p-avatar [image]="user.avatar" shape="circle" size="normal"></p-avatar>
+          } @else {
+            <p-avatar [label]="user.name[0]" shape="circle" size="normal"></p-avatar>
+          }
+          <div class="flex flex-col">
+            <span class="font-medium">{{ user.name }}</span>
+            @if (user.username) {
+              <span class="text-sm text-gray-500">@{{ user.username }}</span>
+            }
+          </div>
+        </a>
+      }
+    </div>
+  }
 </p-dialog>

@@ -64,6 +64,12 @@ export const routes: Routes = [
     loadChildren: () => import('./features/achievements/achievements.routes').then(m => m.achievementRoutes)
   },
 
+  // Institutional Module (Public pages)
+  {
+    path: 'institutional',
+    loadChildren: () => import('./features/institutional/institutional.routes').then(m => m.INSTITUTIONAL_ROUTES)
+  },
+
   // Default redirect
   {
     path: '',

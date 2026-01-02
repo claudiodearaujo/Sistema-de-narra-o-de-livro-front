@@ -12,6 +12,7 @@ import { MessageService } from 'primeng/api';
 
 // Core
 import { PostService } from '../../../../core/services/post.service';
+import { FollowService, FollowUser } from '../../../../core/services/follow.service';
 import { Post } from '../../../../core/models/post.model';
 import { TimeAgoPipe } from '../../../../shared/pipes/time-ago.pipe';
 import { InfiniteScrollDirective } from '../../../../shared/directives/infinite-scroll.directive';
@@ -65,6 +66,7 @@ interface FeaturedBook {
 export class ExploreComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly postService = inject(PostService);
+  private readonly followService = inject(FollowService);
   private readonly messageService = inject(MessageService);
 
   // Posts state
@@ -80,6 +82,7 @@ export class ExploreComponent implements OnInit {
   suggestedUsers = signal<SuggestedUser[]>([]);
   featuredBooks = signal<FeaturedBook[]>([]);
   popularGenres = signal<string[]>([]);
+  followingInProgress = signal<Set<string>>(new Set());
 
   // Computed
   isScrollDisabled = computed(() => 
@@ -164,49 +167,38 @@ export class ExploreComponent implements OnInit {
     });
   }
 
-  async loadExploreData() {
+  loadExploreData() {
     this.loading.set(true);
     
-    // Simulate API call for trending topics, users, books
-    // TODO: Replace with real API calls when endpoints are ready
-    await new Promise(resolve => setTimeout(resolve, 500));
+    // Load suggested users from API
+    this.followService.getSuggestions(10).subscribe({
+      next: (response) => {
+        // Map API response to SuggestedUser format
+        const users: SuggestedUser[] = response.users.map(u => ({
+          id: u.id,
+          username: u.username || u.name.toLowerCase().replace(/\s+/g, '_'),
+          displayName: u.name,
+          avatar: u.avatar,
+          bio: u.bio,
+          followersCount: 0, // API doesn't return this
+          isFollowing: u.isFollowing || false
+        }));
+        this.suggestedUsers.set(users);
+      },
+      error: (err) => {
+        console.error('[ExploreComponent] Error loading suggestions:', err);
+        // Fallback to empty array
+        this.suggestedUsers.set([]);
+      }
+    });
     
+    // Trending topics (static for now, can be connected to API later)
     this.trendingTopics.set([
       { tag: 'FantasiaEpica', posts: 1243 },
       { tag: 'LivrosDoMes', posts: 892 },
       { tag: 'RomanceLiterario', posts: 756 },
       { tag: 'LeituraDomingo', posts: 543 },
       { tag: 'NovosAutores', posts: 421 }
-    ]);
-    
-    this.suggestedUsers.set([
-      {
-        id: '1',
-        username: 'maria_escritora',
-        displayName: 'Maria Silva',
-        avatar: null,
-        bio: 'Escritora de fantasia e ficção científica',
-        followersCount: 5420,
-        isFollowing: false
-      },
-      {
-        id: '2',
-        username: 'joao_leitor',
-        displayName: 'João Santos',
-        avatar: null,
-        bio: 'Leitor voraz de romances',
-        followersCount: 3210,
-        isFollowing: false
-      },
-      {
-        id: '3',
-        username: 'ana_bookworm',
-        displayName: 'Ana Costa',
-        avatar: null,
-        bio: 'Resenhas literárias e dicas de leitura',
-        followersCount: 8932,
-        isFollowing: false
-      }
     ]);
     
     this.featuredBooks.set([
@@ -244,11 +236,66 @@ export class ExploreComponent implements OnInit {
   }
 
   toggleFollow(user: SuggestedUser) {
+    // Prevent multiple clicks
+    if (this.followingInProgress().has(user.id)) return;
+    
+    // Mark as in progress
+    this.followingInProgress.update(set => new Set(set).add(user.id));
+    
+    // Optimistic update
+    const wasFollowing = user.isFollowing;
     const users = this.suggestedUsers();
     const updated = users.map(u => 
       u.id === user.id ? { ...u, isFollowing: !u.isFollowing } : u
     );
     this.suggestedUsers.set(updated);
+    
+    // Call API
+    this.followService.toggleFollow(user.id).subscribe({
+      next: (response) => {
+        // Update with actual response
+        const currentUsers = this.suggestedUsers();
+        const finalUpdated = currentUsers.map(u => 
+          u.id === user.id ? { ...u, isFollowing: response.following } : u
+        );
+        this.suggestedUsers.set(finalUpdated);
+        this.followingInProgress.update(set => {
+          const newSet = new Set(set);
+          newSet.delete(user.id);
+          return newSet;
+        });
+        
+        this.messageService.add({
+          severity: 'success',
+          summary: response.following ? 'Seguindo' : 'Deixou de seguir',
+          detail: response.following 
+            ? `Você começou a seguir ${user.displayName}` 
+            : `Você deixou de seguir ${user.displayName}`,
+          life: 3000
+        });
+      },
+      error: (err) => {
+        console.error('[ExploreComponent] Error toggling follow:', err);
+        // Revert optimistic update
+        const currentUsers = this.suggestedUsers();
+        const reverted = currentUsers.map(u => 
+          u.id === user.id ? { ...u, isFollowing: wasFollowing } : u
+        );
+        this.suggestedUsers.set(reverted);
+        this.followingInProgress.update(set => {
+          const newSet = new Set(set);
+          newSet.delete(user.id);
+          return newSet;
+        });
+        
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Erro',
+          detail: 'Não foi possível processar a solicitação',
+          life: 3000
+        });
+      }
+    });
   }
 
   goToPost(postId: string): void {
