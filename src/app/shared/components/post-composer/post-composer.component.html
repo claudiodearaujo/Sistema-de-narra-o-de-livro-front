@@ -1,6 +1,7 @@
 <p-dialog 
   header="Criar Post" 
-  [(visible)]="visible" 
+  [visible]="dialogVisible" 
+  (visibleChange)="onDialogVisibleChange($event)"
   [modal]="true"
   [dismissableMask]="true"
   [closable]="!submitting()"

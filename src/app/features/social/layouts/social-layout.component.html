@@ -137,3 +137,15 @@
     </nav>
   }
 </div>
+
+<!-- Toast for notifications -->
+<p-toast></p-toast>
+
+<!-- Post Composer Modal -->
+<app-post-composer
+  [visible]="showPostComposer()"
+  [userName]="currentUser()?.name || 'Usuário'"
+  [userAvatar]="currentUser()?.avatar || ''"
+  (visibleChange)="showPostComposer.set($event)"
+  (postCreated)="onPostCreated($event)">
+</app-post-composer>

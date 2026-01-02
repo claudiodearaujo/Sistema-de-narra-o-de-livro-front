@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, signal, inject } from '@angular/core';
+import { Component, EventEmitter, Input, Output, signal, inject, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -43,7 +43,7 @@ import { Post, PostType, CreatePostDto } from '../../../core/models/post.model';
   templateUrl: './post-composer.component.html',
   styleUrl: './post-composer.component.css'
 })
-export class PostComposerComponent {
+export class PostComposerComponent implements OnChanges {
   private readonly postService = inject(PostService);
   private readonly messageService = inject(MessageService);
 
@@ -62,6 +62,9 @@ export class PostComposerComponent {
   /** Emitted when a post is successfully created */
   @Output() postCreated = new EventEmitter<Post>();
 
+  // Internal visible state for two-way binding with p-dialog
+  dialogVisible = false;
+
   // State
   content = signal('');
   mediaUrl = signal('');
@@ -78,6 +81,20 @@ export class PostComposerComponent {
     { label: 'Imagem', value: 'IMAGE' },
     { label: 'Atualização de Livro', value: 'BOOK_UPDATE' }
   ];
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['visible']) {
+      this.dialogVisible = changes['visible'].currentValue;
+    }
+  }
+
+  onDialogVisibleChange(visible: boolean): void {
+    this.dialogVisible = visible;
+    this.visibleChange.emit(visible);
+    if (!visible) {
+      this.reset();
+    }
+  }
 
   /**
    * Get remaining characters count
@@ -137,7 +154,7 @@ export class PostComposerComponent {
    * Close the dialog
    */
   close(): void {
-    this.visible = false;
+    this.dialogVisible = false;
     this.visibleChange.emit(false);
     this.reset();
   }

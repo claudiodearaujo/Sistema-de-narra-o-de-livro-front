@@ -11,7 +11,13 @@ import { BadgeModule } from 'primeng/badge';
 import { TooltipModule } from 'primeng/tooltip';
 import { RippleModule } from 'primeng/ripple';
 import { MenuModule } from 'primeng/menu';
-import { MenuItem } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
+import { MenuItem, MessageService as PrimeMessageService } from 'primeng/api';
+
+// Components
+import { PostComposerComponent } from '../../../shared/components/post-composer/post-composer.component';
+import { PostService } from '../../../core/services/post.service';
+import { Post } from '../../../core/models/post.model';
 
 import { AuthService } from '../../../core/auth/services/auth.service';
 import { NotificationService } from '../../../core/services/notification.service';
@@ -39,20 +45,26 @@ import { WebSocketService } from '../../../core/services/websocket.service';
     BadgeModule,
     TooltipModule,
     RippleModule,
-    MenuModule
+    MenuModule,
+    ToastModule,
+    PostComposerComponent
   ],
+  providers: [PrimeMessageService],
   templateUrl: './social-layout.component.html',
   styleUrl: './social-layout.component.css'
 })
 export class SocialLayoutComponent implements OnInit, OnDestroy {
   private readonly authService = inject(AuthService);
   private readonly notificationService = inject(NotificationService);
-  private readonly messageService = inject(MessageService);
+  private readonly msgService = inject(MessageService);
   private readonly wsService = inject(WebSocketService);
   private readonly router = inject(Router);
+  private readonly postService = inject(PostService);
+  private readonly primeMessageService = inject(PrimeMessageService);
 
   // Signals
   isMobile = signal(false);
+  showPostComposer = signal(false);
   showRightSidebar = signal(true);
   currentUser = computed(() => this.authService.currentUser());
 
@@ -63,7 +75,7 @@ export class SocialLayoutComponent implements OnInit, OnDestroy {
   });
 
   readonly messageCount = computed(() => {
-    const count = this.messageService.unreadCount();
+    const count = this.msgService.unreadCount();
     return count > 0 ? (count > 99 ? '99+' : count.toString()) : '';
   });
 
@@ -104,7 +116,7 @@ export class SocialLayoutComponent implements OnInit, OnDestroy {
 
     // Load initial counts
     this.notificationService.getCount().subscribe();
-    this.messageService.getUnreadCount().subscribe();
+    this.msgService.getUnreadCount().subscribe();
 
     // Track current route for active state
     this.routerSubscription = this.router.events
@@ -187,8 +199,26 @@ export class SocialLayoutComponent implements OnInit, OnDestroy {
   }
 
   openNewPost(): void {
-    // Will open a modal or navigate to new post page
-    console.log('Open new post modal');
+    this.showPostComposer.set(true);
+  }
+
+  onPostCreated(post: Post): void {
+    // Show success toast
+    this.primeMessageService.add({
+      severity: 'success',
+      summary: 'Sucesso',
+      detail: 'Post publicado com sucesso!'
+    });
+    
+    // Navigate to feed if not already there
+    if (this.router.url !== '/social/feed') {
+      this.router.navigate(['/social/feed']);
+    } else {
+      // Force refresh by navigating away and back
+      this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+        this.router.navigate(['/social/feed']);
+      });
+    }
   }
 
   private logout(): void {
