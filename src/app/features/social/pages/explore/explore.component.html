@@ -201,7 +201,7 @@
             <h3 class="section-title">Livros em Destaque</h3>
             <div class="books-grid">
               @for (book of featuredBooks(); track book.id) {
-                <a [routerLink]="['/books', book.id]" class="book-card">
+                <a [routerLink]="['/writer/books', book.id]" class="book-card">
                   <div class="book-cover">
                     @if (book.cover) {
                       <img [src]="book.cover" [alt]="book.title">

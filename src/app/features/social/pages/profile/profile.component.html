@@ -201,7 +201,7 @@
         <p-tabpanel value="1">
           <div class="books-list">
             @for (book of books(); track book.id) {
-              <a [routerLink]="['/books', book.id]" class="book-item">
+              <a [routerLink]="['/writer/books', book.id]" class="book-item">
                 @if (book.coverUrl) {
                   <img [src]="book.coverUrl" alt="Capa" class="book-cover">
                 } @else {
