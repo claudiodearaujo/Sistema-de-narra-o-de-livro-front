@@ -13,7 +13,7 @@ export class InstitutionalLayoutComponent {
   currentYear = new Date().getFullYear();
   
   mainNav = [
-    { label: 'Início', path: '/social' },
+    { label: 'Início', path: '/institutional' },
     { label: 'Sobre Nós', path: '/institutional/about' },
     { label: 'Para Escritores', path: '/institutional/writer-area' },
     { label: 'Comunidade', path: '/institutional/community' },

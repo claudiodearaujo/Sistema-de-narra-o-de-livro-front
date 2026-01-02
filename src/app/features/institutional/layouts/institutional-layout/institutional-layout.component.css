@@ -32,15 +32,20 @@
 }
 
 .logo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
   text-decoration: none;
 }
 
-.logo-text {
-  font-family: var(--font-heading);
-  font-size: var(--text-2xl);
-  font-weight: var(--font-weight-bold);
-  color: var(--color-primary-600);
-  letter-spacing: -0.02em;
+.logo-icon {
+  width: 40px;
+  height: auto;
+}
+
+.logo-text-img {
+  width: 100px;
+  height: auto;
 }
 
 .main-nav {
@@ -151,10 +156,21 @@
 }
 
 .footer-logo {
-  font-family: var(--font-heading);
-  font-size: var(--text-3xl);
-  font-weight: var(--font-weight-bold);
-  color: white;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.footer-logo-icon {
+  width: 40px;
+  height: auto;
+  filter: brightness(0) invert(1);
+}
+
+.footer-logo-text {
+  width: 100px;
+  height: auto;
+  filter: brightness(0) invert(1);
 }
 
 .footer-tagline {

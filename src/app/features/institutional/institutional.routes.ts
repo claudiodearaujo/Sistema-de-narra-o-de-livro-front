@@ -1,18 +1,21 @@
 import { Routes } from '@angular/router';
 
 export const INSTITUTIONAL_ROUTES: Routes = [
+  // Home Page - without institutional layout (has its own header/footer)
+  {
+    path: '',
+    pathMatch: 'full',
+    loadComponent: () => import('./pages/home/home.component')
+      .then(m => m.HomeComponent),
+    title: 'Livrya - Histórias que ganham voz, forma e caminho'
+  },
+  
+  // Pages with institutional layout
   {
     path: '',
     loadComponent: () => import('./layouts/institutional-layout/institutional-layout.component')
       .then(m => m.InstitutionalLayoutComponent),
     children: [
-      // Default route
-      {
-        path: '',
-        redirectTo: 'about',
-        pathMatch: 'full'
-      },
-      
       // Site Pages
       {
         path: 'about',
@@ -111,3 +114,4 @@ export const INSTITUTIONAL_ROUTES: Routes = [
     ]
   }
 ];
+

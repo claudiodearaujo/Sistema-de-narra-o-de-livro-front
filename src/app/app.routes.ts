@@ -5,11 +5,12 @@ import { authGuard } from './core/auth/guards/auth.guard';
  * Application Root Routes
  * 
  * Structure:
- * - /auth/*       - Authentication pages (login, signup, forgot-password, profile)
- * - /writer/*     - Writer Area module (books, chapters, characters, voices)
- * - /social/*     - Social Network module (future)
- * - /unauthorized - Access denied page
- * - /             - Redirects to /writer if authenticated, /auth/login otherwise
+ * - /institutional/* - Public institutional pages (about, terms, privacy, etc.)
+ * - /auth/*          - Authentication pages (login, signup, forgot-password, profile)
+ * - /writer/*        - Writer Area module (books, chapters, characters, voices)
+ * - /social/*        - Social Network module
+ * - /unauthorized    - Access denied page
+ * - /                - Redirects to /institutional/about (home page)
  */
 export const routes: Routes = [
   // Authentication Routes (public)
@@ -70,16 +71,16 @@ export const routes: Routes = [
     loadChildren: () => import('./features/institutional/institutional.routes').then(m => m.INSTITUTIONAL_ROUTES)
   },
 
-  // Default redirect
+  // Default redirect - Home page is the institutional home
   {
     path: '',
     pathMatch: 'full',
-    redirectTo: 'writer'
+    redirectTo: 'institutional'
   },
 
   // Wildcard redirect
   {
     path: '**',
-    redirectTo: 'writer'
+    redirectTo: 'institutional'
   }
 ];
