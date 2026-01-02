@@ -175,7 +175,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
 
   goToBook(bookId: string): void {
-    this.router.navigate(['/books', bookId]);
+    this.router.navigate(['/writer/books', bookId]);
   }
 
   toggleFollow(user: UserSearchResult, event: Event): void {
