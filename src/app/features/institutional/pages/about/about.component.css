@@ -84,34 +84,50 @@
   position: relative;
 }
 
-.hero-illustration {
+.hero-image-wrapper {
+  position: relative;
   width: 400px;
   height: 400px;
-  position: relative;
+  border-radius: var(--radius-2xl);
+  overflow: hidden;
 }
 
-.illustration-books {
+.hero-image {
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, var(--color-primary-200) 0%, var(--color-primary-100) 100%);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  object-fit: cover;
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-xl);
+  transition: transform var(--duration-normal) var(--ease-standard);
 }
 
-.illustration-books::before {
-  content: '📚';
-  font-size: 8rem;
+.hero-image-wrapper:hover .hero-image {
+  transform: scale(1.05);
 }
 
-.illustration-glow {
+.hero-image-glow {
   position: absolute;
-  inset: -20px;
-  background: radial-gradient(circle, var(--color-primary-300) 0%, transparent 70%);
-  opacity: 0.3;
-  filter: blur(40px);
+  inset: -30px;
+  background: radial-gradient(
+    circle,
+    var(--color-primary-400) 0%,
+    transparent 70%
+  );
+  opacity: 0.4;
+  filter: blur(60px);
   z-index: -1;
+  animation: pulse-glow 3s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    opacity: 0.4;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.1);
+  }
 }
 
 /* ==========================================================================
@@ -372,13 +388,9 @@
     order: -1;
   }
   
-  .hero-illustration {
+  .hero-image-wrapper {
     width: 280px;
     height: 280px;
-  }
-  
-  .illustration-books::before {
-    font-size: 5rem;
   }
 }
 
