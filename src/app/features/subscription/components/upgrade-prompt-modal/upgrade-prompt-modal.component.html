@@ -1,0 +1,83 @@
+<p-dialog
+  [(visible)]="visible"
+  [header]="data?.title || 'Limite Atingido'"
+  [modal]="true"
+  [dismissableMask]="true"
+  [draggable]="false"
+  [resizable]="false"
+  styleClass="w-full max-w-md"
+  (onHide)="onClose()"
+>
+  <div class="text-center">
+    <!-- Icon -->
+    <div class="w-16 h-16 bg-amber-100 dark:bg-amber-900 rounded-full flex items-center justify-center mx-auto mb-4">
+      <i class="pi pi-lock text-amber-500 text-3xl"></i>
+    </div>
+
+    <!-- Message -->
+    <p class="text-primary-700 dark:text-primary-300 mb-4">
+      {{ data?.message }}
+    </p>
+
+    <!-- Current vs Upgrade -->
+    @if (data?.currentLimit && data?.upgradeBenefit) {
+      <div class="bg-secondary-50 dark:bg-secondary-800 rounded-lg p-4 mb-4">
+        <div class="flex items-center justify-between text-sm">
+          <div>
+            <div class="text-secondary">Seu plano atual</div>
+            <div class="font-semibold">{{ getPlanDisplayName(currentPlan()) }}</div>
+            <div class="text-secondary">{{ data?.currentLimit }} {{ data?.feature }}</div>
+          </div>
+          <i class="pi pi-arrow-right text-secondary"></i>
+          <div>
+            <div class="text-secondary">Com upgrade</div>
+            <div class="font-semibold text-primary-500">{{ data?.upgradeBenefit }}</div>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- Benefits -->
+    <div class="text-left mb-4">
+      <h4 class="font-semibold mb-2">Vantagens do upgrade:</h4>
+      <ul class="text-sm space-y-1">
+        <li class="flex items-center">
+          <i class="pi pi-check text-green-500 mr-2"></i>
+          <span>Mais livros e personagens</span>
+        </li>
+        <li class="flex items-center">
+          <i class="pi pi-check text-green-500 mr-2"></i>
+          <span>Mais minutos de áudio TTS</span>
+        </li>
+        <li class="flex items-center">
+          <i class="pi pi-check text-green-500 mr-2"></i>
+          <span>Livras mensais grátis</span>
+        </li>
+        <li class="flex items-center">
+          <i class="pi pi-check text-green-500 mr-2"></i>
+          <span>Vozes premium</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <div class="flex flex-col gap-2">
+      <button
+        pButton
+        label="Ver Planos"
+        icon="pi pi-arrow-up"
+        class="w-full"
+        (click)="goToPlans()"
+      ></button>
+      <button
+        pButton
+        label="Talvez Depois"
+        severity="secondary"
+        [text]="true"
+        class="w-full"
+        (click)="onClose()"
+      ></button>
+    </div>
+  </ng-template>
+</p-dialog>

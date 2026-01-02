@@ -24,59 +24,8 @@ import { LivraPackage } from '../../../../core/models/subscription.model';
     ToastModule,
   ],
   providers: [MessageService],
-  template: `
-    <p-toast />
-    
-    <div class="mb-6">
-      <h2 class="text-xl font-bold font-heading text-primary-700 dark:text-primary-300 mb-2">Comprar Livras</h2>
-      <p class="text-secondary">
-        Precisa de mais Livras? Compre pacotes para desbloquear recursos premium.
-      </p>
-    </div>
-
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-      @for (pkg of packages(); track pkg.id) {
-        <p-card [styleClass]="getCardClass(pkg)">
-          <ng-template pTemplate="content">
-            <div class="text-center">
-              @if (getBestValue(pkg)) {
-                <p-tag value="Melhor Valor" severity="success" class="mb-2" />
-              }
-
-              <div class="text-4xl font-bold text-primary-500 mb-2">
-                {{ pkg.amount }}
-              </div>
-              <div class="text-sm text-secondary mb-4">Livras</div>
-
-              <div class="text-2xl font-semibold mb-1">
-                R$ {{ pkg.displayPrice }}
-              </div>
-              <div class="text-xs text-secondary mb-4">
-                R$ {{ pkg.pricePerLivra }} / Livra
-              </div>
-
-              <button
-                pButton
-                label="Comprar"
-                class="w-full"
-                [loading]="loadingPackage() === pkg.id"
-                (click)="purchasePackage(pkg)"
-              ></button>
-            </div>
-          </ng-template>
-        </p-card>
-      }
-    </div>
-  `,
-  styles: [`
-    :host {
-      display: block;
-    }
-
-    .best-value-card {
-      border: 2px solid var(--color-primary-500);
-    }
-  `],
+  templateUrl: './livra-packages.component.html',
+  styleUrl: './livra-packages.component.css',
 })
 export class LivraPackagesComponent implements OnInit {
   private subscriptionService = inject(SubscriptionService);

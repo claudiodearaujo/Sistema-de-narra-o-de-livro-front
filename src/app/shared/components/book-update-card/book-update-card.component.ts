@@ -23,76 +23,8 @@ import { Post, PostBook } from '../../../core/models/post.model';
     ButtonModule,
     TagModule
   ],
-  template: `
-    <div class="book-update-card bg-linear-to-r from-primary-50 to-primary-100 dark:from-primary-900/30 dark:to-primary-800/30 rounded-xl p-4 border border-primary-200 dark:border-primary-700">
-      <div class="flex items-start gap-4">
-        <!-- Book Cover -->
-        @if (book?.coverUrl) {
-          <div class="shrink-0">
-            <img 
-              [src]="book!.coverUrl" 
-              [alt]="book!.title"
-              class="w-20 h-28 object-cover rounded-lg shadow-md"
-            />
-          </div>
-        } @else {
-          <div class="w-20 h-28 bg-secondary-200 dark:bg-secondary-700 rounded-lg flex items-center justify-center shrink-0">
-            <i class="pi pi-book text-2xl text-secondary-400"></i>
-          </div>
-        }
-
-        <!-- Book Info -->
-        <div class="flex-1 min-w-0">
-          <p-tag 
-            [value]="isNewBook ? 'Novo Livro 📚' : 'Atualização 📝'" 
-            severity="success"
-            styleClass="mb-2"
-          />
-          
-          <h3 class="font-bold text-lg text-primary-800 dark:text-primary-200 truncate mb-1 font-heading">
-            {{ book?.title || 'Livro' }}
-          </h3>
-          
-          <p class="text-sm text-primary-700 dark:text-primary-300 mb-2">
-            por {{ book?.author || 'Autor desconhecido' }}
-          </p>
-
-          @if (description) {
-            <p class="text-sm text-secondary line-clamp-2 mb-3">
-              {{ description }}
-            </p>
-          }
-
-          <a 
-            [routerLink]="['/books', book?.id]"
-            pButton
-            type="button"
-            label="Ver livro"
-            icon="pi pi-arrow-right"
-            iconPos="right"
-            class="p-button-sm"
-          ></a>
-        </div>
-      </div>
-    </div>
-  `,
-  styles: [`
-    .book-update-card {
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-
-    .book-update-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    }
-
-    .line-clamp-2 {
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-  `]
+  templateUrl: './book-update-card.component.html',
+  styleUrl: './book-update-card.component.css'
 })
 export class BookUpdateCardComponent {
   @Input() book: PostBook | undefined;

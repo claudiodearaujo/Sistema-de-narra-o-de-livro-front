@@ -18,36 +18,8 @@ import { AuthService } from '../../../core/auth/services/auth.service';
   selector: 'app-follow-button',
   standalone: true,
   imports: [CommonModule, ButtonModule],
-  template: `
-    @if (!isSelf()) {
-      <button 
-        pButton 
-        type="button"
-        [label]="buttonLabel()"
-        [icon]="buttonIcon()"
-        [class]="buttonClass()"
-        [loading]="loading()"
-        (click)="onFollowClick()"
-        (mouseenter)="hovering.set(true)"
-        (mouseleave)="hovering.set(false)"
-      ></button>
-    }
-  `,
-  styles: [`
-    :host {
-      display: inline-block;
-    }
-
-    :host ::ng-deep .p-button {
-      min-width: 120px;
-      transition: all 0.2s ease;
-    }
-
-    :host ::ng-deep .p-button.unfollow-hover {
-      background-color: var(--color-accent-500) !important;
-      border-color: var(--color-accent-500) !important;
-    }
-  `]
+  templateUrl: './follow-button.component.html',
+  styleUrl: './follow-button.component.css'
 })
 export class FollowButtonComponent {
   private readonly followService = inject(FollowService);

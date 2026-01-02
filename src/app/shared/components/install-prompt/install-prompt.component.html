@@ -1,0 +1,25 @@
+@if (showPrompt()) {
+  <div class="install-prompt">
+    <div class="prompt-content">
+      <div class="prompt-icon">📚</div>
+      <div class="prompt-text">
+        <h4>Instalar LIVRIA</h4>
+        <p>Tenha acesso rápido ao app na sua tela inicial</p>
+      </div>
+    </div>
+    <div class="prompt-actions">
+      <p-button 
+        label="Agora não" 
+        [text]="true" 
+        size="small"
+        (onClick)="dismiss()"
+      />
+      <p-button 
+        label="Instalar" 
+        icon="pi pi-download"
+        size="small"
+        (onClick)="install()"
+      />
+    </div>
+  </div>
+}

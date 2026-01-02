@@ -1,0 +1,181 @@
+<div class="livras-page">
+  <!-- Header -->
+  <div class="page-header">
+    <h1><i class="pi pi-bolt mr-2"></i>Minhas Livras</h1>
+    <p class="text-color-secondary">Gerencie seu saldo e veja seu histórico de transações</p>
+  </div>
+
+  <!-- Balance Cards -->
+  <div class="balance-cards">
+    <!-- Main Balance -->
+    <p-card styleClass="balance-main-card">
+      <div class="balance-main">
+        <div class="balance-icon">
+          <i class="pi pi-bolt"></i>
+        </div>
+        <div class="balance-info">
+          <span class="balance-label">Saldo Atual</span>
+          <span class="balance-value">{{ balance()?.balance ?? 0 | number }}</span>
+          <span class="balance-sublabel">Livras disponíveis</span>
+        </div>
+      </div>
+    </p-card>
+
+    <!-- Stats Cards -->
+    <div class="stats-grid">
+      <p-card styleClass="stat-card earned">
+        <div class="stat-content">
+          <i class="pi pi-arrow-up stat-icon"></i>
+          <div class="stat-info">
+            <span class="stat-value">{{ balance()?.lifetime ?? 0 | number }}</span>
+            <span class="stat-label">Total Ganho</span>
+          </div>
+        </div>
+      </p-card>
+
+      <p-card styleClass="stat-card spent">
+        <div class="stat-content">
+          <i class="pi pi-arrow-down stat-icon"></i>
+          <div class="stat-info">
+            <span class="stat-value">{{ balance()?.spent ?? 0 | number }}</span>
+            <span class="stat-label">Total Gasto</span>
+          </div>
+        </div>
+      </p-card>
+    </div>
+  </div>
+
+  <!-- How to Earn Section -->
+  <p-card header="Como ganhar Livras" styleClass="how-to-card">
+    <div class="how-to-grid">
+      <div class="how-to-item">
+        <i class="pi pi-heart-fill text-accent-500"></i>
+        <span class="how-to-label">Receber curtidas</span>
+        <span class="how-to-amount">+2 por curtida</span>
+      </div>
+      <div class="how-to-item">
+        <i class="pi pi-comment text-primary-500"></i>
+        <span class="how-to-label">Receber comentários</span>
+        <span class="how-to-amount">+3 por comentário</span>
+      </div>
+      <div class="how-to-item">
+        <i class="pi pi-user-plus text-primary-600"></i>
+        <span class="how-to-label">Ganhar seguidores</span>
+        <span class="how-to-amount">+5 por seguidor</span>
+      </div>
+      <div class="how-to-item">
+        <i class="pi pi-pencil text-primary-700"></i>
+        <span class="how-to-label">Criar posts</span>
+        <span class="how-to-amount">+1 por post</span>
+      </div>
+      <div class="how-to-item">
+        <i class="pi pi-trophy text-livra-500"></i>
+        <span class="how-to-label">Completar campanhas</span>
+        <span class="how-to-amount">+50 por campanha</span>
+      </div>
+      <div class="how-to-item">
+        <i class="pi pi-shield text-primary-500"></i>
+        <span class="how-to-label">Conquistar medalhas</span>
+        <span class="how-to-amount">+10 ou mais</span>
+      </div>
+    </div>
+  </p-card>
+
+  <!-- Buy Livras Section (Sprint 9) -->
+  <p-card styleClass="buy-livras-card">
+    <app-livra-packages />
+  </p-card>
+
+  <!-- Transaction History -->
+  <p-card header="Histórico de Transações" styleClass="transactions-card">
+    <ng-template pTemplate="header">
+      <div class="transactions-header">
+        <h3><i class="pi pi-history mr-2"></i>Histórico de Transações</h3>
+        
+        <!-- Filters -->
+        <div class="filters">
+          <p-select
+            [options]="typeOptions"
+            [(ngModel)]="selectedType"
+            placeholder="Todos os tipos"
+            [showClear]="true"
+            (onChange)="loadTransactions()"
+            styleClass="filter-dropdown"
+          ></p-select>
+
+          <p-datepicker
+            [(ngModel)]="dateRange"
+            selectionMode="range"
+            [showIcon]="true"
+            placeholder="Período"
+            dateFormat="dd/mm/yy"
+            (onSelect)="loadTransactions()"
+            [showClear]="true"
+            styleClass="filter-calendar"
+          ></p-datepicker>
+        </div>
+      </div>
+    </ng-template>
+
+    @if (loading()) {
+      <div class="loading-container">
+        <p-progressSpinner strokeWidth="4" />
+      </div>
+    } @else if (transactions().length === 0) {
+      <div class="empty-state">
+        <i class="pi pi-inbox text-4xl text-color-secondary mb-3"></i>
+        <p class="text-color-secondary">Nenhuma transação encontrada</p>
+      </div>
+    } @else {
+      <!-- Period Summary -->
+      <div class="period-summary">
+        <div class="summary-item earned">
+          <span class="summary-label">Ganho no período</span>
+          <span class="summary-value">+{{ periodTotals().earned | number }}</span>
+        </div>
+        <div class="summary-item spent">
+          <span class="summary-label">Gasto no período</span>
+          <span class="summary-value">-{{ periodTotals().spent | number }}</span>
+        </div>
+      </div>
+
+      <!-- Transactions List -->
+      <div class="transactions-list">
+        @for (tx of transactions(); track tx.id) {
+          <div class="transaction-item" [class.earned]="tx.amount > 0" [class.spent]="tx.amount < 0">
+            <div class="tx-icon" [class]="getTypeInfo(tx.type).color">
+              <i class="pi" [class]="getTypeInfo(tx.type).icon"></i>
+            </div>
+            
+            <div class="tx-info">
+              <span class="tx-label">{{ getTypeInfo(tx.type).label }}</span>
+              <span class="tx-date">{{ tx.createdAt | date:'dd/MM/yyyy HH:mm' }}</span>
+            </div>
+            
+            <div class="tx-amount" [class.positive]="tx.amount > 0" [class.negative]="tx.amount < 0">
+              {{ tx.amount > 0 ? '+' : '' }}{{ tx.amount | number }}
+            </div>
+            
+            <div class="tx-balance">
+              <span class="balance-label">Saldo:</span>
+              <span class="balance-value">{{ tx.balance | number }}</span>
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Load More -->
+      @if (hasMore()) {
+        <div class="load-more">
+          <p-button
+            label="Carregar mais"
+            icon="pi pi-refresh"
+            [loading]="loadingMore()"
+            (onClick)="loadMore()"
+            [outlined]="true"
+          />
+        </div>
+      }
+    }
+  </p-card>
+</div>

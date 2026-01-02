@@ -1,0 +1,33 @@
+<div class="export-options p-4 border border-surface-border rounded-lg bg-white dark:bg-secondary-800 shadow-sm mt-4">
+    <h3 class="text-lg font-semibold mb-3 text-primary-700 dark:text-primary-300 font-heading">Processamento de Áudio</h3>
+    
+    <div class="flex flex-col gap-3">
+        <p class="text-sm text-secondary">
+            Gera o arquivo final unindo todas as falas, normalizando o volume e exportando para MP3.
+        </p>
+        
+        <div class="flex gap-2">
+            <p-button 
+                label="Processar Áudio Final" 
+                icon="pi pi-cog" 
+                (onClick)="processAudio()" 
+                [loading]="processing"
+                [disabled]="processing || !canProcess"
+                severity="help">
+            </p-button>
+            
+            <p-button 
+                *ngIf="processing"
+                label="Ver Status" 
+                icon="pi pi-refresh" 
+                (onClick)="checkStatus()" 
+                [outlined]="true"
+                severity="secondary">
+            </p-button>
+        </div>
+
+        <div *ngIf="status" class="text-sm mt-2">
+            Status: <span class="font-semibold">{{ status }}</span>
+        </div>
+    </div>
+</div>

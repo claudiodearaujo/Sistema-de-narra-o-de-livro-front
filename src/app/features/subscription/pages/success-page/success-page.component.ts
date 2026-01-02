@@ -21,84 +21,8 @@ import { getPlanDisplayName } from '../../../../core/models/subscription.model';
     ButtonModule,
     ProgressSpinnerModule,
   ],
-  template: `
-    <div class="flex items-center justify-center min-h-[70vh]">
-      <p-card styleClass="w-full max-w-md text-center">
-        @if (isLoading()) {
-          <ng-template pTemplate="content">
-            <p-progressSpinner 
-              styleClass="w-16 h-16"
-              strokeWidth="4"
-            />
-            <p class="mt-4 text-secondary">Confirmando seu pagamento...</p>
-          </ng-template>
-        } @else {
-          <ng-template pTemplate="header">
-            <div class="pt-8">
-              <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto">
-                <i class="pi pi-check text-green-500 text-4xl"></i>
-              </div>
-            </div>
-          </ng-template>
-
-          <ng-template pTemplate="content">
-            <h1 class="text-2xl font-heading font-bold text-primary-800 dark:text-primary-200 mb-2">
-              Assinatura Ativada!
-            </h1>
-            <p class="text-secondary mb-6">
-              Parabéns! Você agora é um assinante {{ planName() }}.
-              Aproveite todos os benefícios do seu novo plano!
-            </p>
-
-            <div class="bg-secondary-50 dark:bg-secondary-800 rounded-lg p-4 mb-6">
-              <h3 class="font-semibold mb-2">O que você ganhou:</h3>
-              <ul class="text-left text-sm space-y-2">
-                <li class="flex items-center">
-                  <i class="pi pi-check text-green-500 mr-2"></i>
-                  <span>Mais livros e personagens</span>
-                </li>
-                <li class="flex items-center">
-                  <i class="pi pi-check text-green-500 mr-2"></i>
-                  <span>Mais minutos de áudio TTS</span>
-                </li>
-                <li class="flex items-center">
-                  <i class="pi pi-check text-green-500 mr-2"></i>
-                  <span>Livras mensais grátis</span>
-                </li>
-                <li class="flex items-center">
-                  <i class="pi pi-check text-green-500 mr-2"></i>
-                  <span>Suporte prioritário</span>
-                </li>
-              </ul>
-            </div>
-          </ng-template>
-
-          <ng-template pTemplate="footer">
-            <div class="flex flex-col gap-2 px-4 pb-4">
-              <button
-                pButton
-                label="Começar a Escrever"
-                icon="pi pi-book"
-                (click)="goToBooks()"
-              ></button>
-              <button
-                pButton
-                label="Ver Minha Assinatura"
-                severity="secondary"
-                (click)="goToSubscription()"
-              ></button>
-            </div>
-          </ng-template>
-        }
-      </p-card>
-    </div>
-  `,
-  styles: [`
-    :host {
-      display: block;
-      padding: 2rem 1rem;
-    }
-  `],
+  templateUrl: './success-page.component.html',
+  styleUrl: './success-page.component.css',
 })
 export class SuccessPageComponent implements OnInit {
   private router = inject(Router);
