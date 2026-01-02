@@ -5,7 +5,10 @@
 
 .app-shell {
 	min-height: 100vh;
-	background: var(--surface-ground, #f5f6f8);
+	 background-image: url(../assets/backgroud.jpeg);
+	  background-repeat: no-repeat;
+	  background-size: 100vw 100vh;
+background-attachment: fixed;
 	color: var(--text-color, #1f2933);
 }
 

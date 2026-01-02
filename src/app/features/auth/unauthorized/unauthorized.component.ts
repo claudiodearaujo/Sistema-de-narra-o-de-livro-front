@@ -30,8 +30,9 @@ import { ButtonModule } from 'primeng/button';
       display: flex;
       align-items: center;
       justify-content: center;
-      background: linear-gradient(135deg, var(--color-primary-600) 0%, var(--color-primary-800) 100%);
-      padding: 1rem;
+  background: color-mix(in srgb, var(--surface-ground) 35%, transparent);
+
+   padding: 1rem;
     }
 
     .unauthorized-card {
