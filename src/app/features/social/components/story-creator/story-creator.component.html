@@ -39,31 +39,57 @@
   <!-- Image Story -->
   @if (selectedType === 'IMAGE') {
     <div class="image-content mb-4">
-      @if (!imageUrl) {
+      <!-- Hidden file input -->
+      <input 
+        type="file" 
+        #fileInput
+        accept="image/jpeg,image/png,image/gif,image/webp"
+        (change)="onFileSelected($event)"
+        class="hidden-input"
+      />
+
+      @if (!imagePreview() && !imageUrl) {
         <div class="upload-area">
-          <label class="block mb-2 font-medium">Imagem</label>
+          <div class="upload-zone" (click)="triggerFileInput()">
+            <i class="pi pi-cloud-upload upload-icon"></i>
+            <p class="upload-text">Clique para selecionar uma imagem</p>
+            <small class="text-500">JPG, PNG, GIF ou WebP (máx. 5MB)</small>
+          </div>
+          
+          <div class="url-divider">
+            <span>ou cole uma URL</span>
+          </div>
+          
           <input 
             type="text" 
             pInputText 
             [(ngModel)]="imageUrl" 
-            placeholder="Cole a URL da imagem..."
-            class="w-full mb-2"
+            placeholder="https://exemplo.com/imagem.jpg"
+            class="w-full"
             [disabled]="creating()"
           />
-          <small class="text-500">Suporta URLs de imagens JPG, PNG, GIF</small>
         </div>
       } @else {
         <div class="image-preview">
-          <img [src]="imageUrl" alt="Preview" class="preview-image" />
+          <img [src]="imagePreview() || imageUrl" alt="Preview" class="preview-image" />
           <p-button 
             icon="pi pi-times" 
             [rounded]="true" 
             severity="danger"
             size="small"
-            (onClick)="imageUrl = ''"
+            (onClick)="removeImage()"
             styleClass="remove-image-btn"
+            [disabled]="creating()"
           />
         </div>
+        
+        <!-- Upload Progress -->
+        @if (creating() && uploadProgress() > 0) {
+          <div class="upload-progress mt-2">
+            <p-progressBar [value]="uploadProgress()" [showValue]="false" />
+            <small class="text-500">Enviando imagem...</small>
+          </div>
+        }
       }
 
       <div class="caption-input mt-3">
