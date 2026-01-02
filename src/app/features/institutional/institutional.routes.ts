@@ -9,6 +9,13 @@ export const INSTITUTIONAL_ROUTES: Routes = [
       .then(m => m.HomeComponent),
     title: 'Livrya - Histórias que ganham voz, forma e caminho'
   },
+  // Home Page - alias route for navigation menu
+  {
+    path: 'home',
+    loadComponent: () => import('./pages/home/home.component')
+      .then(m => m.HomeComponent),
+    title: 'Livrya - Histórias que ganham voz, forma e caminho'
+  },
   
   // Pages with institutional layout
   {
