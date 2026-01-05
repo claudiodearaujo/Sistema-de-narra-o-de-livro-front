@@ -30,7 +30,7 @@ import { AuthService } from '../../../core/auth/services/auth.service';
 export class LoginComponent {
   loginForm: FormGroup;
   errorMessage: string | null = null;
-  returnUrl: string = '/writer';
+  returnUrl: string = '/social/feed';
 
   constructor(
     private fb: FormBuilder,
@@ -45,7 +45,7 @@ export class LoginComponent {
     });
 
     // Get return URL from query params
-    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/writer';
+    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/social/feed';
   }
 
   get isLoading() {
