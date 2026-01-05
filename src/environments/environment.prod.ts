@@ -1,7 +1,7 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://api.yoursite.com/api',  // Update with production URL
-  wsUrl: 'https://api.yoursite.com',        // Update with production WS URL
+  apiUrl: 'https://sistema-de-narra-o-de-livro.onrender.com/api',  // Update with production URL
+  wsUrl: 'https://sistema-de-narra-o-de-livro.onrender.com',        // Update with production WS URL
   
   // Push Notifications VAPID Key (set via CI/CD or build process)
   vapidPublicKey: '',  // Set your VAPID public key here
