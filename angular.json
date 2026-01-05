@@ -30,7 +30,22 @@
               },
               "src/manifest.webmanifest",
               "src/offline.html",
-              "src/sw.js"
+              "src/sw.js",
+              {
+                "glob": "_redirects",
+                "input": "./",
+                "output": "/"
+              },
+              {
+                "glob": ".htaccess",
+                "input": "./",
+                "output": "/"
+              },
+              {
+                "glob": "render.yaml",
+                "input": "./",
+                "output": "/"
+              }
             ],
             "styles": [
               "src/styles.css"
