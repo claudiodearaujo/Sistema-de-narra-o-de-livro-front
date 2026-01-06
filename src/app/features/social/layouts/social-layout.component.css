@@ -16,7 +16,7 @@
   position: sticky;
   top: 0;
   z-index: var(--z-sticky);
-  background: color-mix(in srgb, var(--surface-ground) 35%, transparent);
+  background: color-mix(in srgb, var(--surface-ground) 85%, transparent);
 
   border-bottom: var(--border-width) solid var(--surface-border);
   padding: var(--space-3) var(--space-4);

@@ -1,32 +1,38 @@
 <div class="card">
-    <div class="flex justify-between items-center mb-4">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-4 md:gap-0">
         <h3 class="text-xl font-semibold text-primary-700 dark:text-primary-300 font-heading">Capítulos</h3>
-        <button pButton label="Novo Capítulo" icon="pi pi-plus" (click)="createChapter()"></button>
+        <button pButton label="Novo Capítulo" icon="pi pi-plus" (click)="createChapter()"
+            class="w-full md:w-auto"></button>
     </div>
 
     <p-orderList [value]="chapters" [listStyle]="{'height':'auto'}" header="Lista de Capítulos" filterBy="title"
         filterPlaceholder="Filtrar por título" [dragdrop]="true" (onReorder)="onReorder()">
         <ng-template let-chapter pTemplate="item">
-            <div class="flex items-center p-2 w-full flex-wrap gap-2">
-                <div class="flex-1 min-w-0">
+            <div class="flex flex-col md:flex-row md:items-center p-3 w-full gap-3">
+                <div class="flex-1 min-w-0 mb-2 md:mb-0">
                     <div class="flex items-center gap-2">
-                        <span class="font-bold text-lg">{{ chapter.orderIndex }}.</span>
-                        <span class="font-medium text-lg">{{ chapter.title }}</span>
+                        <span class="font-bold text-lg text-primary-600 dark:text-primary-400">{{ chapter.orderIndex
+                            }}.</span>
+                        <span class="font-medium text-lg text-gray-900 dark:text-gray-100">{{ chapter.title }}</span>
                     </div>
-                    <div class="flex items-center gap-2 mt-1">
-                        <p-tag [value]="getStatusLabel(chapter.status)"
-                            [severity]="getStatusSeverity(chapter.status)"></p-tag>
-                        <span class="text-sm text-gray-500" *ngIf="chapter.speeches">
+                    <div class="flex items-center gap-2 mt-2">
+                        <p-tag [value]="getStatusLabel(chapter.status)" [severity]="getStatusSeverity(chapter.status)"
+                            styleClass="text-sm"></p-tag>
+                        <span class="text-sm text-gray-500 flex items-center gap-1" *ngIf="chapter.speeches">
+                            <i class="pi pi-comments text-xs"></i>
                             {{ chapter.speeches.length }} falas
                         </span>
                     </div>
                 </div>
-                <div class="flex gap-2">
-                    <button pButton icon="pi pi-eye" class="p-button-text p-button-rounded"
+                <div
+                    class="flex gap-3 justify-end w-full md:w-auto border-t md:border-t-0 pt-2 md:pt-0 border-gray-100 dark:border-gray-800">
+                    <button pButton icon="pi pi-eye" class="p-button-text p-button-rounded p-button-lg md:p-button-md"
                         (click)="viewChapter(chapter)" pTooltip="Visualizar" tooltipPosition="top"></button>
-                    <button pButton icon="pi pi-pencil" class="p-button-text p-button-rounded"
-                        (click)="editChapter(chapter)" pTooltip="Editar" tooltipPosition="top"></button>
-                    <button pButton icon="pi pi-trash" class="p-button-text p-button-rounded p-button-danger"
+                    <button pButton icon="pi pi-pencil"
+                        class="p-button-text p-button-rounded p-button-lg md:p-button-md" (click)="editChapter(chapter)"
+                        pTooltip="Editar" tooltipPosition="top"></button>
+                    <button pButton icon="pi pi-trash"
+                        class="p-button-text p-button-rounded p-button-danger p-button-lg md:p-button-md"
                         (click)="deleteChapter(chapter)" pTooltip="Excluir" tooltipPosition="top"></button>
                 </div>
             </div>

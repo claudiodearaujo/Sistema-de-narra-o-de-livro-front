@@ -335,6 +335,13 @@ export class CharacterFormComponent implements OnInit {
         return 'bg-green-500';
     }
 
+    isBasicFieldsValid(): boolean {
+        const nameValid = this.form.get('name')?.valid || false;
+        const bookIdValid = this.form.get('bookId')?.valid || false;
+        const voiceIdValid = this.form.get('voiceId')?.valid || false;
+        return nameValid && bookIdValid && voiceIdValid;
+    }
+
     loadVoices() {
         this.voiceService.listVoices().subscribe({
             next: (data) => {
@@ -391,7 +398,11 @@ export class CharacterFormComponent implements OnInit {
     }
 
     save() {
-        if (this.form.invalid) {
+        if (!this.isBasicFieldsValid()) {
+            // Marcar apenas os campos obrigatórios como touched para mostrar erros
+            this.form.get('name')?.markAsTouched();
+            this.form.get('bookId')?.markAsTouched();
+            this.form.get('voiceId')?.markAsTouched();
             return;
         }
 

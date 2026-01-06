@@ -11,11 +11,11 @@
             </small>
         </div>
 
-        <div class="flex justify-end gap-2 mt-6">
+        <div class="flex flex-col-reverse md:flex-row justify-end gap-3 mt-6">
             <button pButton type="button" label="Cancelar" icon="pi pi-times" (click)="cancel()" severity="secondary"
-                [disabled]="submitting"></button>
+                [disabled]="submitting" class="w-full md:w-auto"></button>
             <button pButton type="submit" [label]="isEditMode ? 'Salvar' : 'Criar'" icon="pi pi-check"
-                [loading]="submitting" [disabled]="chapterForm.invalid || submitting"></button>
+                [loading]="submitting" [disabled]="chapterForm.invalid || submitting" class="w-full md:w-auto"></button>
         </div>
     </form>
 </div>

@@ -1,26 +1,26 @@
 <div class="p-4">
-    <div class="flex justify-between items-center mb-4">
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-3">
         <h3 class="text-xl font-bold font-heading text-primary-700 dark:text-primary-300">Falas do Capítulo</h3>
-        <div class="flex gap-2">
-            <button pButton label="Importar em Massa" icon="pi pi-upload" (click)="openBulkImport()"
-                severity="secondary" [outlined]="true"></button>
-            <button pButton label="Nova Fala" icon="pi pi-plus" (click)="openNew()" severity="success"></button>
+        <div class="flex gap-2 w-full sm:w-auto">
+            <button pButton (click)="openBulkImport()" severity="secondary" [outlined]="true"
+                class="flex-1 sm:flex-none p-button-sm sm:p-button-md justify-center">
+                <i class="pi pi-upload"></i>
+                <span class="ml-2 hidden sm:inline">Importar em Massa</span>
+            </button>
+            <button pButton label="Nova Fala" icon="pi pi-plus" (click)="openNew()" severity="success"
+                class="flex-1 sm:flex-none p-button-sm sm:p-button-md"></button>
         </div>
     </div>
 
-    <p-orderList [value]="speeches" [listStyle]="{'max-height':'30rem'}" header="Falas" filterBy="text"
-        filterPlaceholder="Filtrar por texto" [dragdrop]="true" (onReorder)="onReorder()">
+    <p-orderList [value]="speeches" [listStyle]="{'max-height':'60vh', 'height': 'auto'}" header="Falas" filterBy="text"
+        filterPlaceholder="Filtrar por texto" [dragdrop]="true" (onReorder)="onReorder()" styleClass="w-full">
         <ng-template let-speech pTemplate="item">
-            <div class="speech-item flex align-items-center p-2 w-full flex-wrap gap-2 rounded-lg border border-transparent cursor-pointer transition-colors duration-150"
+            <div class="speech-item flex align-items-center p-3 w-full flex-wrap gap-3 rounded-lg border border-transparent cursor-pointer transition-colors duration-150"
                 [ngClass]="{
                     'bg-primary-50 dark:bg-primary-900/40 border-primary-300 shadow-sm': selectedSpeechId === speech.id,
                     'hover:bg-secondary-50 dark:hover:bg-secondary-700/40': selectedSpeechId !== speech.id
-                }"
-                (click)="selectSpeech(speech)"
-                (keydown.enter)="selectSpeech(speech)"
-                (keydown.space)="selectSpeech(speech)"
-                tabindex="0"
-                role="button"
+                }" (click)="selectSpeech(speech)" (keydown.enter)="selectSpeech(speech)"
+                (keydown.space)="selectSpeech(speech)" tabindex="0" role="button"
                 [attr.aria-pressed]="selectedSpeechId === speech.id">
                 <div class="shrink-0" *ngIf="speech.character">
                     <div class="w-8 h-8 rounded-full bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center text-primary-600 dark:text-primary-300 font-bold text-sm"
