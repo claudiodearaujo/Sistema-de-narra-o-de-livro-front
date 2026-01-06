@@ -113,4 +113,10 @@ export class BookDetailComponent implements OnInit {
             tabsElement.scrollIntoView({ behavior: 'smooth' });
         }
     }
+
+    newChapter() {
+        if (this.bookId) {
+            this.router.navigate(['/writer/books', this.bookId, 'chapters', 'new']);
+        }
+    }
 }

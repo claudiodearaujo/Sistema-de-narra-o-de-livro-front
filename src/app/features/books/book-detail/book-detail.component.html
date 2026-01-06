@@ -1,131 +1,122 @@
-<div class="container mx-auto p-6">
-    <div class="mb-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <div>
-            <h1 class="text-2xl md:text-3xl font-bold mb-2 font-heading text-primary-700 dark:text-primary-300">Detalhes
-                do Livro</h1>
-            <p class="text-secondary text-sm md:text-base">Informações completas do livro</p>
-        </div>
-        <div class="flex gap-2 w-full md:w-auto">
-            <button pButton label="Voltar" icon="pi pi-arrow-left" (click)="backToList()" severity="secondary"
-                class="flex-1 md:flex-none"></button>
-            <button pButton label="Editar" icon="pi pi-pencil" (click)="editBook()"
-                class="flex-1 md:flex-none"></button>
-        </div>
+<!-- Mobile-first Book Details Page -->
+<div class="book-details-page">
+    <!-- Fixed Header -->
+    <header class="book-header">
+        <button
+            class="header-btn header-btn-back"
+            (click)="backToList()"
+            aria-label="Voltar">
+            <i class="pi pi-arrow-left"></i>
+        </button>
+        <h1 class="header-title">Detalhes do Livro</h1>
+        <button
+            class="header-btn header-btn-edit"
+            (click)="editBook()"
+            aria-label="Editar">
+            <i class="pi pi-pencil"></i>
+        </button>
+    </header>
+
+    <!-- Loading State -->
+    <div *ngIf="loading" class="loading-container">
+        <i class="pi pi-spin pi-spinner loading-spinner"></i>
+        <p class="loading-text">Carregando...</p>
     </div>
 
-    <div *ngIf="loading" class="text-center py-8">
-        <i class="pi pi-spin pi-spinner" style="font-size: 2rem;"></i>
-    </div>
+    <!-- Content -->
+    <div *ngIf="!loading && book" class="book-content">
 
-    <div *ngIf="!loading && book" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <!-- Main Info -->
-        <div class="lg:col-span-2">
-            <p-card>
-                <div class="flex flex-col md:flex-row gap-6">
-                    <!-- Cover Image -->
-                    <div class="w-full md:w-1/3 lg:w-1/4 shrink-0">
-                        <div *ngIf="book.coverUrl" class="rounded-lg shadow-md overflow-hidden aspect-2/3">
-                            <img [src]="book.coverUrl" [alt]="book.title" class="w-full h-full object-cover" />
-                        </div>
-                        <div *ngIf="!book.coverUrl"
-                            class="w-full rounded-lg shadow-md bg-gray-200 dark:bg-gray-700 flex items-center justify-center aspect-2/3">
-                            <i class="pi pi-book text-6xl text-gray-400"></i>
-                        </div>
-                    </div>
-
-                    <!-- Book Details -->
-                    <div class="flex-1">
-                        <h2 class="text-3xl font-bold mb-2 font-heading text-primary-700 dark:text-primary-300">{{
-                            book.title }}</h2>
-                        <p class="text-xl mb-6 text-accent-600 dark:text-accent-400">
-                            <i class="pi pi-user mr-2"></i>{{ book.author }}
-                        </p>
-
-                        <div class="mb-6">
-                            <h3 class="font-semibold mb-2 text-lg">Descrição</h3>
-                            <div *ngIf="book.description" [innerHTML]="book.description"
-                                class="prose max-w-none text-gray-700 leading-relaxed"></div>
-                            <p *ngIf="!book.description" class="text-gray-500 italic">
-                                Sem descrição
-                            </p>
-                        </div>
-
-                        <div class="grid grid-cols-2 gap-4 text-sm text-gray-500 mt-auto pt-4 border-t">
-                            <div>
-                                <strong class="block text-gray-700">Criado em:</strong>
-                                {{ book.createdAt | date: 'dd/MM/yyyy HH:mm' }}
-                            </div>
-                            <div>
-                                <strong class="block text-gray-700">Atualizado em:</strong>
-                                {{ book.updatedAt | date: 'dd/MM/yyyy HH:mm' }}
-                            </div>
-                        </div>
-                    </div>
+        <!-- Main Book Card -->
+        <div class="book-main-card">
+            <!-- Cover Image -->
+            <div class="book-cover-container">
+                <div *ngIf="book.coverUrl" class="book-cover">
+                    <img [src]="book.coverUrl" [alt]="book.title" class="book-cover-image" />
                 </div>
-            </p-card>
+                <div *ngIf="!book.coverUrl" class="book-cover book-cover-placeholder">
+                    <i class="pi pi-book placeholder-icon"></i>
+                </div>
+            </div>
+
+            <!-- Book Info -->
+            <div class="book-info">
+                <h2 class="book-title">{{ book.title }}</h2>
+                <p class="book-author">
+                    <i class="pi pi-user author-icon"></i>
+                    {{ book.author }}
+                </p>
+            </div>
         </div>
 
-        <!-- Stats Sidebar -->
-        <div class="lg:col-span-1">
-            <!-- Statistics Card -->
-            <p-card class="mb-4">
-                <ng-template pTemplate="header">
-                    <div class="p-4 border-b">
-                        <h3 class="text-lg font-semibold">Estatísticas</h3>
-                    </div>
-                </ng-template>
-
-                <div *ngIf="stats" class="space-y-4">
-                    <div class="flex items-center justify-between p-3 rounded-lg bg-primary-50 dark:bg-primary-900/20">
-                        <div class="flex items-center gap-2">
-                            <i class="pi pi-book text-primary-600"></i>
-                            <span class="font-medium">Capítulos</span>
-                        </div>
-                        <p-tag [value]="stats.totalChapters.toString()" severity="info"></p-tag>
-                    </div>
-
-                    <div class="flex items-center justify-between p-3 rounded-lg bg-accent-50 dark:bg-accent-900/20">
-                        <div class="flex items-center gap-2">
-                            <i class="pi pi-users text-accent-600"></i>
-                            <span class="font-medium">Personagens</span>
-                        </div>
-                        <p-tag [value]="stats.totalCharacters.toString()" severity="warn"></p-tag>
-                    </div>
-
-                    <div class="flex items-center justify-between p-3 rounded-lg bg-green-50 dark:bg-green-900/20">
-                        <div class="flex items-center gap-2">
-                            <i class="pi pi-comment text-green-600"></i>
-                            <span class="font-medium">Falas</span>
-                        </div>
-                        <p-tag [value]="stats.totalSpeeches.toString()" severity="success"></p-tag>
-                    </div>
-                </div>
-
-                <div *ngIf="!stats" class="text-center py-4">
-                    <i class="pi pi-spin pi-spinner"></i>
-                </div>
-            </p-card>
-
-            <!-- Quick Actions Card -->
-            <p-card>
-                <ng-template pTemplate="header">
-                    <div class="p-4 border-b">
-                        <h3 class="text-lg font-semibold">Ações Rápidas</h3>
-                    </div>
-                </ng-template>
-
-                <div class="space-y-2">
-                    <button pButton label="Ver Personagens" icon="pi pi-users" class="w-full" severity="secondary"
-                        (click)="viewCharacters()"></button>
-                    <small class="text-gray-500 block mt-2">
-                        * Personagens na próxima fase
-                    </small>
-                </div>
-            </p-card>
+        <!-- Description Card -->
+        <div class="description-card">
+            <h3 class="section-title">Sobre o Livro</h3>
+            <div *ngIf="book.description"
+                 [innerHTML]="book.description"
+                 class="description-text">
+            </div>
+            <p *ngIf="!book.description" class="description-empty">
+                Nenhuma descrição disponível
+            </p>
         </div>
 
-        <!-- Tabs for Chapters and Characters -->
-        <div class="lg:col-span-3">
+        <!-- Statistics Section -->
+        <div class="stats-section">
+            <h3 class="section-title">Estatísticas</h3>
+
+            <div *ngIf="stats" class="stats-grid">
+                <!-- Chapters Stat -->
+                <div class="stat-card stat-card-primary">
+                    <div class="stat-icon-container">
+                        <i class="pi pi-book stat-icon"></i>
+                    </div>
+                    <p class="stat-label">Capítulos</p>
+                    <p class="stat-value">{{ stats.totalChapters }}</p>
+                </div>
+
+                <!-- Characters Stat -->
+                <div class="stat-card stat-card-accent">
+                    <div class="stat-icon-container">
+                        <i class="pi pi-users stat-icon"></i>
+                    </div>
+                    <p class="stat-label">Personagens</p>
+                    <p class="stat-value">{{ stats.totalCharacters }}</p>
+                </div>
+
+                <!-- Speeches Stat -->
+                <div class="stat-card stat-card-success">
+                    <div class="stat-icon-container">
+                        <i class="pi pi-comment stat-icon"></i>
+                    </div>
+                    <p class="stat-label">Falas</p>
+                    <p class="stat-value">{{ stats.totalSpeeches }}</p>
+                </div>
+            </div>
+
+            <div *ngIf="!stats" class="stats-loading">
+                <i class="pi pi-spin pi-spinner"></i>
+            </div>
+        </div>
+
+        <!-- Quick Actions Section -->
+        <div class="actions-section">
+            <h3 class="section-title">Ações Rápidas</h3>
+
+            <div class="actions-grid">
+                <button class="action-btn action-btn-primary" (click)="viewCharacters()">
+                    <i class="pi pi-users action-btn-icon"></i>
+                    <span>Ver Personagens</span>
+                </button>
+
+                <button class="action-btn action-btn-secondary" (click)="newChapter()">
+                    <i class="pi pi-plus action-btn-icon"></i>
+                    <span>Novo Capítulo</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Tabs Section -->
+        <div class="tabs-section">
             <p-tabs [value]="activeTab" (valueChange)="onTabChange($event)">
                 <p-tablist>
                     <p-tab value="0">
