@@ -40,9 +40,8 @@
                 <label for="description" class="block text-sm font-medium mb-2">
                     Descrição
                 </label>
-                <textarea pInputTextarea id="description" formControlName="description" 
-                    placeholder="Digite uma descrição para o livro..." 
-                    rows="6" class="w-full" [autoResize]="true">
+                <textarea pInputTextarea id="description" formControlName="description"
+                    placeholder="Digite uma descrição para o livro..." rows="6" class="w-full" [autoResize]="true">
                 </textarea>
             </div>
 
@@ -59,11 +58,12 @@
             </div>
 
             <!-- Actions -->
-            <div class="flex gap-3 justify-end">
+            <div class="flex flex-col-reverse md:flex-row gap-3 justify-end">
                 <button pButton type="button" label="Cancelar" icon="pi pi-times" (click)="cancel()"
-                    severity="secondary" [disabled]="submitting"></button>
+                    severity="secondary" [disabled]="submitting" class="w-full md:w-auto"></button>
                 <button pButton type="submit" [label]="isEditMode ? 'Atualizar' : 'Criar'" icon="pi pi-check"
-                    [loading]="submitting" [disabled]="bookForm.invalid || submitting"></button>
+                    [loading]="submitting" [disabled]="bookForm.invalid || submitting"
+                    class="w-full md:w-auto"></button>
             </div>
         </form>
     </div>

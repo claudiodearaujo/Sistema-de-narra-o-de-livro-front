@@ -86,11 +86,12 @@
             <p-message *ngIf="errorMessage" severity="error" [text]="errorMessage" styleClass="mt-4 w-full"></p-message>
 
             <!-- Botões -->
-            <div class="flex justify-end gap-3 mt-6">
-                <p-button label="Cancelar" severity="secondary" (onClick)="onCancel()" [disabled]="loading"></p-button>
-                <p-button [label]="isEditMode ? 'Salvar Alterações' : 'Cadastrar Voz'" icon="pi pi-check" type="submit"
-                    [loading]="loading">
-                </p-button>
+            <div class="flex flex-col-reverse md:flex-row justify-end gap-3 mt-6">
+                <button pButton label="Cancelar" severity="secondary" (click)="onCancel()" [disabled]="loading"
+                    class="w-full md:w-auto"></button>
+                <button pButton [label]="isEditMode ? 'Salvar Alterações' : 'Cadastrar Voz'" icon="pi pi-check"
+                    type="submit" [loading]="loading" class="w-full md:w-auto">
+                </button>
             </div>
         </form>
 

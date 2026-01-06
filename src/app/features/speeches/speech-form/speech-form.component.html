@@ -37,18 +37,24 @@
                 <span>Como usar SSML sem complicação</span>
             </button>
             <div *ngIf="ssmlGuideVisible" class="guide-body">
-                <p>SSML é como um roteiro com marcações simples e os atalhos acima inserem as tags prontas para você:</p>
+                <p>SSML é como um roteiro com marcações simples e os atalhos acima inserem as tags prontas para você:
+                </p>
                 <ul>
                     <li><strong>&lt;speak&gt;</strong> envolve toda a fala para evitar erros de validação.</li>
                     <li><strong>&lt;break time="500ms"/&gt;</strong> cria pausas rápidas entre frases.</li>
                     <li><strong>&lt;emphasis level="moderate"&gt;</strong> realça trechos com naturalidade.</li>
                     <li><strong>&lt;emphasis level="strong"&gt;</strong> dá destaque máximo a palavras-chave.</li>
-                    <li><strong>&lt;prosody rate="slow"&gt;</strong> e <strong>&lt;prosody rate="fast"&gt;</strong> controlam o ritmo.</li>
-                    <li><strong>&lt;prosody rate="slow" pitch="-2st"&gt;</strong> deixa a fala lenta e com tom grave.</li>
-                    <li><strong>&lt;prosody pitch="+2st"&gt;</strong> e <strong>&lt;prosody pitch="-2st"&gt;</strong> ajustam somente o tom.</li>
-                    <li><strong>&lt;say-as interpret-as="cardinal"&gt;</strong> garante que números sejam lidos como algarismos naturais.</li>
+                    <li><strong>&lt;prosody rate="slow"&gt;</strong> e <strong>&lt;prosody rate="fast"&gt;</strong>
+                        controlam o ritmo.</li>
+                    <li><strong>&lt;prosody rate="slow" pitch="-2st"&gt;</strong> deixa a fala lenta e com tom grave.
+                    </li>
+                    <li><strong>&lt;prosody pitch="+2st"&gt;</strong> e <strong>&lt;prosody pitch="-2st"&gt;</strong>
+                        ajustam somente o tom.</li>
+                    <li><strong>&lt;say-as interpret-as="cardinal"&gt;</strong> garante que números sejam lidos como
+                        algarismos naturais.</li>
                 </ul>
-                <p class="prompt-hint">Dicas rápidas: teste partes pequenas, combine tags com moderação e troque o trecho específico se algo soar estranho.</p>
+                <p class="prompt-hint">Dicas rápidas: teste partes pequenas, combine tags com moderação e troque o
+                    trecho específico se algo soar estranho.</p>
             </div>
         </div>
         <div class="field mb-6">
@@ -70,21 +76,23 @@
                 <p class="assistant-helper">Aperfeiçoe o texto sem sair da tela.</p>
             </div>
 
-            <div class="assistant-actions">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 <button pButton type="button" label="Corretor ortográfico" icon="pi pi-check-square"
-                    (click)="runSpellCheck()" [loading]="spellCheckLoading"></button>
+                    (click)="runSpellCheck()" [loading]="spellCheckLoading" class="w-full"></button>
                 <button pButton type="button" label="Sugestões de melhoria" icon="pi pi-lightbulb"
-                    (click)="runSuggestions()" [loading]="suggestionLoading"></button>
+                    (click)="runSuggestions()" [loading]="suggestionLoading" class="w-full"></button>
                 <button pButton type="button" label="Detalhar personagem" icon="pi pi-user-edit"
                     (click)="runCharacterEnrichment()" [disabled]="!form.get('characterId')?.value"
-                    [loading]="characterEnrichmentLoading"></button>
+                    [loading]="characterEnrichmentLoading" class="w-full"></button>
                 <button pButton type="button" label="Imagem do sentimento" icon="pi pi-image"
-                    class="p-button-help" (click)="generateEmotionImage()" [loading]="emotionImageLoading"></button>
+                    class="p-button-help w-full" (click)="generateEmotionImage()"
+                    [loading]="emotionImageLoading"></button>
             </div>
 
             <div class="context-toggle">
                 <label for="contextSwitch">Incluir contexto do capítulo e personagem</label>
-                <p-toggleSwitch inputId="contextSwitch" name="includeContextToggle" [(ngModel)]="includeContext" [ngModelOptions]="{standalone: true}"></p-toggleSwitch>
+                <p-toggleSwitch inputId="contextSwitch" name="includeContextToggle" [(ngModel)]="includeContext"
+                    [ngModelOptions]="{standalone: true}"></p-toggleSwitch>
             </div>
 
             <div class="assistant-result" *ngIf="spellCheckResult">
@@ -161,10 +169,11 @@
         </div>
 
 
-        <div class="flex justify-end gap-2">
-            <button pButton type="button" label="Cancelar" class="p-button-text" (click)="cancel()"></button>
+        <div class="flex flex-col-reverse sm:flex-row justify-end gap-3">
+            <button pButton type="button" label="Cancelar" class="p-button-text w-full sm:w-auto"
+                (click)="cancel()"></button>
             <button pButton type="submit" label="Salvar" [disabled]="form.invalid || loading || validating"
-                [loading]="loading"></button>
+                [loading]="loading" class="w-full sm:w-auto"></button>
         </div>
     </form>
 </div>

@@ -1,12 +1,15 @@
 <div class="container mx-auto p-6">
-    <div class="mb-6 flex justify-between items-center">
+    <div class="mb-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-            <h1 class="text-3xl font-bold mb-2 font-heading text-primary-700 dark:text-primary-300">Detalhes do Livro</h1>
-            <p class="text-secondary">Informações completas do livro</p>
+            <h1 class="text-2xl md:text-3xl font-bold mb-2 font-heading text-primary-700 dark:text-primary-300">Detalhes
+                do Livro</h1>
+            <p class="text-secondary text-sm md:text-base">Informações completas do livro</p>
         </div>
-        <div class="flex gap-2">
-            <button pButton label="Voltar" icon="pi pi-arrow-left" (click)="backToList()" severity="secondary"></button>
-            <button pButton label="Editar" icon="pi pi-pencil" (click)="editBook()"></button>
+        <div class="flex gap-2 w-full md:w-auto">
+            <button pButton label="Voltar" icon="pi pi-arrow-left" (click)="backToList()" severity="secondary"
+                class="flex-1 md:flex-none"></button>
+            <button pButton label="Editar" icon="pi pi-pencil" (click)="editBook()"
+                class="flex-1 md:flex-none"></button>
         </div>
     </div>
 
@@ -32,7 +35,8 @@
 
                     <!-- Book Details -->
                     <div class="flex-1">
-                        <h2 class="text-3xl font-bold mb-2 font-heading text-primary-700 dark:text-primary-300">{{ book.title }}</h2>
+                        <h2 class="text-3xl font-bold mb-2 font-heading text-primary-700 dark:text-primary-300">{{
+                            book.title }}</h2>
                         <p class="text-xl mb-6 text-accent-600 dark:text-accent-400">
                             <i class="pi pi-user mr-2"></i>{{ book.author }}
                         </p>

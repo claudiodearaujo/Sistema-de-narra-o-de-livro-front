@@ -5,7 +5,8 @@
         <ng-template pTemplate="header">
             <div class="flex justify-between items-center p-4">
                 <div>
-                    <h2 class="text-2xl font-bold font-heading text-primary-700 dark:text-primary-300">Vozes Gemini TTS</h2>
+                    <h2 class="text-2xl font-bold font-heading text-primary-700 dark:text-primary-300">Vozes Gemini TTS
+                    </h2>
                     <p class="text-secondary mt-1">30 vozes disponíveis para narração</p>
                 </div>
             </div>
@@ -26,7 +27,7 @@
                         Gênero
                         <p-sortIcon field="gender"></p-sortIcon>
                     </th>
-                    <th>Descrição / Característica</th>
+                    <th class="hidden md:table-cell">Descrição / Característica</th>
                     <th style="width: 100px">Preview</th>
                 </tr>
             </ng-template>
@@ -43,18 +44,14 @@
                         <p-tag [value]="getGenderLabel(voice.gender)" [severity]="getGenderSeverity(voice.gender)">
                         </p-tag>
                     </td>
-                    <td>
+                    <td class="hidden md:table-cell">
                         <span class="text-gray-700">{{ voice.description }}</span>
                     </td>
                     <td>
-                        <p-button 
-                            [icon]="previewingVoice === voice.id ? 'pi pi-stop' : 'pi pi-play'" 
-                            [severity]="previewingVoice === voice.id ? 'danger' : 'secondary'"
-                            size="small" 
-                            [rounded]="true"
-                            (onClick)="previewVoice(voice)" 
-                            [pTooltip]="previewingVoice === voice.id ? 'Parar' : 'Ouvir'" 
-                            tooltipPosition="top"
+                        <p-button [icon]="previewingVoice === voice.id ? 'pi pi-stop' : 'pi pi-play'"
+                            [severity]="previewingVoice === voice.id ? 'danger' : 'secondary'" size="small"
+                            [rounded]="true" (onClick)="previewVoice(voice)"
+                            [pTooltip]="previewingVoice === voice.id ? 'Parar' : 'Ouvir'" tooltipPosition="top"
                             [loading]="previewingVoice === voice.id">
                         </p-button>
                     </td>
@@ -78,12 +75,13 @@
                 <div class="flex items-start gap-2">
                     <i class="pi pi-info-circle mt-0.5"></i>
                     <div>
-                        <p><strong>Vozes Gemini TTS:</strong> Estas são as 30 vozes fixas disponíveis na API do Google Gemini.</p>
-                        <p class="mt-1">Cada voz possui características únicas. Clique em "Play" para ouvir uma prévia.</p>
+                        <p><strong>Vozes Gemini TTS:</strong> Estas são as 30 vozes fixas disponíveis na API do Google
+                            Gemini.</p>
+                        <p class="mt-1">Cada voz possui características únicas. Clique em "Play" para ouvir uma prévia.
+                        </p>
                         <p class="mt-1">
-                            <a href="https://ai.google.dev/gemini-api/docs/speech-generation?hl=pt-br#voices" 
-                               target="_blank" 
-                               class="text-primary hover:underline">
+                            <a href="https://ai.google.dev/gemini-api/docs/speech-generation?hl=pt-br#voices"
+                                target="_blank" class="text-primary hover:underline">
                                 Ver documentação oficial
                                 <i class="pi pi-external-link ml-1"></i>
                             </a>
