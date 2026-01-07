@@ -25,12 +25,13 @@ import { Router } from '@angular/router';
         ConfirmDialogModule,
         ToastModule
     ],
-    providers: [DialogService, ConfirmationService],
+    providers: [DialogService, ConfirmationService, MessageService],
     templateUrl: './chapter-list.component.html',
     styleUrls: ['./chapter-list.component.css']
 })
 export class ChapterListComponent implements OnInit {
     @Input() bookId!: string;
+    @Output() chapterChanged = new EventEmitter<void>();
     chapters: Chapter[] = [];
     ref: DynamicDialogRef<ChapterFormComponent> | null | undefined;
 
@@ -100,25 +101,6 @@ export class ChapterListComponent implements OnInit {
         });
     }
 
-    createChapter() {
-        this.ref = this.dialogService.open(ChapterFormComponent, {
-            header: 'Novo Capítulo',
-            width: '50%',
-            contentStyle: { overflow: 'auto' },
-            baseZIndex: 10000,
-            data: { bookId: this.bookId }
-        });
-
-        if (this.ref) {
-            this.ref.onClose.subscribe((result) => {
-                if (result) {
-                    this.loadChapters();
-                    this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Capítulo criado' });
-                }
-            });
-        }
-    }
-
     editChapter(chapter: Chapter) {
         this.ref = this.dialogService.open(ChapterFormComponent, {
             header: 'Editar Capítulo',
@@ -132,6 +114,7 @@ export class ChapterListComponent implements OnInit {
             this.ref.onClose.subscribe((result) => {
                 if (result) {
                     this.loadChapters();
+                    this.chapterChanged.emit();
                     this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Capítulo atualizado' });
                 }
             });
@@ -148,6 +131,7 @@ export class ChapterListComponent implements OnInit {
                     next: () => {
                         this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Capítulo excluído' });
                         this.loadChapters();
+                        this.chapterChanged.emit();
                     },
                     error: (error) => {
                         console.error('Error deleting chapter:', error);

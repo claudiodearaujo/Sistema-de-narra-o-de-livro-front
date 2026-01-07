@@ -117,8 +117,8 @@
 
         <!-- Tabs Section -->
         <div class="tabs-section p-4">
-          <app-chapter-list [bookId]="book.id"></app-chapter-list>
-             
+          <app-chapter-list [bookId]="book.id" (chapterChanged)="loadStats()"></app-chapter-list>
+
         </div>
     </div>
 

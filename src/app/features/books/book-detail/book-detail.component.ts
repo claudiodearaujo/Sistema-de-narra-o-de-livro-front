@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CardModule } from 'primeng/card';
@@ -7,10 +7,12 @@ import { ButtonModule } from 'primeng/button';
 import { TagModule } from 'primeng/tag';
 import { Toast } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { BookService } from '../../../services/book.service';
 import { Book, BookStats } from '../../../models/book.model';
 import { ChapterListComponent } from '../../chapters/chapter-list/chapter-list.component';
 import { CharacterListComponent } from '../../characters/character-list/character-list.component';
+import { ChapterFormComponent } from '../../chapters/chapter-form/chapter-form.component';
 
 @Component({
     selector: 'app-book-detail',
@@ -25,7 +27,7 @@ import { CharacterListComponent } from '../../characters/character-list/characte
         
      
     ],
-    providers: [MessageService],
+    providers: [MessageService, DialogService],
     templateUrl: './book-detail.component.html',
     styleUrls: ['./book-detail.component.css']
 })
@@ -35,12 +37,16 @@ export class BookDetailComponent implements OnInit {
     loading = false;
     bookId?: string;
     activeTab: string | number = '0';
+    ref: DynamicDialogRef<ChapterFormComponent> | null | undefined;
+
+    @ViewChild(ChapterListComponent) chapterListComponent?: ChapterListComponent;
 
     constructor(
         private bookService: BookService,
         private route: ActivatedRoute,
         private router: Router,
-        private messageService: MessageService
+        private messageService: MessageService,
+        private dialogService: DialogService
     ) { }
 
     ngOnInit() {
@@ -116,7 +122,30 @@ export class BookDetailComponent implements OnInit {
 
     newChapter() {
         if (this.bookId) {
-            this.router.navigate(['/writer/books', this.bookId, 'chapters', 'new']);
+            this.ref = this.dialogService.open(ChapterFormComponent, {
+                header: 'Novo Capítulo',
+                width: '50%',
+                contentStyle: { overflow: 'auto' },
+                baseZIndex: 10000,
+                data: { bookId: this.bookId }
+            });
+
+            if (this.ref) {
+                this.ref.onClose.subscribe((result) => {
+                    if (result) {
+                        this.loadStats();
+                        // Recarrega a lista de capítulos no componente filho
+                        if (this.chapterListComponent) {
+                            this.chapterListComponent.loadChapters();
+                        }
+                        this.messageService.add({
+                            severity: 'success',
+                            summary: 'Sucesso',
+                            detail: 'Capítulo criado'
+                        });
+                    }
+                });
+            }
         }
     }
 }
