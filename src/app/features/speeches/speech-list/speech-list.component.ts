@@ -1,9 +1,10 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SpeechService } from '../../../core/services/speech.service';
 import { Speech } from '../../../core/models/speech.model';
 import { ButtonModule } from 'primeng/button';
-import { OrderListModule } from 'primeng/orderlist';
+import { TableModule, Table } from 'primeng/table';
+import { InputTextModule } from 'primeng/inputtext';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { MessageService, ConfirmationService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
@@ -19,7 +20,8 @@ import { BulkImportComponent } from '../bulk-import/bulk-import.component';
     imports: [
         CommonModule,
         ButtonModule,
-        OrderListModule,
+        TableModule,
+        InputTextModule,
         ConfirmDialogModule,
         ToastModule,
         TooltipModule
@@ -32,6 +34,7 @@ export class SpeechListComponent implements OnInit {
     @Input() bookId: string = '';
     @Input() chapterId: string = '';
     @Output() selectionChange = new EventEmitter<Speech | null>();
+    @ViewChild('dt') table!: Table;
     speeches: Speech[] = [];
     ref: DynamicDialogRef<any> | undefined | null;
     selectedSpeechId: string | null = null;
@@ -164,17 +167,10 @@ export class SpeechListComponent implements OnInit {
         });
     }
 
-    onReorder() {
-        const orderedIds = this.speeches.map(s => s.id);
-        this.speechService.reorder(this.chapterId, orderedIds).subscribe({
-            next: () => {
-                this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Ordem atualizada' });
-            },
-            error: (error) => {
-                console.error('Error reordering speeches:', error);
-                this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Erro ao reordenar falas.' });
-                this.loadSpeeches(); // Revert
-            }
-        });
+    onGlobalFilter(event: Event) {
+        const input = event.target as HTMLInputElement;
+        if (this.table) {
+            this.table.filterGlobal(input.value, 'contains');
+        }
     }
 }
