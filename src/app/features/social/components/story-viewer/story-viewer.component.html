@@ -86,7 +86,7 @@
     @if (isOwner()) {
       <div class="story-footer">
         <div class="view-count" (click)="showViewers.emit(currentStory()!)">
-          <i class="pi pi-eye"></i>
+          <i class="pi pi-spin pi-cog"></i>
           <span>{{ currentStory()?.viewCount || 0 }} visualizações</span>
         </div>
       </div>
