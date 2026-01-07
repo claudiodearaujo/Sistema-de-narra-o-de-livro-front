@@ -6,7 +6,7 @@
             class="header-btn header-btn-back"
             (click)="backToList()"
             aria-label="Voltar">
-            <i class="pi pi-arrow-left"></i>
+            <i class="pi pi-arrow-left"></i> Voltar
         </button>
         <h1 class="header-title">Detalhes do Livro</h1>
         <button
@@ -116,27 +116,9 @@
         </div>
 
         <!-- Tabs Section -->
-        <div class="tabs-section">
-            <p-tabs [value]="activeTab" (valueChange)="onTabChange($event)">
-                <p-tablist>
-                    <p-tab value="0">
-                        <i class="pi pi-book mr-2"></i>
-                        Capítulos
-                    </p-tab>
-                    <p-tab value="1">
-                        <i class="pi pi-users mr-2"></i>
-                        Personagens
-                    </p-tab>
-                </p-tablist>
-                <p-tabpanels>
-                    <p-tabpanel value="0">
-                        <app-chapter-list [bookId]="book.id"></app-chapter-list>
-                    </p-tabpanel>
-                    <p-tabpanel value="1">
-                        <app-character-list [bookId]="book.id"></app-character-list>
-                    </p-tabpanel>
-                </p-tabpanels>
-            </p-tabs>
+        <div class="tabs-section p-4">
+          <app-chapter-list [bookId]="book.id"></app-chapter-list>
+             
         </div>
     </div>
 

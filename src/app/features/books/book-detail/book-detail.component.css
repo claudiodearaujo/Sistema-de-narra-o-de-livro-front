@@ -63,7 +63,7 @@
    ============================================ */
 .book-details-page {
     min-height: 100vh;
-    background: var(--bg-secondary);
+
     padding-bottom: var(--spacing-xl);
 }
 
@@ -78,10 +78,8 @@
     align-items: center;
     justify-content: space-between;
     padding: var(--spacing-md) var(--spacing-lg);
-    background: var(--bg-primary);
-    border-bottom: 1px solid var(--border-color);
-    box-shadow: var(--shadow-sm);
-}
+  
+  }
 
 .header-title {
     font-size: var(--font-size-lg);
@@ -486,7 +484,7 @@
 /* ============================================
    Dark Mode Support
    ============================================ */
-@media (prefers-color-scheme: dark) {
+/* @media (prefers-color-scheme: dark) {
     :host {
         --text-primary: #f9fafb;
         --text-secondary: #d1d5db;
@@ -505,7 +503,7 @@
         --accent-bg: rgba(245, 158, 11, 0.15);
         --success-bg: rgba(16, 185, 129, 0.15);
     }
-}
+} */
 
 /* ============================================
    Accessibility

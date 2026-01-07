@@ -1,6 +1,7 @@
 import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { OrderListModule } from 'primeng/orderlist';
+import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { TagModule } from 'primeng/tag';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -18,6 +19,7 @@ import { Router } from '@angular/router';
     imports: [
         CommonModule,
         OrderListModule,
+        TableModule,
         ButtonModule,
         TagModule,
         ConfirmDialogModule,

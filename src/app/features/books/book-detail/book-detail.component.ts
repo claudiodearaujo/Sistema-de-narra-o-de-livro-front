@@ -22,8 +22,8 @@ import { CharacterListComponent } from '../../characters/character-list/characte
         TagModule,
         Toast,
         ChapterListComponent,
-        CharacterListComponent,
-        Tabs, TabList, Tab, TabPanels, TabPanel
+        
+     
     ],
     providers: [MessageService],
     templateUrl: './book-detail.component.html',
