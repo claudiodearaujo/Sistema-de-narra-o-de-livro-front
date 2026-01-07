@@ -1,4 +1,4 @@
-<div class="fixed inset-0 z-50 flex items-center justify-center p-4">
+<div class="fixed inset-0 z-50 flex items-center justify-center md:p-4">
   <!-- Backdrop -->
   <div 
     class="absolute inset-0 bg-black/50 backdrop-blur-sm"
@@ -8,7 +8,7 @@
   <!-- Modal -->
   <div class="relative bg-surface-card rounded-2xl shadow-xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
     <!-- Header -->
-    <div class="flex items-center justify-between p-4 border-b border-surface-border">
+    <div class="flex items-center justify-between md:p-4 border-b border-surface-border">
       <h2 class="text-xl font-heading font-bold text-primary-800 dark:text-primary-200">Nova Campanha de Leitura</h2>
       <button 
         (click)="close.emit()"
@@ -20,7 +20,7 @@
     </div>
 
     <!-- Form -->
-    <form (ngSubmit)="onSubmit()" class="p-4 space-y-4">
+    <form (ngSubmit)="onSubmit()" class="md:p-4 space-y-4">
       <!-- Name -->
       <div>
         <label class="block text-sm font-medium text-primary-700 dark:text-primary-300 mb-1">
