@@ -2,10 +2,7 @@
   <!-- Header -->
   <header class="institutional-header">
     <div class="header-container">
-      <a routerLink="/" class="logo">
-        <img src="assets/logosm.png" alt="Livrya" class="logo-icon">
-        <img src="assets/logo.png" alt="Livrya" class="logo-text-img">
-      </a>
+     
 
       <nav class="main-nav">
         @for (item of mainNav; track item.path) {
@@ -14,7 +11,10 @@
         </a>
         }
       </nav>
-
+ <a routerLink="/" class="logo">
+        <img src="assets/logosm.png" alt="Livrya" class="logo-icon">
+        <img src="assets/logo.png" alt="Livrya" class="logo-icon-2">
+      </a>
       <div class="header-actions">
         <a routerLink="/auth/login" class="btn-outline">Entrar</a>
         <a routerLink="/auth/signup" class="btn-primary">Baixe o App</a>

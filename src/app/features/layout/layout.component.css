@@ -9,6 +9,15 @@
 }
 
 
+.logo-icon {
+  width: 40px;
+  height: auto;
+}
+.logo-icon-2 {
+   width: 90px;
+  height: auto;
+}
+
 .layout-topbar {
     position: sticky;
     top: 0;
