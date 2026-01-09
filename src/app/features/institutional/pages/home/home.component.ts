@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { SeoService, StructuredDataService } from '@app/core/services';
 
 @Component({
   selector: 'app-home',
@@ -9,7 +10,26 @@ import { RouterModule } from '@angular/router';
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit, OnDestroy {
+  private seoService = inject(SeoService);
+  private structuredDataService = inject(StructuredDataService);
+
+  ngOnInit(): void {
+    // Configurar SEO para a home page
+    this.seoService.updateSeoTags({
+      title: 'Livrya - Histórias que ganham voz, forma e caminho',
+      description: 'LIVRIA é a rede social para escritores e leitores. Crie, compartilhe e descubra histórias incríveis com narração por IA. Junte-se à nossa comunidade literária.',
+      keywords: 'escritores, livros, rede social, literatura, escrever, publicar livros, narração, audiobook, IA, comunidade literária'
+    });
+
+    // Configurar Structured Data para a home page
+    this.structuredDataService.setHomePageSchemas();
+  }
+
+  ngOnDestroy(): void {
+    // Limpar schemas ao sair da página
+    this.structuredDataService.setDefaultSchemas();
+  }
   features = [
     {
       icon: 'pi-book',

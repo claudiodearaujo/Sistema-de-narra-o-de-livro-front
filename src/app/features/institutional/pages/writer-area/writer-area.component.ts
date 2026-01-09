@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { SeoService, StructuredDataService } from '@app/core/services';
 
 @Component({
   selector: 'app-writer-area',
@@ -9,7 +10,21 @@ import { RouterModule } from '@angular/router';
   templateUrl: './writer-area.component.html',
   styleUrl: './writer-area.component.css'
 })
-export class WriterAreaComponent {
+export class WriterAreaComponent implements OnInit {
+  private seoService = inject(SeoService);
+  private structuredDataService = inject(StructuredDataService);
+
+  ngOnInit(): void {
+    this.seoService.setInstitutionalPage(
+      'Área do Escritor',
+      'Publique suas histórias, receba feedback da comunidade, use ferramentas de narração por IA e encontre parcerias editoriais na LIVRIA.'
+    );
+
+    this.structuredDataService.setBreadcrumbSchema([
+      { name: 'Home', url: 'https://livria.com.br/' },
+      { name: 'Área do Escritor', url: 'https://livria.com.br/institutional/writer-area' }
+    ]);
+  }
   features = [
     {
       icon: 'pi-pencil',
