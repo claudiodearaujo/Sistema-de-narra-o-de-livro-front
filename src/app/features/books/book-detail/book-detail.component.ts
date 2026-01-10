@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CardModule } from 'primeng/card';
@@ -14,6 +14,8 @@ import { ChapterListComponent } from '../../chapters/chapter-list/chapter-list.c
 import { CharacterListComponent } from '../../characters/character-list/character-list.component';
 import { AnalyticsService } from '../../../core/services/analytics.service';
 import { ChapterFormComponent } from '../../chapters/chapter-form/chapter-form.component';
+import { SeoService } from '../../../core/services/seo.service';
+import { StructuredDataService } from '../../../core/services/structured-data.service';
 
 @Component({
     selector: 'app-book-detail',
@@ -33,6 +35,9 @@ import { ChapterFormComponent } from '../../chapters/chapter-form/chapter-form.c
     styleUrls: ['./book-detail.component.css']
 })
 export class BookDetailComponent implements OnInit, OnDestroy {
+    private seoService = inject(SeoService);
+    private structuredDataService = inject(StructuredDataService);
+
     book?: Book;
     stats?: BookStats;
     loading = false;
@@ -81,6 +86,11 @@ export class BookDetailComponent implements OnInit, OnDestroy {
         if (this.pageViewInterval) {
             clearInterval(this.pageViewInterval);
         }
+
+        // Clean up SEO schemas
+        this.structuredDataService.removeJsonLd('book-schema');
+        this.structuredDataService.removeJsonLd('breadcrumb-schema');
+        this.seoService.resetToDefaults();
     }
 
     loadBook() {
@@ -91,6 +101,31 @@ export class BookDetailComponent implements OnInit, OnDestroy {
             next: (book: Book) => {
                 this.book = book;
                 this.loading = false;
+
+                // Configure SEO for book page
+                this.seoService.setBookPage({
+                    title: book.title,
+                    description: book.description || `Leia "${book.title}" na LIVRIA. Descubra esta história incrível.`,
+                    cover: book.coverUrl,
+                    author: book.author || 'Autor'
+                });
+
+                // Configure structured data for book
+                this.structuredDataService.setBookSchema({
+                    name: book.title,
+                    description: book.description || '',
+                    author: book.author || 'Autor',
+                    datePublished: book.createdAt ? new Date(book.createdAt).toISOString() : new Date().toISOString(),
+                    image: book.coverUrl,
+                    genre: [],
+                    inLanguage: 'pt-BR'
+                });
+
+                this.structuredDataService.setBreadcrumbSchema([
+                    { name: 'Home', url: 'https://livria.com.br/' },
+                    { name: 'Livros', url: 'https://livria.com.br/writer/books' },
+                    { name: book.title, url: `https://livria.com.br/writer/books/${book.id}` }
+                ]);
 
                 // Track book view
                 this.analytics.trackBookView(book.id, book.title);
