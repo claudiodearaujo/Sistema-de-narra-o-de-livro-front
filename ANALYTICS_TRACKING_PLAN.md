@@ -521,13 +521,13 @@ Otimização de imagens para performance:
 - [x] Criar AnalyticsService
 - [x] Implementar eventos na página de detalhes do livro
 
-### Fase 2: Expandir Cobertura (Próximos Passos)
-- [ ] Adicionar tracking em outras páginas de livros
-- [ ] Implementar eventos de capítulos
-- [ ] Implementar eventos de personagens
-- [ ] Implementar eventos de falas/TTS
-- [ ] Adicionar tracking no feed social
-- [ ] Implementar eventos de autenticação
+### Fase 2: Expandir Cobertura ✅ (Implementado em Janeiro 2026)
+- [x] Adicionar tracking em outras páginas de livros (book-form, book-list)
+- [x] Implementar eventos de capítulos (chapter-form, chapter-list)
+- [x] Implementar eventos de personagens (character-form, character-list)
+- [ ] Implementar eventos de falas/TTS (pendente)
+- [x] Adicionar tracking no feed social (feed, likes, posts)
+- [x] Implementar eventos de autenticação (login, signup)
 
 ### Fase 3: Eventos Avançados
 - [ ] Implementar enhanced ecommerce (se houver monetização)
@@ -688,9 +688,10 @@ Otimização de imagens para performance:
 ---
 
 **Última atualização**: 10 Janeiro 2026
-**Versão**: 1.1.0
-**Status**: Fase 1 + Fase 5 (SEO/Performance) Completas ✅
+**Versão**: 1.2.0
+**Status**: Fase 1 + Fase 2 + Fase 5 (SEO/Performance) Completas ✅
 
 ### Changelog
+- **v1.2.0** (10/01/2026): Concluída Fase 2 - Tracking em livros, capítulos, personagens, feed social e autenticação
 - **v1.1.0** (10/01/2026): Adicionada Fase 5 com SEO e Performance (WebVitals, SeoService, StructuredDataService, ImageOptimizationService)
 - **v1.0.0** (09/01/2026): Implementação inicial com AnalyticsService e tracking de livros

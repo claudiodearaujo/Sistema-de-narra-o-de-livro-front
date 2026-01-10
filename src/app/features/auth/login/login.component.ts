@@ -11,6 +11,7 @@ import { CardModule } from 'primeng/card';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { AuthService } from '../../../core/auth/services/auth.service';
+import { AnalyticsService } from '../../../core/services/analytics.service';
 
 @Component({
   selector: 'app-login',
@@ -44,6 +45,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
     private authService: AuthService,
     private router: Router,
     private route: ActivatedRoute,
+    private analytics: AnalyticsService,
     private messageService: MessageService,
     private ngZone: NgZone
   ) {
@@ -158,6 +160,9 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
     this.authService.login(this.loginForm.value).subscribe({
       next: (response) => {
+        // Track successful login
+        this.analytics.trackLogin('email');
+
         console.log('[LoginComponent] Login success, response:', response);
         console.log('[LoginComponent] Token saved:', this.authService.getToken());
         console.log('[LoginComponent] Is authenticated:', this.authService.isAuthenticated());
@@ -169,6 +174,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
           detail: 'Bem-vindo de volta!',
           life: 2000
         });
+
 
         // Force navigation after authentication
         setTimeout(() => {
@@ -187,6 +193,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
       },
       error: (error) => {
         console.error('[LoginComponent] Login error:', error);
+        this.analytics.trackError('login_error', error.message || 'Login failed', 'login');
         this.errorMessage = error.message;
 
         // Show error via toast for better visibility

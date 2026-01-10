@@ -18,6 +18,7 @@ import { TabsModule } from 'primeng/tabs';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { TooltipModule } from 'primeng/tooltip';
+import { AnalyticsService } from '../../../core/services/analytics.service';
 
 @Component({
     selector: 'app-character-form',
@@ -140,7 +141,8 @@ export class CharacterFormComponent implements OnInit {
         private characterService: CharacterService,
         private voiceService: VoiceService,
         private bookService: BookService,
-        private messageService: MessageService
+        private messageService: MessageService,
+        private analytics: AnalyticsService
     ) {
         this.form = this.fb.group({
             // Campos básicos obrigatórios
@@ -413,11 +415,18 @@ export class CharacterFormComponent implements OnInit {
             this.characterService.update(this.characterId, formData).subscribe({
                 next: (updatedCharacter) => {
                     this.loading = false;
+                    this.analytics.trackEvent('edit_character', {
+                        book_id: formData.bookId,
+                        character_id: this.characterId,
+                        character_name: formData.name,
+                        content_type: 'character'
+                    });
                     this.ref.close(updatedCharacter);
                 },
                 error: (error) => {
                     this.loading = false;
                     console.error('Error updating character:', error);
+                    this.analytics.trackError('character_edit_error', error.message || 'Failed to update character', 'character-form');
                     this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Erro ao atualizar personagem.' });
                 }
             });
@@ -426,11 +435,13 @@ export class CharacterFormComponent implements OnInit {
             this.characterService.create(selectedBookId, formData).subscribe({
                 next: (newCharacter) => {
                     this.loading = false;
+                    this.analytics.trackCharacterCreate(selectedBookId, newCharacter.id, newCharacter.name);
                     this.ref.close(newCharacter);
                 },
                 error: (error) => {
                     this.loading = false;
                     console.error('Error creating character:', error);
+                    this.analytics.trackError('character_create_error', error.message || 'Failed to create character', 'character-form');
                     this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Erro ao criar personagem.' });
                 }
             });

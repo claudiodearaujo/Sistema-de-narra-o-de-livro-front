@@ -5,6 +5,7 @@ import { DynamicDialogRef, DynamicDialogConfig } from 'primeng/dynamicdialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { ChapterService } from '../../../services/chapter.service';
+import { AnalyticsService } from '../../../core/services/analytics.service';
 
 @Component({
     selector: 'app-chapter-form',
@@ -28,6 +29,7 @@ export class ChapterFormComponent implements OnInit {
     constructor(
         private fb: FormBuilder,
         private chapterService: ChapterService,
+        private analytics: AnalyticsService,
         public ref: DynamicDialogRef,
         public config: DynamicDialogConfig
     ) {
@@ -73,20 +75,24 @@ export class ChapterFormComponent implements OnInit {
         if (this.isEditMode && this.chapterId) {
             this.chapterService.update(this.chapterId, formValue).subscribe({
                 next: (chapter) => {
+                    this.analytics.trackChapterEdit(this.bookId || '', chapter.id, chapter.title);
                     this.ref.close(chapter);
                 },
                 error: (error) => {
                     console.error('Error updating chapter:', error);
+                    this.analytics.trackError('chapter_edit_error', error.message || 'Failed to update chapter', 'chapter-form');
                     this.submitting = false;
                 }
             });
         } else if (this.bookId) {
             this.chapterService.create(this.bookId, formValue).subscribe({
                 next: (chapter) => {
+                    this.analytics.trackChapterCreate(this.bookId!, chapter.id, chapter.title);
                     this.ref.close(chapter);
                 },
                 error: (error) => {
                     console.error('Error creating chapter:', error);
+                    this.analytics.trackError('chapter_create_error', error.message || 'Failed to create chapter', 'chapter-form');
                     this.submitting = false;
                 }
             });
