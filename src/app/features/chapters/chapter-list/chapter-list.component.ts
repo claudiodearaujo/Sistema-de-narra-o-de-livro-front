@@ -12,6 +12,7 @@ import { Chapter, ChapterStatus } from '../../../models/chapter.model';
 import { ChapterService } from '../../../services/chapter.service';
 import { ChapterFormComponent } from '../chapter-form/chapter-form.component';
 import { Router } from '@angular/router';
+import { AnalyticsService } from '../../../core/services/analytics.service';
 
 @Component({
     selector: 'app-chapter-list',
@@ -40,7 +41,8 @@ export class ChapterListComponent implements OnInit {
         private dialogService: DialogService,
         private confirmationService: ConfirmationService,
         private messageService: MessageService,
-        private router: Router
+        private router: Router,
+        private analytics: AnalyticsService
     ) { }
 
     ngOnInit() {
@@ -143,6 +145,7 @@ export class ChapterListComponent implements OnInit {
     }
 
     viewChapter(chapter: Chapter) {
+        this.analytics.trackChapterView(this.bookId, chapter.id, chapter.title);
         this.router.navigate(['/writer/chapters', chapter.id]);
     }
 }

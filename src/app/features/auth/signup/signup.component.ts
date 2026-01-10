@@ -8,6 +8,7 @@ import { PasswordModule } from 'primeng/password';
 import { CheckboxModule } from 'primeng/checkbox';
 import { MessageModule } from 'primeng/message';
 import { AuthService } from '../../../core/auth/services/auth.service';
+import { AnalyticsService } from '../../../core/services/analytics.service';
 
 @Component({
   selector: 'app-signup',
@@ -33,7 +34,8 @@ export class SignupComponent {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private analytics: AnalyticsService
   ) {
     this.signupForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(2)]],
@@ -92,12 +94,16 @@ export class SignupComponent {
 
     this.authService.signup(this.signupForm.value).subscribe({
       next: () => {
+        // Track successful signup
+        this.analytics.trackSignUp('email');
+
         this.successMessage = 'Conta criada com sucesso!';
         setTimeout(() => {
           this.router.navigate(['/writer']);
         }, 1500);
       },
       error: (error) => {
+        this.analytics.trackError('signup_error', error.message || 'Signup failed', 'signup');
         this.errorMessage = error.message;
       }
     });

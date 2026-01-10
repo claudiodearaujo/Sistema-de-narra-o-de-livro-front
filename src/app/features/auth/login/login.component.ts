@@ -9,6 +9,7 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { MessageModule } from 'primeng/message';
 import { CardModule } from 'primeng/card';
 import { AuthService } from '../../../core/auth/services/auth.service';
+import { AnalyticsService } from '../../../core/services/analytics.service';
 
 @Component({
   selector: 'app-login',
@@ -36,7 +37,8 @@ export class LoginComponent {
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private analytics: AnalyticsService
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -67,11 +69,14 @@ export class LoginComponent {
 
     this.authService.login(this.loginForm.value).subscribe({
       next: (response) => {
+        // Track successful login
+        this.analytics.trackLogin('email');
+
         console.log('[LoginComponent] Login success, response:', response);
         console.log('[LoginComponent] Token saved:', this.authService.getToken());
         console.log('[LoginComponent] Is authenticated:', this.authService.isAuthenticated());
         console.log('[LoginComponent] Navigating to:', this.returnUrl);
-        
+
         // Force navigation after authentication
         this.router.navigate([this.returnUrl], { replaceUrl: true }).then(
           (success) => {
@@ -87,6 +92,7 @@ export class LoginComponent {
       },
       error: (error) => {
         console.error('[LoginComponent] Login error:', error);
+        this.analytics.trackError('login_error', error.message || 'Login failed', 'login');
         this.errorMessage = error.message;
       }
     });

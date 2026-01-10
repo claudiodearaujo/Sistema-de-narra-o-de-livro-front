@@ -16,6 +16,7 @@ import { CharacterFormComponent } from '../character-form/character-form.compone
 import { VoicePreviewComponent } from '../voice-preview/voice-preview.component';
 import { SelectModule } from 'primeng/select';
 import { FormsModule } from '@angular/forms';
+import { AnalyticsService } from '../../../core/services/analytics.service';
 
 @Component({
     selector: 'app-character-list',
@@ -48,7 +49,8 @@ export class CharacterListComponent implements OnInit {
         private bookService: BookService,
         private dialogService: DialogService,
         private messageService: MessageService,
-        private confirmationService: ConfirmationService
+        private confirmationService: ConfirmationService,
+        private analytics: AnalyticsService
     ) { }
 
     ngOnInit(): void {
@@ -97,30 +99,25 @@ export class CharacterListComponent implements OnInit {
 
     loadCharacters() {
         if (this.bookId) {
-            console.log('Loading characters for book:', this.bookId);
+            this.analytics.trackCharactersView(this.bookId);
             this.characterService.getByBookId(this.bookId).subscribe({
                 next: (data) => {
-                    console.log('Characters loaded:', data);
-                    console.log('First character voice data:', data[0]?.voice);
-                    console.log('First character voiceId:', data[0]?.voiceId);
                     this.characters = data;
                 },
                 error: (error) => {
                     console.error('Error loading characters:', error);
+                    this.analytics.trackError('characters_load_error', error.message || 'Failed to load characters', 'character-list');
                     this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Erro ao carregar personagens.' });
                 }
             });
         } else {
-            console.log('Loading all characters (global list)');
             this.characterService.getAll().subscribe({
                 next: (data) => {
-                    console.log('All characters loaded:', data);
-                    console.log('First character voice data:', data[0]?.voice);
-                    console.log('First character voiceId:', data[0]?.voiceId);
                     this.characters = data;
                 },
                 error: (error) => {
                     console.error('Error loading all characters:', error);
+                    this.analytics.trackError('characters_load_error', error.message || 'Failed to load all characters', 'character-list');
                     this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Erro ao carregar todos os personagens.' });
                 }
             });
@@ -186,11 +183,18 @@ export class CharacterListComponent implements OnInit {
             accept: () => {
                 this.characterService.delete(character.id).subscribe({
                     next: () => {
+                        this.analytics.trackEvent('delete_character', {
+                            book_id: this.bookId,
+                            character_id: character.id,
+                            character_name: character.name,
+                            content_type: 'character'
+                        });
                         this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Personagem excluído' });
                         this.loadCharacters();
                     },
                     error: (error) => {
                         console.error('Error deleting character:', error);
+                        this.analytics.trackError('character_delete_error', error.message || 'Failed to delete character', 'character-list');
                         this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Erro ao excluir personagem.' });
                     }
                 });

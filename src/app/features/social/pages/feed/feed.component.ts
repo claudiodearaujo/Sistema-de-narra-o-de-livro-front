@@ -21,6 +21,7 @@ import { AuthService } from '../../../../core/auth/services/auth.service';
 import { StoryBarComponent } from '../../components/story-bar/story-bar.component';
 import { StoryViewerComponent } from '../../components/story-viewer/story-viewer.component';
 import { StoryCreatorComponent } from '../../components/story-creator/story-creator.component';
+import { AnalyticsService } from '../../../../core/services/analytics.service';
 
 /**
  * Feed Component
@@ -58,6 +59,7 @@ export class FeedComponent implements OnInit, OnDestroy {
   private readonly postService = inject(PostService);
   private readonly messageService = inject(MessageService);
   private readonly authService = inject(AuthService);
+  private readonly analytics = inject(AnalyticsService);
 
   // State signals
   posts = signal<Post[]>([]);
@@ -83,6 +85,7 @@ export class FeedComponent implements OnInit, OnDestroy {
   currentUser = computed(() => this.authService.currentUser());
 
   ngOnInit(): void {
+    this.analytics.trackPageView('Social Feed', '/social/feed');
     this.loadPosts();
   }
 
@@ -173,6 +176,9 @@ export class FeedComponent implements OnInit, OnDestroy {
         post.isLiked = response.liked;
         post.likeCount = response.likeCount;
         this.posts.update(posts => [...posts]);
+        if (response.liked) {
+          this.analytics.trackLike('post', post.id);
+        }
       },
       error: (err) => {
         console.error('[FeedComponent] Error toggling like:', err);
@@ -200,6 +206,12 @@ export class FeedComponent implements OnInit, OnDestroy {
    * Handle new post created
    */
   onPostCreated(post: Post): void {
+    // Track post creation
+    this.analytics.trackEvent('create_post', {
+      post_id: post.id,
+      content_type: 'post',
+      has_media: post.mediaUrl ? true : false
+    });
     // Add new post to the beginning of the feed
     this.posts.update(posts => [post, ...posts]);
   }
