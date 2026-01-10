@@ -9,6 +9,7 @@ import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { BookService } from '../../../services/book.service';
 import { Book } from '../../../models/book.model';
+import { AnalyticsService } from '../../../core/services/analytics.service';
 
 @Component({
     selector: 'app-book-form',
@@ -37,7 +38,8 @@ export class BookFormComponent implements OnInit {
         private bookService: BookService,
         private route: ActivatedRoute,
         private router: Router,
-        private messageService: MessageService
+        private messageService: MessageService,
+        private analytics: AnalyticsService
     ) {
         this.bookForm = this.fb.group({
             title: ['', [Validators.required, Validators.minLength(3)]],
@@ -98,7 +100,14 @@ export class BookFormComponent implements OnInit {
             : this.bookService.create(formValue);
 
         operation.subscribe({
-            next: () => {
+            next: (book: Book) => {
+                // Track analytics
+                if (this.isEditMode && this.bookId) {
+                    this.analytics.trackBookEdit(this.bookId, formValue.title);
+                } else {
+                    this.analytics.trackBookCreate(book.id, book.title);
+                }
+
                 this.messageService.add({
                     severity: 'success',
                     summary: 'Sucesso',
@@ -110,6 +119,11 @@ export class BookFormComponent implements OnInit {
             },
             error: (error) => {
                 console.error('Error saving book:', error);
+                this.analytics.trackError(
+                    this.isEditMode ? 'book_edit_error' : 'book_create_error',
+                    error.message || 'Failed to save book',
+                    'book-form'
+                );
                 this.messageService.add({
                     severity: 'error',
                     summary: 'Erro',
