@@ -11,6 +11,7 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { BookService } from '../../../services/book.service';
 import { Book, BooksResponse } from '../../../models/book.model';
 import { take } from 'rxjs';
+import { AnalyticsService } from '../../../core/services/analytics.service';
 
 @Component({
     selector: 'app-book-list',
@@ -45,10 +46,12 @@ export class BookListComponent implements OnInit {
         private bookService: BookService,
         private router: Router,
         private confirmationService: ConfirmationService,
-        private messageService: MessageService
+        private messageService: MessageService,
+        private analytics: AnalyticsService
     ) { }
 
     ngOnInit() {
+        this.analytics.trackPageView('Book List', '/writer/books');
         this.loadBooks();
     }
 
@@ -103,14 +106,15 @@ export class BookListComponent implements OnInit {
         this.router.navigate(['/writer/books', id, 'edit']);
     }
 
-    deleteBook(id: string) {
+    deleteBook(book: Book) {
         this.confirmationService.confirm({
             message: 'Tem certeza que deseja excluir este livro?',
             header: 'Confirmação',
             icon: 'pi pi-exclamation-triangle',
             accept: () => {
-                this.bookService.delete(id).subscribe({
+                this.bookService.delete(book.id).subscribe({
                     next: () => {
+                        this.analytics.trackBookDelete(book.id, book.title);
                         this.messageService.add({
                             severity: 'success',
                             summary: 'Sucesso',
@@ -120,6 +124,7 @@ export class BookListComponent implements OnInit {
                     },
                     error: (error) => {
                         console.error('Error deleting book:', error);
+                        this.analytics.trackError('book_delete_error', error.message || 'Failed to delete book', 'book-list');
                         this.messageService.add({
                             severity: 'error',
                             summary: 'Erro',
