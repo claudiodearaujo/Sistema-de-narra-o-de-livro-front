@@ -5,6 +5,7 @@ export * from './comment.service';
 export * from './custom-voice.service';
 export * from './follow.service';
 export * from './group.service';
+export * from './image-optimization.service';
 export * from './like.service';
 export * from './livra.service';
 export * from './message.service';
