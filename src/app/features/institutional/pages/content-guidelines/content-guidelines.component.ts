@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { SeoService } from '../../../../core/services/seo.service';
+import { StructuredDataService } from '../../../../core/services/structured-data.service';
 
 @Component({
   selector: 'app-content-guidelines',
@@ -9,7 +11,22 @@ import { RouterModule } from '@angular/router';
   templateUrl: './content-guidelines.component.html',
   styleUrl: './content-guidelines.component.css'
 })
-export class ContentGuidelinesComponent {
+export class ContentGuidelinesComponent implements OnInit {
+  private seoService = inject(SeoService);
+  private structuredDataService = inject(StructuredDataService);
+
+  ngOnInit(): void {
+    this.seoService.setInstitutionalPage(
+      'Diretrizes de Conteúdo',
+      'Entenda o que pode e não pode ser publicado na LIVRIA. Diretrizes claras para manter uma comunidade saudável e criativa.'
+    );
+
+    this.structuredDataService.setBreadcrumbSchema([
+      { name: 'Home', url: 'https://livria.com.br/' },
+      { name: 'Diretrizes de Conteúdo', url: 'https://livria.com.br/institutional/content-guidelines' }
+    ]);
+  }
+
   lastUpdated = '02 de Janeiro de 2026';
   
   allowed = [

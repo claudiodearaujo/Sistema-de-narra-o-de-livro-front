@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { SeoService } from '../../../../core/services/seo.service';
+import { StructuredDataService } from '../../../../core/services/structured-data.service';
 
 @Component({
   selector: 'app-publication',
@@ -9,7 +11,21 @@ import { RouterModule } from '@angular/router';
   templateUrl: './publication.component.html',
   styleUrl: './publication.component.css'
 })
-export class PublicationComponent {
+export class PublicationComponent implements OnInit {
+  private seoService = inject(SeoService);
+  private structuredDataService = inject(StructuredDataService);
+
+  ngOnInit(): void {
+    this.seoService.setInstitutionalPage(
+      'Publicação e Monetização',
+      'Descubra como monetizar suas histórias na LIVRIA. Apoio de leitores, conteúdo premium, vendas diretas e parcerias editoriais.'
+    );
+
+    this.structuredDataService.setBreadcrumbSchema([
+      { name: 'Home', url: 'https://livria.com.br/' },
+      { name: 'Publicação e Monetização', url: 'https://livria.com.br/institutional/publication' }
+    ]);
+  }
   monetizationMethods = [
     {
       icon: 'pi-heart',

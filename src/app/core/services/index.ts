@@ -22,4 +22,5 @@ export * from './story.service';
 export * from './structured-data.service';
 export * from './subscription.service';
 export * from './voice.service';
+export * from './web-vitals.service';
 export * from './websocket.service';
