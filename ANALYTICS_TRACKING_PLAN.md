@@ -425,6 +425,13 @@
 - Taxa de erro por tipo
 - Páginas com maior taxa de erro
 
+### Métricas de Core Web Vitals ✅ (Implementado)
+- **LCP** (Largest Contentful Paint) - Meta: < 2.5s
+- **FID** (First Input Delay) - Meta: < 100ms
+- **CLS** (Cumulative Layout Shift) - Meta: < 0.1
+- **TTFB** (Time to First Byte) - Meta: < 600ms
+- **FCP** (First Contentful Paint) - Meta: < 1.8s
+
 ---
 
 ## 🛠️ Implementação Técnica
@@ -466,6 +473,45 @@ Implementação de rastreamento na página de detalhes do livro:
 - ✅ `tab_switch` - Mudança de abas
 - ✅ `error` - Erros ao carregar livro
 
+#### 4. `/src/app/core/services/web-vitals.service.ts` ✅ (Novo)
+Monitoramento de Core Web Vitals integrado ao GA4:
+
+**Métricas rastreadas**:
+- ✅ `web_vitals` (LCP) - Largest Contentful Paint
+- ✅ `web_vitals` (FID) - First Input Delay
+- ✅ `web_vitals` (CLS) - Cumulative Layout Shift
+- ✅ `web_vitals` (TTFB) - Time to First Byte
+- ✅ `web_vitals` (FCP) - First Contentful Paint
+
+#### 5. `/src/app/core/services/seo.service.ts` ✅ (Novo)
+Gerenciamento dinâmico de meta tags para SEO:
+
+**Funcionalidades**:
+- ✅ Meta tags dinâmicas (title, description, keywords)
+- ✅ Open Graph tags para redes sociais
+- ✅ Twitter Cards
+- ✅ Canonical URLs automáticas
+
+#### 6. `/src/app/core/services/structured-data.service.ts` ✅ (Novo)
+JSON-LD Structured Data para Rich Snippets:
+
+**Schemas implementados**:
+- ✅ Organization schema
+- ✅ Website schema
+- ✅ Book schema
+- ✅ Person schema
+- ✅ Article schema
+- ✅ BreadcrumbList schema
+- ✅ FAQ schema
+
+#### 7. `/src/app/core/services/image-optimization.service.ts` ✅ (Novo)
+Otimização de imagens para performance:
+
+**Funcionalidades**:
+- ✅ Detecção de suporte WebP/AVIF
+- ✅ Geração de srcset para imagens responsivas
+- ✅ Placeholder generation
+
 ---
 
 ## 📋 Checklist de Implementação
@@ -495,6 +541,16 @@ Implementação de rastreamento na página de detalhes do livro:
 - [ ] Criar dashboards customizados
 - [ ] Configurar alertas para métricas críticas
 - [ ] Implementar A/B testing com GA4
+
+### Fase 5: SEO e Performance ✅ (Implementado em Janeiro 2026)
+- [x] Criar WebVitalsService para Core Web Vitals (LCP, FID, CLS, TTFB, FCP)
+- [x] Integrar métricas de performance com GA4
+- [x] Criar SeoService para meta tags dinâmicas
+- [x] Criar StructuredDataService para JSON-LD schemas
+- [x] Adicionar preconnect/DNS prefetch para recursos externos
+- [x] Implementar lazy loading de imagens (LazyImageDirective)
+- [x] Criar ImageOptimizationService (WebP/AVIF detection)
+- [x] Criar OptimizedImageComponent com suporte a WebP
 
 ---
 
@@ -631,6 +687,10 @@ Implementação de rastreamento na página de detalhes do livro:
 
 ---
 
-**Última atualização**: Janeiro 2026
-**Versão**: 1.0.0
-**Status**: Implementação Inicial Completa ✅
+**Última atualização**: 10 Janeiro 2026
+**Versão**: 1.1.0
+**Status**: Fase 1 + Fase 5 (SEO/Performance) Completas ✅
+
+### Changelog
+- **v1.1.0** (10/01/2026): Adicionada Fase 5 com SEO e Performance (WebVitals, SeoService, StructuredDataService, ImageOptimizationService)
+- **v1.0.0** (09/01/2026): Implementação inicial com AnalyticsService e tracking de livros
