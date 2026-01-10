@@ -1,3 +1,5 @@
+<p-toast position="top-right" />
+
 <div class="login-container">
   <div class="login-card">
     <div class="login-logo">
@@ -13,16 +15,20 @@
       <p-message severity="error" [text]="errorMessage" styleClass="w-full mb-4" />
     }
 
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit($event)" class="login-form" autocomplete="on">
       <div class="field">
         <label for="email">E-mail</label>
         <input
           pInputText
+          #emailInput
           id="email"
           type="email"
+          name="email"
           formControlName="email"
           placeholder="seu@email.com"
           class="w-full"
+          autocomplete="email"
+          (input)="onInputChange('email', $event)"
           [class.ng-invalid]="f['email'].invalid && f['email'].touched"
         />
         @if (f['email'].invalid && f['email'].touched) {
@@ -38,14 +44,18 @@
 
       <div class="field">
         <label for="password">Senha</label>
-        <p-password
+        <input
+          pInputText
+          #passwordInput
           id="password"
+          type="password"
+          name="password"
           formControlName="password"
-          [feedback]="false"
-          [toggleMask]="true"
           placeholder="Sua senha"
-          styleClass="w-full"
-          inputStyleClass="w-full"
+          class="w-full password-input"
+          autocomplete="current-password"
+          (input)="onInputChange('password', $event)"
+          [class.ng-invalid]="f['password'].invalid && f['password'].touched"
         />
         @if (f['password'].invalid && f['password'].touched) {
           <small class="p-error">
