@@ -10,3 +10,6 @@ export * from './book-update-card/book-update-card.component';
 export * from './chapter-preview-card/chapter-preview-card.component';
 export * from './audio-preview-player/audio-preview-player.component';
 export * from './trending-section/trending-section.component';
+
+// Image Optimization
+export * from './optimized-image/optimized-image.component';

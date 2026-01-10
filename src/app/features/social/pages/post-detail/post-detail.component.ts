@@ -14,6 +14,8 @@ import { PostService } from '../../../../core/services/post.service';
 import { Post } from '../../../../core/models/post.model';
 import { CommentService, Comment } from '../../../../core/services/comment.service';
 import { LikeService } from '../../../../core/services/like.service';
+import { SeoService } from '../../../../core/services/seo.service';
+import { StructuredDataService } from '../../../../core/services/structured-data.service';
 
 @Component({
   selector: 'app-post-detail',
@@ -36,6 +38,8 @@ export class PostDetailComponent implements OnInit, OnDestroy {
   private readonly postService = inject(PostService);
   private readonly commentService = inject(CommentService);
   private readonly likeService = inject(LikeService);
+  private readonly seoService = inject(SeoService);
+  private readonly structuredDataService = inject(StructuredDataService);
   private readonly destroy$ = new Subject<void>();
 
   loading = signal(true);
@@ -65,6 +69,11 @@ export class PostDetailComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.destroy$.next();
     this.destroy$.complete();
+
+    // Clean up SEO schemas
+    this.structuredDataService.removeJsonLd('article-schema');
+    this.structuredDataService.removeJsonLd('breadcrumb-schema');
+    this.seoService.resetToDefaults();
   }
 
   loadPost(postId: string) {
@@ -78,6 +87,9 @@ export class PostDetailComponent implements OnInit, OnDestroy {
         this.post.set(post);
         this.comments.set(comments.comments);
         this.loading.set(false);
+
+        // Configure SEO for post
+        this.configurePostSeo(post);
       },
       error: (err) => {
         console.error('Failed to load post:', err);
@@ -257,5 +269,37 @@ export class PostDetailComponent implements OnInit, OnDestroy {
 
   goBack() {
     history.back();
+  }
+
+  private configurePostSeo(post: Post): void {
+    // Get a truncated version of the content for description
+    const description = post.content.length > 160
+      ? post.content.substring(0, 157) + '...'
+      : post.content;
+
+    // Configure SEO meta tags
+    this.seoService.updateSeoTags({
+      title: `Post de ${post.user.name} - LIVRIA`,
+      description: description,
+      image: post.mediaUrl || undefined,
+      type: 'article'
+    });
+
+    // Configure Article schema for structured data
+    this.structuredDataService.setArticleSchema({
+      headline: `Post de ${post.user.name}`,
+      description: description,
+      author: post.user.name,
+      datePublished: post.createdAt ? new Date(post.createdAt).toISOString() : new Date().toISOString(),
+      image: post.mediaUrl
+    });
+
+    // Configure breadcrumb
+    this.structuredDataService.setBreadcrumbSchema([
+      { name: 'Home', url: 'https://livria.com.br/' },
+      { name: 'Comunidade', url: 'https://livria.com.br/social' },
+      { name: post.user.name, url: `https://livria.com.br/social/profile/${post.user.username || post.user.id}` },
+      { name: 'Post', url: `https://livria.com.br/social/posts/${post.id}` }
+    ]);
   }
 }

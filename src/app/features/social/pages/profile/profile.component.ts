@@ -15,6 +15,8 @@ import { FollowService, FollowResponse } from '../../../../core/services/follow.
 import { AuthService } from '../../../../core/auth/services/auth.service';
 import { AchievementService } from '../../../../core/services/achievement.service';
 import { UserAchievement } from '../../../../core/models/achievement.model';
+import { SeoService } from '../../../../core/services/seo.service';
+import { StructuredDataService } from '../../../../core/services/structured-data.service';
 
 @Component({
   selector: 'app-profile',
@@ -39,6 +41,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
   private readonly followService = inject(FollowService);
   private readonly authService = inject(AuthService);
   private readonly achievementService = inject(AchievementService);
+  private readonly seoService = inject(SeoService);
+  private readonly structuredDataService = inject(StructuredDataService);
   private readonly destroy$ = new Subject<void>();
 
   loading = signal(true);
@@ -122,7 +126,10 @@ export class ProfileComponent implements OnInit, OnDestroy {
         next: (profile) => {
           this.profile.set(profile);
           this.loading.set(false);
-          
+
+          // Configure SEO for profile
+          this.configureProfileSeo(profile);
+
           // Load posts for the profile
           if (profile.username) {
             this.profileService.getUserPosts(profile.username, 1, 10).pipe(takeUntil(this.destroy$)).subscribe({
@@ -132,7 +139,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
               }
             });
           }
-          
+
           // Load achievements
           this.loadAchievements(profile.id);
         },
@@ -148,6 +155,11 @@ export class ProfileComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.destroy$.next();
     this.destroy$.complete();
+
+    // Clean up SEO schemas
+    this.structuredDataService.removeJsonLd('person-schema');
+    this.structuredDataService.removeJsonLd('breadcrumb-schema');
+    this.seoService.resetToDefaults();
   }
 
   loadProfile(username: string) {
@@ -166,7 +178,10 @@ export class ProfileComponent implements OnInit, OnDestroy {
         this.posts.set(posts.posts);
         this.hasMorePosts.set(posts.pagination.hasMore);
         this.loading.set(false);
-        
+
+        // Configure SEO for profile
+        this.configureProfileSeo(profile);
+
         // Load achievements for profile
         this.loadAchievements(profile.id);
       },
@@ -342,5 +357,29 @@ export class ProfileComponent implements OnInit, OnDestroy {
         console.error('Failed to load achievements:', err);
       }
     });
+  }
+
+  private configureProfileSeo(profile: UserProfile): void {
+    // Configure SEO meta tags
+    this.seoService.setAuthorPage({
+      name: profile.name,
+      bio: profile.bio || `Perfil de ${profile.name} na LIVRIA`,
+      avatar: profile.avatar || undefined
+    });
+
+    // Configure Person schema for structured data
+    this.structuredDataService.setPersonSchema({
+      name: profile.name,
+      description: profile.bio || `Autor na plataforma LIVRIA`,
+      image: profile.avatar || undefined,
+      url: profile.username ? `https://livria.com.br/social/profile/${profile.username}` : undefined
+    });
+
+    // Configure breadcrumb
+    this.structuredDataService.setBreadcrumbSchema([
+      { name: 'Home', url: 'https://livria.com.br/' },
+      { name: 'Comunidade', url: 'https://livria.com.br/social' },
+      { name: profile.name, url: profile.username ? `https://livria.com.br/social/profile/${profile.username}` : 'https://livria.com.br/social' }
+    ]);
   }
 }

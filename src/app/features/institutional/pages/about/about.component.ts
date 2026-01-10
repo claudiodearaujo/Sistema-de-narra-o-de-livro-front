@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { SeoService } from '../../../../core/services/seo.service';
+import { StructuredDataService } from '../../../../core/services/structured-data.service';
 
 @Component({
   selector: 'app-about',
@@ -9,7 +11,21 @@ import { RouterModule } from '@angular/router';
   templateUrl: './about.component.html',
   styleUrl: './about.component.css'
 })
-export class AboutComponent {
+export class AboutComponent implements OnInit {
+  private seoService = inject(SeoService);
+  private structuredDataService = inject(StructuredDataService);
+
+  ngOnInit(): void {
+    this.seoService.setInstitutionalPage(
+      'Sobre Nós',
+      'Conheça a LIVRIA, a rede social para escritores e leitores. Nossa missão é dar voz a histórias incríveis através de tecnologia e comunidade.'
+    );
+
+    this.structuredDataService.setBreadcrumbSchema([
+      { name: 'Home', url: 'https://livria.com.br/' },
+      { name: 'Sobre Nós', url: 'https://livria.com.br/institutional/about' }
+    ]);
+  }
   features = [
     {
       icon: 'pi-book',

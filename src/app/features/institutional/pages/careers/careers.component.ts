@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { SeoService } from '../../../../core/services/seo.service';
+import { StructuredDataService } from '../../../../core/services/structured-data.service';
 
 @Component({
   selector: 'app-careers',
@@ -9,7 +11,21 @@ import { RouterModule } from '@angular/router';
   templateUrl: './careers.component.html',
   styleUrl: './careers.component.css'
 })
-export class CareersComponent {
+export class CareersComponent implements OnInit {
+  private seoService = inject(SeoService);
+  private structuredDataService = inject(StructuredDataService);
+
+  ngOnInit(): void {
+    this.seoService.setInstitutionalPage(
+      'Trabalhe Conosco',
+      'Faça parte da equipe LIVRIA. Vagas em engenharia, produto, conteúdo e marketing. Venha transformar a literatura com tecnologia.'
+    );
+
+    this.structuredDataService.setBreadcrumbSchema([
+      { name: 'Home', url: 'https://livria.com.br/' },
+      { name: 'Trabalhe Conosco', url: 'https://livria.com.br/institutional/careers' }
+    ]);
+  }
   values = [
     { icon: 'pi-book', title: 'Paixão por Literatura' },
     { icon: 'pi-code', title: 'Inovação Tecnológica' },

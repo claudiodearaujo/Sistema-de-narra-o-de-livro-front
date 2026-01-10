@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { SeoService } from '../../../../core/services/seo.service';
+import { StructuredDataService } from '../../../../core/services/structured-data.service';
 
 @Component({
   selector: 'app-transparency',
@@ -9,7 +11,21 @@ import { RouterModule } from '@angular/router';
   templateUrl: './transparency.component.html',
   styleUrl: './transparency.component.css'
 })
-export class TransparencyComponent {
+export class TransparencyComponent implements OnInit {
+  private seoService = inject(SeoService);
+  private structuredDataService = inject(StructuredDataService);
+
+  ngOnInit(): void {
+    this.seoService.setInstitutionalPage(
+      'Transparência e Valores',
+      'Conheça os valores que guiam a LIVRIA. Paixão pela literatura, comunidade, segurança, inclusão e respeito aos autores.'
+    );
+
+    this.structuredDataService.setBreadcrumbSchema([
+      { name: 'Home', url: 'https://livria.com.br/' },
+      { name: 'Transparência e Valores', url: 'https://livria.com.br/institutional/transparency' }
+    ]);
+  }
   values = [
     {
       icon: 'pi-heart',

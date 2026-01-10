@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { SeoService } from '../../../../core/services/seo.service';
+import { StructuredDataService } from '../../../../core/services/structured-data.service';
 
 @Component({
   selector: 'app-partners',
@@ -9,7 +11,21 @@ import { RouterModule } from '@angular/router';
   templateUrl: './partners.component.html',
   styleUrl: './partners.component.css'
 })
-export class PartnersComponent {
+export class PartnersComponent implements OnInit {
+  private seoService = inject(SeoService);
+  private structuredDataService = inject(StructuredDataService);
+
+  ngOnInit(): void {
+    this.seoService.setInstitutionalPage(
+      'Parcerias e Editoras',
+      'Conheça as parcerias editoriais da LIVRIA. Orientação para publicação, revisão de originais e conexão com editoras.'
+    );
+
+    this.structuredDataService.setBreadcrumbSchema([
+      { name: 'Home', url: 'https://livria.com.br/' },
+      { name: 'Parcerias e Editoras', url: 'https://livria.com.br/institutional/partners' }
+    ]);
+  }
   benefits = [
     'Orientação para publicação',
     'Revisão e preparação de originais',
