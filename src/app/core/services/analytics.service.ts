@@ -333,4 +333,198 @@ export class AnalyticsService {
       context: context
     });
   }
+
+  // ========================================
+  // PHASE 3: ADVANCED EVENTS
+  // ========================================
+
+  // --- SCROLL DEPTH TRACKING ---
+
+  private scrollThresholds = [25, 50, 75, 90, 100];
+  private trackedThresholds: Set<number> = new Set();
+
+  /**
+   * Track scroll depth on a page
+   * @param percentage Current scroll percentage (0-100)
+   * @param pagePath Current page path
+   */
+  trackScrollDepth(percentage: number, pagePath: string): void {
+    for (const threshold of this.scrollThresholds) {
+      if (percentage >= threshold && !this.trackedThresholds.has(threshold)) {
+        this.trackedThresholds.add(threshold);
+        this.trackEvent('scroll_depth', {
+          percent_scrolled: threshold,
+          page_path: pagePath
+        });
+      }
+    }
+  }
+
+  /**
+   * Reset scroll tracking (call on page change)
+   */
+  resetScrollTracking(): void {
+    this.trackedThresholds.clear();
+  }
+
+  // --- FORM TRACKING ---
+
+  /**
+   * Track form start (first interaction)
+   */
+  trackFormStart(formName: string, formId?: string): void {
+    this.trackEvent('form_start', {
+      form_name: formName,
+      form_id: formId
+    });
+  }
+
+  /**
+   * Track form submission
+   */
+  trackFormSubmit(formName: string, formId?: string, success: boolean = true): void {
+    this.trackEvent('form_submit', {
+      form_name: formName,
+      form_id: formId,
+      success: success
+    });
+  }
+
+  /**
+   * Track form abandonment
+   */
+  trackFormAbandon(formName: string, formId?: string, lastFieldInteracted?: string): void {
+    this.trackEvent('form_abandon', {
+      form_name: formName,
+      form_id: formId,
+      last_field: lastFieldInteracted
+    });
+  }
+
+  /**
+   * Track form field interaction
+   */
+  trackFormFieldFocus(formName: string, fieldName: string): void {
+    this.trackEvent('form_field_focus', {
+      form_name: formName,
+      field_name: fieldName
+    });
+  }
+
+  // --- CUSTOM USER DIMENSIONS ---
+
+  /**
+   * Set user properties/dimensions
+   */
+  setUserProperties(properties: { [key: string]: any }): void {
+    if (typeof gtag !== 'undefined') {
+      gtag('set', 'user_properties', properties);
+    }
+  }
+
+  /**
+   * Set user type dimension (free, premium, etc.)
+   */
+  setUserType(userType: 'free' | 'premium' | 'trial' | 'admin'): void {
+    this.setUserProperties({ user_type: userType });
+  }
+
+  /**
+   * Set user ID for cross-device tracking
+   */
+  setUserId(userId: string): void {
+    if (typeof gtag !== 'undefined') {
+      gtag('config', 'G-0VZYW339W8', { user_id: userId });
+    }
+  }
+
+  /**
+   * Set content creator status
+   */
+  setCreatorStatus(isCreator: boolean, booksCount: number = 0): void {
+    this.setUserProperties({
+      is_creator: isCreator,
+      books_count: booksCount
+    });
+  }
+
+  // --- CAMPAIGN/UTM TRACKING ---
+
+  /**
+   * Parse UTM parameters from URL and track campaign
+   */
+  trackCampaignFromUrl(): void {
+    const urlParams = new URLSearchParams(window.location.search);
+    const utmSource = urlParams.get('utm_source');
+    const utmMedium = urlParams.get('utm_medium');
+    const utmCampaign = urlParams.get('utm_campaign');
+    const utmTerm = urlParams.get('utm_term');
+    const utmContent = urlParams.get('utm_content');
+
+    if (utmSource || utmMedium || utmCampaign) {
+      this.trackEvent('campaign_hit', {
+        campaign_source: utmSource,
+        campaign_medium: utmMedium,
+        campaign_name: utmCampaign,
+        campaign_term: utmTerm,
+        campaign_content: utmContent
+      });
+
+      // Store in session for attribution
+      sessionStorage.setItem('utm_data', JSON.stringify({
+        source: utmSource,
+        medium: utmMedium,
+        campaign: utmCampaign,
+        term: utmTerm,
+        content: utmContent
+      }));
+    }
+  }
+
+  /**
+   * Get stored UTM data from session
+   */
+  getStoredUtmData(): { source?: string; medium?: string; campaign?: string; term?: string; content?: string } | null {
+    const data = sessionStorage.getItem('utm_data');
+    return data ? JSON.parse(data) : null;
+  }
+
+  /**
+   * Track conversion with campaign attribution
+   */
+  trackConversionWithAttribution(conversionName: string, value?: number): void {
+    const utmData = this.getStoredUtmData();
+    this.trackEvent(conversionName, {
+      value: value,
+      campaign_source: utmData?.source,
+      campaign_medium: utmData?.medium,
+      campaign_name: utmData?.campaign
+    });
+  }
+
+  // --- EXTERNAL LINK TRACKING ---
+
+  /**
+   * Track external link clicks
+   */
+  trackOutboundLink(url: string, linkText?: string): void {
+    this.trackEvent('click', {
+      link_url: url,
+      link_text: linkText,
+      outbound: true
+    });
+  }
+
+  // --- FILE DOWNLOAD TRACKING ---
+
+  /**
+   * Track file downloads
+   */
+  trackFileDownload(fileName: string, fileType: string, fileSize?: number): void {
+    this.trackEvent('file_download', {
+      file_name: fileName,
+      file_extension: fileType,
+      file_size: fileSize
+    });
+  }
 }
