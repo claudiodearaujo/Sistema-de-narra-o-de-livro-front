@@ -13,6 +13,7 @@ import {
   ProfileUpdate,
   ChangePassword
 } from '../models/user.model';
+import { AnalyticsService } from '../../services/analytics.service';
 
 const TOKEN_KEY = 'auth_token';
 const REFRESH_TOKEN_KEY = 'refresh_token';
@@ -40,7 +41,8 @@ export class AuthService {
 
   constructor(
     private http: HttpClient,
-    private router: Router
+    private router: Router,
+    private analytics: AnalyticsService
   ) {
     this.loadStoredUser();
   }
@@ -208,15 +210,32 @@ export class AuthService {
 
   private handleAuthSuccess(response: AuthResponse, rememberMe?: boolean): void {
     const storage = rememberMe ? localStorage : sessionStorage;
-    
+
     storage.setItem(TOKEN_KEY, response.accessToken);
     if (response.refreshToken) {
       storage.setItem(REFRESH_TOKEN_KEY, response.refreshToken);
     }
-    
+
     this.storeUser(response.user);
     this.currentUserSignal.set(response.user);
     this.authStateSubject.next(true);
+
+    // Set analytics user dimensions
+    this.setAnalyticsUserDimensions(response.user);
+  }
+
+  private setAnalyticsUserDimensions(user: User): void {
+    // Set user ID for cross-device tracking
+    this.analytics.setUserId(user.id);
+
+    // Set user type dimension
+    const userType = user.role === 'admin' ? 'admin' :
+                     (user as any).isPremium ? 'premium' : 'free';
+    this.analytics.setUserType(userType as any);
+
+    // Set creator status
+    const booksCount = (user as any).booksCount || 0;
+    this.analytics.setCreatorStatus(booksCount > 0, booksCount);
   }
 
   private storeUser(user: User): void {
@@ -231,6 +250,8 @@ export class AuthService {
         const user = JSON.parse(userJson) as User;
         this.currentUserSignal.set(user);
         this.authStateSubject.next(true);
+        // Set analytics dimensions for returning user
+        this.setAnalyticsUserDimensions(user);
       } catch {
         this.clearAuth();
       }

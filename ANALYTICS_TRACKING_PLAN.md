@@ -529,12 +529,12 @@ Otimização de imagens para performance:
 - [x] Adicionar tracking no feed social (feed, likes, posts)
 - [x] Implementar eventos de autenticação (login, signup)
 
-### Fase 3: Eventos Avançados
-- [ ] Implementar enhanced ecommerce (se houver monetização)
-- [ ] Adicionar custom dimensions por tipo de usuário
-- [ ] Implementar event tracking para campanhas
-- [ ] Adicionar rastreamento de scroll depth
-- [ ] Implementar tracking de formulários
+### Fase 3: Eventos Avançados ✅ (Implementado em Janeiro 2026)
+- [ ] Implementar enhanced ecommerce (se houver monetização) - *Pendente: aguardando definição de monetização*
+- [x] Adicionar custom dimensions por tipo de usuário (user_type, is_creator, books_count)
+- [x] Implementar event tracking para campanhas (UTM tracking)
+- [x] Adicionar rastreamento de scroll depth (ScrollTrackerDirective)
+- [x] Implementar tracking de formulários (FormTrackerDirective)
 
 ### Fase 4: Otimização
 - [ ] Configurar funis no GA4
@@ -688,10 +688,11 @@ Otimização de imagens para performance:
 ---
 
 **Última atualização**: 11 Janeiro 2026
-**Versão**: 1.3.0
-**Status**: Fase 1 + Fase 2 + Fase 5 (SEO/Performance) Completas ✅
+**Versão**: 1.4.0
+**Status**: Fase 1 + Fase 2 + Fase 3 + Fase 5 Completas ✅
 
 ### Changelog
+- **v1.4.0** (11/01/2026): Concluída Fase 3 - Eventos Avançados (scroll depth, form tracking, UTM campaigns, user dimensions)
 - **v1.3.0** (11/01/2026): Concluída Fase 2 - Eventos de TTS/falas (speech-form, speech-list, narration-control, bulk-import)
 - **v1.2.0** (10/01/2026): Concluída Fase 2 - Tracking em livros, capítulos, personagens, feed social e autenticação
 - **v1.1.0** (10/01/2026): Adicionada Fase 5 com SEO e Performance (WebVitals, SeoService, StructuredDataService, ImageOptimizationService)
