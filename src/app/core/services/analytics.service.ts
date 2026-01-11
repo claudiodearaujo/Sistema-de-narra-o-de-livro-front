@@ -527,4 +527,159 @@ export class AnalyticsService {
       file_size: fileSize
     });
   }
+
+  // ========================================
+  // PHASE 4: FUNNEL & CONVERSION TRACKING
+  // ========================================
+
+  // --- FUNNEL STEP TRACKING ---
+
+  /**
+   * Track funnel step progression
+   * Use this to track user progression through multi-step processes
+   */
+  trackFunnelStep(funnelName: string, stepNumber: number, stepName: string, metadata?: Record<string, any>): void {
+    this.trackEvent('funnel_step', {
+      funnel_name: funnelName,
+      step_number: stepNumber,
+      step_name: stepName,
+      ...metadata
+    });
+  }
+
+  /**
+   * Track funnel completion
+   */
+  trackFunnelComplete(funnelName: string, totalSteps: number, metadata?: Record<string, any>): void {
+    this.trackEvent('funnel_complete', {
+      funnel_name: funnelName,
+      total_steps: totalSteps,
+      ...metadata
+    });
+  }
+
+  /**
+   * Track funnel abandonment
+   */
+  trackFunnelAbandon(funnelName: string, lastStep: number, lastStepName: string): void {
+    this.trackEvent('funnel_abandon', {
+      funnel_name: funnelName,
+      last_step: lastStep,
+      last_step_name: lastStepName
+    });
+  }
+
+  // --- PRE-DEFINED FUNNELS ---
+
+  /**
+   * User Registration Funnel
+   */
+  trackRegistrationFunnel(step: 'start' | 'email_entered' | 'password_entered' | 'profile_completed' | 'verified'): void {
+    const steps: Record<string, number> = {
+      start: 1,
+      email_entered: 2,
+      password_entered: 3,
+      profile_completed: 4,
+      verified: 5
+    };
+
+    this.trackFunnelStep('user_registration', steps[step], step);
+
+    if (step === 'verified') {
+      this.trackFunnelComplete('user_registration', 5);
+    }
+  }
+
+  /**
+   * Book Creation Funnel
+   */
+  trackBookCreationFunnel(step: 'start' | 'title_entered' | 'details_filled' | 'cover_uploaded' | 'published'): void {
+    const steps: Record<string, number> = {
+      start: 1,
+      title_entered: 2,
+      details_filled: 3,
+      cover_uploaded: 4,
+      published: 5
+    };
+
+    this.trackFunnelStep('book_creation', steps[step], step);
+
+    if (step === 'published') {
+      this.trackFunnelComplete('book_creation', 5);
+    }
+  }
+
+  /**
+   * Chapter Narration Funnel
+   */
+  trackNarrationFunnel(step: 'chapter_selected' | 'speeches_added' | 'characters_assigned' | 'tts_generated' | 'audio_reviewed', bookId?: string): void {
+    const steps: Record<string, number> = {
+      chapter_selected: 1,
+      speeches_added: 2,
+      characters_assigned: 3,
+      tts_generated: 4,
+      audio_reviewed: 5
+    };
+
+    this.trackFunnelStep('narration_creation', steps[step], step, { book_id: bookId });
+
+    if (step === 'audio_reviewed') {
+      this.trackFunnelComplete('narration_creation', 5, { book_id: bookId });
+    }
+  }
+
+  // --- CONVERSION GOALS ---
+
+  /**
+   * Track primary conversion: First book created
+   */
+  trackFirstBookConversion(bookId: string): void {
+    this.trackEvent('conversion_first_book', {
+      book_id: bookId,
+      conversion_type: 'primary'
+    });
+  }
+
+  /**
+   * Track secondary conversion: First narration generated
+   */
+  trackFirstNarrationConversion(bookId: string, chapterId: string): void {
+    this.trackEvent('conversion_first_narration', {
+      book_id: bookId,
+      chapter_id: chapterId,
+      conversion_type: 'secondary'
+    });
+  }
+
+  /**
+   * Track premium conversion (if applicable)
+   */
+  trackPremiumConversion(planType: string, value?: number): void {
+    this.trackEvent('conversion_premium', {
+      plan_type: planType,
+      value: value,
+      conversion_type: 'monetization'
+    });
+  }
+
+  // --- RETENTION TRACKING ---
+
+  /**
+   * Track user return after X days
+   */
+  trackUserReturn(daysSinceLastVisit: number): void {
+    this.trackEvent('user_return', {
+      days_since_last_visit: daysSinceLastVisit
+    });
+  }
+
+  /**
+   * Track feature re-engagement
+   */
+  trackFeatureReengagement(featureName: string, usageCount: number): void {
+    this.trackEvent('feature_reengagement', {
+      feature_name: featureName,
+      usage_count: usageCount
+    });
+  }
 }
