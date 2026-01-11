@@ -163,6 +163,9 @@ export class LoginComponent implements OnInit, AfterViewInit {
         // Track successful login
         this.analytics.trackLogin('email');
 
+        // Track successful login
+        this.analytics.trackLogin('email');
+
         console.log('[LoginComponent] Login success, response:', response);
         console.log('[LoginComponent] Token saved:', this.authService.getToken());
         console.log('[LoginComponent] Is authenticated:', this.authService.isAuthenticated());
