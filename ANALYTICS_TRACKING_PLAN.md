@@ -525,7 +525,7 @@ Otimização de imagens para performance:
 - [x] Adicionar tracking em outras páginas de livros (book-form, book-list)
 - [x] Implementar eventos de capítulos (chapter-form, chapter-list)
 - [x] Implementar eventos de personagens (character-form, character-list)
-- [ ] Implementar eventos de falas/TTS (pendente)
+- [x] Implementar eventos de falas/TTS (speech-form, speech-list, narration-control, bulk-import)
 - [x] Adicionar tracking no feed social (feed, likes, posts)
 - [x] Implementar eventos de autenticação (login, signup)
 
@@ -687,11 +687,12 @@ Otimização de imagens para performance:
 
 ---
 
-**Última atualização**: 10 Janeiro 2026
-**Versão**: 1.2.0
+**Última atualização**: 11 Janeiro 2026
+**Versão**: 1.3.0
 **Status**: Fase 1 + Fase 2 + Fase 5 (SEO/Performance) Completas ✅
 
 ### Changelog
+- **v1.3.0** (11/01/2026): Concluída Fase 2 - Eventos de TTS/falas (speech-form, speech-list, narration-control, bulk-import)
 - **v1.2.0** (10/01/2026): Concluída Fase 2 - Tracking em livros, capítulos, personagens, feed social e autenticação
 - **v1.1.0** (10/01/2026): Adicionada Fase 5 com SEO e Performance (WebVitals, SeoService, StructuredDataService, ImageOptimizationService)
 - **v1.0.0** (09/01/2026): Implementação inicial com AnalyticsService e tracking de livros

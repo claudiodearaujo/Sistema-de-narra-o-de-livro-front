@@ -12,6 +12,7 @@ import { SelectModule } from 'primeng/select';
 import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { MessageService } from 'primeng/api';
 import { SsmEditorComponent } from '../ssml-editor/ssml-editor.component';
+import { AnalyticsService } from '../../../core/services/analytics.service';
 
 @Component({
     selector: 'app-speech-form',
@@ -57,7 +58,8 @@ export class SpeechFormComponent implements OnInit {
         private speechService: SpeechService,
         private characterService: CharacterService,
         private ssmlService: SsmlService,
-        private messageService: MessageService
+        private messageService: MessageService,
+        private analytics: AnalyticsService
     ) {
         this.form = this.fb.group({
             characterId: ['', Validators.required],
@@ -297,11 +299,18 @@ export class SpeechFormComponent implements OnInit {
             this.speechService.update(this.speechId, formValue).subscribe({
                 next: (updatedSpeech) => {
                     this.loading = false;
+                    this.analytics.trackEvent('edit_speech', {
+                        speech_id: this.speechId,
+                        chapter_id: this.chapterId,
+                        character_id: formValue.characterId,
+                        content_type: 'speech'
+                    });
                     this.ref.close(updatedSpeech);
                 },
                 error: (error) => {
                     this.loading = false;
                     console.error('Error updating speech:', error);
+                    this.analytics.trackError('speech_edit_error', error.message || 'Failed to update speech', 'speech-form');
                     this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Erro ao atualizar fala.' });
                 }
             });
@@ -309,11 +318,14 @@ export class SpeechFormComponent implements OnInit {
             this.speechService.create(this.chapterId, formValue).subscribe({
                 next: (newSpeech) => {
                     this.loading = false;
+                    const bookId = this.config.data?.bookId || '';
+                    this.analytics.trackSpeechCreate(bookId, this.chapterId, formValue.characterId);
                     this.ref.close(newSpeech);
                 },
                 error: (error) => {
                     this.loading = false;
                     console.error('Error creating speech:', error);
+                    this.analytics.trackError('speech_create_error', error.message || 'Failed to create speech', 'speech-form');
                     this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Erro ao criar fala.' });
                 }
             });
