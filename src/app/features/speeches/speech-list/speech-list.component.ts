@@ -13,6 +13,7 @@ import { TooltipModule } from 'primeng/tooltip';
 
 import { SpeechFormComponent } from '../speech-form/speech-form.component';
 import { BulkImportComponent } from '../bulk-import/bulk-import.component';
+import { AnalyticsService } from '../../../core/services/analytics.service';
 
 @Component({
     selector: 'app-speech-list',
@@ -43,7 +44,8 @@ export class SpeechListComponent implements OnInit {
         private speechService: SpeechService,
         private dialogService: DialogService,
         private messageService: MessageService,
-        private confirmationService: ConfirmationService
+        private confirmationService: ConfirmationService,
+        private analytics: AnalyticsService
     ) { }
 
     ngOnInit(): void {
@@ -155,11 +157,18 @@ export class SpeechListComponent implements OnInit {
             accept: () => {
                 this.speechService.delete(speech.id).subscribe({
                     next: () => {
+                        this.analytics.trackEvent('delete_speech', {
+                            speech_id: speech.id,
+                            chapter_id: this.chapterId,
+                            character_id: speech.characterId,
+                            content_type: 'speech'
+                        });
                         this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Fala excluída' });
                         this.loadSpeeches();
                     },
                     error: (error) => {
                         console.error('Error deleting speech:', error);
+                        this.analytics.trackError('speech_delete_error', error.message || 'Failed to delete speech', 'speech-list');
                         this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Erro ao excluir fala.' });
                     }
                 });

@@ -10,6 +10,7 @@ import { SelectModule } from 'primeng/select';
 import { TextareaModule } from 'primeng/textarea';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { MessageService } from 'primeng/api';
+import { AnalyticsService } from '../../../core/services/analytics.service';
 
 @Component({
     selector: 'app-bulk-import',
@@ -38,7 +39,8 @@ export class BulkImportComponent implements OnInit {
         public config: DynamicDialogConfig,
         private speechService: SpeechService,
         private characterService: CharacterService,
-        private messageService: MessageService
+        private messageService: MessageService,
+        private analytics: AnalyticsService
     ) {
         this.form = this.fb.group({
             text: ['', Validators.required],
@@ -79,11 +81,20 @@ export class BulkImportComponent implements OnInit {
         this.speechService.bulkCreate(this.chapterId, text, strategy, defaultCharacterId).subscribe({
             next: (result) => {
                 this.loading = false;
+                const bookId = this.config.data?.bookId || '';
+                this.analytics.trackEvent('bulk_import_speeches', {
+                    book_id: bookId,
+                    chapter_id: this.chapterId,
+                    strategy: strategy,
+                    speeches_count: result.count || 0,
+                    content_type: 'speech'
+                });
                 this.ref.close(result);
             },
             error: (error) => {
                 this.loading = false;
                 console.error('Error importing speeches:', error);
+                this.analytics.trackError('bulk_import_error', error.message || 'Failed to bulk import speeches', 'bulk-import');
                 this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Erro ao importar falas.' });
             }
         });

@@ -8,6 +8,7 @@ import { NarrationService } from '../../../core/services/narration.service';
 import { WebSocketService } from '../../../core/services/websocket.service';
 import { Speech } from '../../../core/models/speech.model';
 import { Subscription } from 'rxjs';
+import { AnalyticsService } from '../../../core/services/analytics.service';
 
 @Component({
     selector: 'app-narration-control',
@@ -48,7 +49,8 @@ export class NarrationControlComponent implements OnInit, OnDestroy {
     constructor(
         private narrationService: NarrationService,
         private webSocketService: WebSocketService,
-        private messageService: MessageService
+        private messageService: MessageService,
+        private analytics: AnalyticsService
     ) { }
 
     ngOnInit(): void {
@@ -132,12 +134,16 @@ export class NarrationControlComponent implements OnInit, OnDestroy {
 
         this.isProcessing = true;
         this.progress = 0;
-        this.narrationService.startNarration(this.chapterId, this.selectedSpeech.id).subscribe({
+        const speechId = this.selectedSpeech.id;
+        const voiceId = this.selectedSpeech.character?.voiceId || '';
+        this.narrationService.startNarration(this.chapterId, speechId).subscribe({
             next: () => {
+                this.analytics.trackTTSGenerate(speechId, voiceId);
                 this.messageService.add({ severity: 'info', summary: 'Iniciado', detail: 'Geração de áudio iniciada para esta fala.' });
             },
             error: (err) => {
                 this.isProcessing = false;
+                this.analytics.trackError('tts_generation_error', err.error?.error || 'Failed to start TTS generation', 'narration-control');
                 this.messageService.add({ severity: 'error', summary: 'Erro', detail: err.error?.error || 'Erro ao iniciar narração.' });
             }
         });
