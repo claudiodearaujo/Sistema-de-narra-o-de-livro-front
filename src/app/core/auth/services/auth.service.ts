@@ -5,6 +5,7 @@ import { Observable, throwError, BehaviorSubject, tap, catchError, map, of } fro
 import { environment } from '../../../../environments/environment';
 import {
   User,
+  UserRole,
   AuthResponse,
   LoginCredentials,
   SignupCredentials,
@@ -229,7 +230,7 @@ export class AuthService {
     this.analytics.setUserId(user.id);
 
     // Set user type dimension
-    const userType = user.role === 'admin' ? 'admin' :
+    const userType = user.role === UserRole.ADMIN ? 'admin' :
                      (user as any).isPremium ? 'premium' : 'free';
     this.analytics.setUserType(userType as any);
 

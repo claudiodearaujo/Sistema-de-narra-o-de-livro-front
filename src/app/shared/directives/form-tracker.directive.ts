@@ -48,7 +48,7 @@ export class FormTrackerDirective implements OnInit, OnDestroy {
         }
     }
 
-    @HostListener('submit', ['$event'])
+    @HostListener('submit')
     onSubmit(): void {
         this.hasStarted = false; // Prevent abandonment tracking
         this.analytics.trackFormSubmit(this.formName, this.formId, true);
