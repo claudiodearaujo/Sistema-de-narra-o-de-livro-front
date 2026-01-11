@@ -117,3 +117,36 @@
   margin-top: 0.25rem;
   font-size: 0.75rem;
 }
+
+/* Password input styling */
+.password-input {
+  padding-right: 2.5rem;
+}
+
+/* Toast customization */
+::ng-deep .p-toast {
+  z-index: 10000 !important;
+}
+
+::ng-deep .p-toast .p-toast-message {
+  margin-bottom: 0.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+::ng-deep .p-toast .p-toast-message.p-toast-message-error {
+  background: var(--red-50);
+  border: 1px solid var(--red-200);
+  border-left: 4px solid var(--red-500);
+}
+
+::ng-deep .p-toast .p-toast-message.p-toast-message-warn {
+  background: var(--yellow-50);
+  border: 1px solid var(--yellow-200);
+  border-left: 4px solid var(--yellow-500);
+}
+
+::ng-deep .p-toast .p-toast-message.p-toast-message-success {
+  background: var(--green-50);
+  border: 1px solid var(--green-200);
+  border-left: 4px solid var(--green-500);
+}
