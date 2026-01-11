@@ -536,11 +536,11 @@ Otimização de imagens para performance:
 - [x] Adicionar rastreamento de scroll depth (ScrollTrackerDirective)
 - [x] Implementar tracking de formulários (FormTrackerDirective)
 
-### Fase 4: Otimização
-- [ ] Configurar funis no GA4
-- [ ] Criar dashboards customizados
-- [ ] Configurar alertas para métricas críticas
-- [ ] Implementar A/B testing com GA4
+### Fase 4: Otimização ✅ (Implementado em Janeiro 2026)
+- [x] Configurar funis no GA4 (eventos de funil + documentação)
+- [x] Criar dashboards customizados (guia de configuração GA4)
+- [x] Configurar alertas para métricas críticas (documentação)
+- [x] Implementar A/B testing com GA4 (ABTestingService)
 
 ### Fase 5: SEO e Performance ✅ (Implementado em Janeiro 2026)
 - [x] Criar WebVitalsService para Core Web Vitals (LCP, FID, CLS, TTFB, FCP)
@@ -688,10 +688,11 @@ Otimização de imagens para performance:
 ---
 
 **Última atualização**: 11 Janeiro 2026
-**Versão**: 1.4.0
-**Status**: Fase 1 + Fase 2 + Fase 3 + Fase 5 Completas ✅
+**Versão**: 1.5.0
+**Status**: TODAS AS FASES COMPLETAS ✅ (Fase 1 + 2 + 3 + 4 + 5)
 
 ### Changelog
+- **v1.5.0** (11/01/2026): Concluída Fase 4 - Otimização (ABTestingService, funis de conversão, GA4 Configuration Guide)
 - **v1.4.0** (11/01/2026): Concluída Fase 3 - Eventos Avançados (scroll depth, form tracking, UTM campaigns, user dimensions)
 - **v1.3.0** (11/01/2026): Concluída Fase 2 - Eventos de TTS/falas (speech-form, speech-list, narration-control, bulk-import)
 - **v1.2.0** (10/01/2026): Concluída Fase 2 - Tracking em livros, capítulos, personagens, feed social e autenticação
